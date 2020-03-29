@@ -1,0 +1,342 @@
+/*! Modified from the built-in theme: Le Frog */
+
+
+/* Component containers
+----------------------------------*/
+.f-widget-content {
+	border-color: #3f7506;
+	background: #fff;
+	color: #444;
+}
+.f-widget-content a {
+	color: #444;
+}
+.f-widget-header {
+	border-color: #316D04;
+	background: #3a8104;
+	color: #fff;
+}
+.f-widget-header a {
+	color: #fff;
+}
+
+
+/* Interaction states
+----------------------------------*/
+.f-state-default,
+.f-widget-content .f-state-default,
+.f-widget-header .f-state-default {
+	border-color: #45930b;
+	background: #388900;
+	color: #fff;
+}
+.f-state-default a,
+.f-state-default a:link,
+.f-state-default a:visited {
+	color: #fff;
+	
+}
+.f-state-hover,
+.f-widget-content .f-state-hover,
+.f-widget-header .f-state-hover,
+.f-state-focus,
+.f-widget-content .f-state-focus,
+.f-widget-header .f-state-focus {
+	border-color: #7AA45D;
+	background: #FFFFCC;
+	color: #111;
+}
+.f-state-hover a,
+.f-state-hover a:hover,
+.f-state-hover a:link,
+.f-state-hover a:visited,
+.f-state-focus a,
+.f-state-focus a:hover,
+.f-state-focus a:link,
+.f-state-focus a:visited {
+	color: #111;
+	
+}
+.f-state-active,
+.f-widget-content .f-state-active,
+.f-widget-header .f-state-active {
+	border-color: #3f7506;
+	background: #CCFF99;
+	color: #000;
+}
+.f-state-active a,
+.f-state-active a:link,
+.f-state-active a:visited {
+	color: #000;
+	
+}
+
+/* Interaction Cues
+----------------------------------*/
+.f-state-highlight,
+.f-widget-content .f-state-highlight,
+.f-widget-header .f-state-highlight {
+	border-color: #fad000;
+	background: #fbf5d0;
+	color: #363636;
+}
+.f-state-highlight a,
+.f-widget-content .f-state-highlight a,
+.f-widget-header .f-state-highlight a {
+	color: #363636;
+}
+.f-state-error,
+.f-widget-content .f-state-error,
+.f-widget-header .f-state-error {
+	border-color: #fad000;
+	background: #ffdc2e;
+	color: #2b2b2b;
+}
+.f-state-error a,
+.f-widget-content .f-state-error a,
+.f-widget-header .f-state-error a {
+	color: #2b2b2b;
+}
+.f-state-error-text,
+.f-widget-content .f-state-error-text,
+.f-widget-header .f-state-error-text {
+	color: #2b2b2b;
+}
+.f-state-disabled,
+.f-widget-content .f-state-disabled,
+.f-widget-header .f-state-disabled {
+	opacity: .5;
+	filter: alpha(opacity=50);
+	background-image: none;
+}
+.f-state-disabled .f-icon {
+	filter: alpha(opacity=50); /* For IE8 - See #6059 */
+}
+
+
+/* states and images */
+.f-icon {
+	
+	
+}
+.f-icon,
+.f-widget-content .f-icon {
+	color: #72b42d;
+}
+.f-widget-header .f-icon {
+	color: #fff;
+}
+.f-state-default .f-icon {
+    color: #72b42d
+}
+.f-state-hover .f-icon,
+.f-state-focus .f-icon {
+	color: #72b42d;
+}
+.f-state-active .f-icon {
+	color: #72b42d;
+}
+.f-state-highlight .f-icon {
+	color: #72b42d;
+}
+.f-state-error .f-icon,
+.f-state-error-text .f-icon {
+	color: #D23131;
+}
+
+.f-nobg.f-state-hover .f-icon,
+.f-nobg.f-state-focus .f-icon {
+	color: #006600;
+}
+
+
+
+
+/* Corner radius */
+.f-corner-all,
+.f-corner-top,
+.f-corner-left,
+.f-corner-tl {
+	border-top-left-radius: 5px;
+}
+.f-corner-all,
+.f-corner-top,
+.f-corner-right,
+.f-corner-tr {
+	border-top-right-radius: 5px;
+}
+.f-corner-all,
+.f-corner-bottom,
+.f-corner-left,
+.f-corner-bl {
+	border-bottom-left-radius: 5px;
+}
+.f-corner-all,
+.f-corner-bottom,
+.f-corner-right,
+.f-corner-br {
+	border-bottom-right-radius: 5px;
+}
+
+
+
+
+/* FineUIPro CSS */
+.f-accordion > .f-panel-bodyct > .f-panel-body {
+    background: #3a8104;
+}
+
+
+.f-datalist-item,
+.f-grid-row-lines .f-grid-cell,
+.f-grid-row-lines .f-grid-rowexpander > td,
+.f-grid-column-lines .f-grid-cell {
+	border-color: #E6E6E6 !important;
+}
+
+.f-grid-selectedcell-border {
+	border-color: #5BCB09 !important;
+}
+
+
+
+
+
+.f-panel-toolbar-top.f-widget-content {
+	background-position-y: top;
+}
+
+.f-messagebox-icon.f-icon.success {
+	color: #72b42d;
+}
+
+
+.f-grid-row-alt {
+	background-color: #fcfcfc;
+}
+
+.f-widget-header.f-mainheader {
+	background-color: #2f6505;
+}
+.f-widget-header.f-subheader {
+
+}
+
+
+
+.f-tabstrip-plain > .f-panel-bodyct > .f-panel-body,
+.f-tabstrip-plain > .f-panel-header,
+.f-tabstrip-plain > .f-panel-header .f-panel-tools,
+.f-tabstrip-bordercolor .f-tab-header {
+	border-color: #3f7506;
+}
+.f-tabstrip-plain > .f-panel-bodyct > .f-toolbar {
+	border-left-color: #3f7506;
+	border-right-color: #3f7506;
+}
+.f-tabstrip-plain.f-tabstrip-header-top  > .f-panel-header .f-tabstrip-scroller,
+.f-tabstrip-plain.f-tabstrip-header-right  > .f-panel-header .f-tabstrip-scroller {
+	border-bottom-color: #3f7506;
+}
+.f-tabstrip-plain.f-tabstrip-header-bottom  > .f-panel-header .f-tabstrip-scroller,
+.f-tabstrip-plain.f-tabstrip-header-left  > .f-panel-header .f-tabstrip-scroller {
+	border-top-color: #3f7506;
+}
+.f-tab-header.f-state-active {
+	background-color: #fff;
+	color: #444;
+}
+.f-tabstrip-header .f-tab-header.f-state-active:after {
+	background-color: #fff;
+}
+.f-tab-header.f-state-active .f-icon{
+	color: #c00;
+}
+
+.f-tabstrip-header .f-tabstrip-header-inkbar {
+	background-color: #64c800;
+}
+.f-tabstrip-inkbar > .f-tabstrip-header .f-tab-header.f-state-active {
+	background-color: #3f8c03;
+	color: #fff;
+}
+.f-tabstrip-inkbar > .f-tabstrip-header .f-tab-header.f-state-active .f-icon {
+	color: #fff;
+}
+
+
+.f-panel {
+	border-color: #316D04;
+}
+.f-grouppanel {
+	border-color: #C4C8CA;
+}
+
+
+
+.f-grid-colheader,
+.f-grid-colheader-trigger {
+	border-color: #45930b !important;
+}
+
+
+.f-tree-headerstyle .f-panel-body {
+	background: #3a8104;
+}
+.f-tree-headerstyle .f-tree-node.f-tree-node-toplevel .f-tree-cell-inner,
+.f-tree-minimode-item-inner {
+	border-color: #316D04;
+}
+
+	
+.f-toolbar-buttonplain,
+.f-toolbar-buttonplain .f-buttongroup .f-btn:after {
+	border-color: #45930b !important;
+}
+body.f-body-bgcolor {
+    background-color: #f3f3f3;
+}
+
+.f-grid-row.f-grid-row-newadded > .f-grid-cell:first-child > .f-grid-cell-inner:after {
+	color: #72b42d;
+}
+
+
+
+.f-grid-show-selected-cell .f-grid-cell-selected {
+    background: #c2f589;
+    color: #000;
+}
+.f-grid-show-selected-cell .f-grid-cell-selected .f-icon {
+	color: #72b42d;
+}
+
+
+
+
+
+
+
+.f-field-checkbox-switch.f-checked {
+    background-color: #72b42d;
+    border-color: #72b42d;
+}
+.f-state-focus.f-field-checkbox-switch.f-checked {
+    background-color: #006600;
+    border-color: #006600;
+}
+.f-state-focus.f-field-checkbox-switch {
+    background-color: #bbb;
+    border-color: #bbb;
+}
+
+
+
+
+.mainpanel .sidebarregion .leftregion,
+.mainpanel .bodyregion .centerregion {
+    border-width: 0;
+}
+.mainpanel .bodyregion .centerregion .f-tabstrip-header {
+    border-width: 0;
+}

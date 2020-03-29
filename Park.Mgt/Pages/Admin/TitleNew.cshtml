@@ -1,0 +1,35 @@
+﻿@page
+@model Park.Mgt.Pages.Admin.TitleNewModel
+@{
+    ViewData["Title"] = "TitleNew";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true" Layout="VBox">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="F.activeWindow.hide();"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" ValidateForms="SimpleForm1" Icon="SystemSaveClose" OnClick="@Url.Handler("TitleNew_btnSaveClose_Click")" OnClickFields="SimpleForm1" Text="保存后关闭"></f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:SimpleForm ID="SimpleForm1" ShowBorder="false" ShowHeader="false" BodyPadding="10">
+                <Items>
+                    <f:TextBox For="Title.Name">
+                    </f:TextBox>
+                    <f:TextArea For="Title.Remark"></f:TextArea>
+                </Items>
+            </f:SimpleForm>
+        </Items>
+    </f:Panel>
+
+}
+

@@ -1,0 +1,129 @@
+﻿@page
+@model Park.Mgt.Pages.Admin.TitleModel
+@{
+    ViewData["Title"] = "Title";
+    var PagingInfo = Model.PagingInfo;
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" ShowHeader="false" Layout="VBox" Title="职称管理" IsViewPort="true">
+        <Items>
+            <f:Form ShowBorder="false" ShowHeader="false">
+                <Rows>
+                    <f:FormRow>
+                        <Items>
+                            <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="在职称名称中搜索" Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false"
+                                              OnTrigger1Click="@Url.Handler("Title_DoPostBack")" OnTrigger1ClickParameter1="@(new Parameter("actionType","trigger1",ParameterMode.String))" OnTrigger1ClickFields="Panel1"
+                                              OnTrigger2Click="@Url.Handler("Title_DoPostBack")" OnTrigger2ClickParameter1="@(new Parameter("actionType","trigger2",ParameterMode.String))" OnTrigger2ClickFields="Panel1">
+                            </f:TwinTriggerBox>
+                            <f:label></f:label>
+                        </Items>
+                    </f:FormRow>
+                </Rows>
+            </f:Form>
+            <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="false" DataIDField="ID" DataTextField="Name" AllowSorting="true"
+                    SortField="@PagingInfo.SortField" SortDirection="@PagingInfo.SortDirection"
+                    AllowPaging="true" IsDatabasePaging="true" PageSize="@PagingInfo.PageSize" DataSource="@Model.Titles" RecordCount="@PagingInfo.RecordCount"
+                    OnPageIndexChanged="@Url.Handler("Title_DoPostBack")" OnPageIndexChangedFields="Panel1"
+                    OnSort="@Url.Handler("Title_DoPostBack")" OnSortFields="Panel1">
+                <Columns>
+                    <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                    <f:RenderField For="Titles.First().Name" SortField="Name" Width="180"></f:RenderField>
+                    <f:RenderField For="Titles.First().Remark" ExpandUnusedSpace="true"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionEdit"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionDelete"></f:RenderField>
+                </Columns>
+                <PageItems>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:ToolbarText Text="每页记录数："></f:ToolbarText>
+                    <f:DropDownList ID="ddlGridPageSize" Width="80" SelectedValue="@PagingInfo.PageSize.ToString()"
+                                    OnSelectedIndexChanged="@Url.Handler("Title_DoPostBack")" OnSelectedIndexChangedParameter1="@(new Parameter("actionType","changeGridPageSize",ParameterMode.String))" OnSelectedIndexChangedFields="Panel1">
+                        <Items>
+                            <f:ListItem Text="10" Value="10"></f:ListItem>
+                            <f:ListItem Text="20" Value="20"></f:ListItem>
+                            <f:ListItem Text="50" Value="50"></f:ListItem>
+                            <f:ListItem Text="100" Value="100"></f:ListItem>
+                        </Items>
+                    </f:DropDownList>
+                </PageItems>
+                <Toolbars>
+                    <f:Toolbar ID="Toolbar1" Position="Top">
+                        <Items>
+                            <f:ToolbarFill></f:ToolbarFill>
+                            <f:Button ID="btnNew" Icon="Add" Text="新增职称" Enabled="@Model.PowerCoreTitleNew">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onNewClick"></f:Listener>
+                                </Listeners>
+                            </f:Button>
+                        </Items>
+                    </f:Toolbar>
+                </Toolbars>
+            </f:Grid>
+        </Items>
+    </f:Panel>
+
+    <f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+              EnableMaximize="true" EnableIFrame="true" Width="900" Height="550"
+              OnClose="@Url.Handler("Title_DoPostBack")" OnCloseFields="Panel1">
+    </f:Window>
+
+}
+
+
+@section script {
+
+    <script>
+
+        var coreTitleEdit = @Convert.ToString(Model.PowerCoreTitleEdit).ToLower();
+        var coreTitleDelete = @Convert.ToString(Model.PowerCoreTitleDelete).ToLower();
+
+        function onNewClick(event) {
+            F.ui.Window1.show('@Url.Content("~/Admin/TitleNew")', '新增');
+        }
+
+        function renderActionEdit(value, params) {
+            var imageUrl = '@Url.Content("~/res/icon/pencil.png")';
+            var disabledCls = coreTitleEdit ? '' : ' f-state-disabled';
+            return '<a class="action-btn edit'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+        }
+
+        function renderActionDelete(value, params) {
+            var imageUrl = '@Url.Content("~/res/icon/delete.png")';
+            var disabledCls = coreTitleDelete ? '' : ' f-state-disabled';
+            return '<a class="action-btn delete'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+        }
+
+        F.ready(function () {
+
+            var grid1 = F.ui.Grid1;
+            grid1.el.on('click', 'a.action-btn', function (event) {
+                var cnode = $(this);
+                var rowData = grid1.getRowData(cnode.closest('.f-grid-row'));
+
+                // 是否禁用
+                if(cnode.hasClass('f-state-disabled')) {
+                    return;
+                }
+
+                if (cnode.hasClass('delete')) {
+                    F.confirm({
+                        message: '确定删除此记录？',
+                        target: '_top',
+                        ok: function () {
+                            // 触发后台事件
+                            F.doPostBack('@Url.Handler("Title_DoPostBack")', 'Panel1', {
+                                actionType: 'delete',
+                                deletedRowID: rowData.id
+                            });
+                        }
+                    });
+                } else if (cnode.hasClass('edit')) {
+                    F.ui.Window1.show('@Url.Content("~/Admin/TitleEdit?id=")' + rowData.id, '编辑');
+                }
+            });
+
+        });
+
+    </script>
+}

@@ -1,0 +1,48 @@
+﻿@{
+    var F = Html.F();
+}
+
+@using FineUICore
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Park.Mgt - 通用权限管理系统</title>
+
+    @F.RenderCss()
+    <link href="~/res/css/common.css" rel="stylesheet" type="text/css" />
+    @RenderSection("head", false)
+
+</head>
+<body>
+    @Html.AntiForgeryToken()
+
+    @{
+        var pm = F.PageManager;
+        
+        // 主题
+        var themeCookie = Context.Request.Cookies["Theme"];
+        if (!String.IsNullOrEmpty(themeCookie))
+        {
+            Theme theme;
+            if (Enum.TryParse<Theme>(themeCookie, true, out theme))
+            {
+				pm.CustomTheme(String.Empty);
+                pm.Theme(theme);
+            }
+            else
+            {
+                pm.CustomTheme(themeCookie);
+            }
+        }
+    }
+    @F.PageManager
+
+    @RenderSection("body", true)
+
+    @F.RenderScript()
+    @RenderSection("script", false)
+
+</body>
+</html>

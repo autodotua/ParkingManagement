@@ -1,0 +1,244 @@
+﻿@page
+@model Park.Mgt.Pages.Admin.UserListModel
+@{
+    ViewData["Title"] = "UserList";
+    var PagingInfo = Model.PagingInfo;
+}
+
+@section body {
+    
+    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="VBox" ShowHeader="false" Title="用户管理" IsViewPort="true">
+        <Items>
+            <f:Form ID="Form2" ShowBorder="false" ShowHeader="false">
+                <Rows>
+                    <f:FormRow ID="FormRow1">
+                        <Items>
+                            <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="在用户名称中搜索" Trigger1Icon="Clear" Trigger2Icon="Search"
+                                              ShowTrigger1="false" OnTrigger2Click="@Url.Handler("UserList_DoPostBack")" OnTrigger2ClickParameter1="@(new Parameter("actionType","trigger2",ParameterMode.String))" OnTrigger2ClickFields="Panel1"
+                                              OnTrigger1Click="@Url.Handler("UserList_DoPostBack")" OnTrigger1ClickParameter1="@(new Parameter("actionType","trigger1",ParameterMode.String))" OnTrigger1ClickFields="Panel1">
+                            </f:TwinTriggerBox>
+                            <f:RadioButtonList ID="rblEnableStatus" OnSelectedIndexChanged="@Url.Handler("UserList_DoPostBack")" OnSelectedIndexChangedFields="Panel1" Label="启用状态" ColumnNumber="3">
+                                <Items>
+                                    <f:RadioItem Text="全部" Selected="true" Value="all"></f:RadioItem>
+                                    <f:RadioItem Text="启用" Value="enabled"></f:RadioItem>
+                                    <f:RadioItem Text="禁用" Value="disabled"></f:RadioItem>
+                                </Items>
+                            </f:RadioButtonList>
+                        </Items>
+                    </f:FormRow>
+                </Rows>
+            </f:Form>
+            <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true" DataIDField="ID" DataTextField="Name" AllowSorting="true"
+                    AllowPaging="true" IsDatabasePaging="true"
+                    SortField="@PagingInfo.SortField" SortDirection="@PagingInfo.SortDirection"
+                    PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.Users"
+                    OnSort="@Url.Handler("UserList_DoPostBack")" OnSortFields="Panel1"
+                    OnPageIndexChanged="@Url.Handler("UserList_DoPostBack")" OnPageIndexChangedFields="Panel1">
+                <Columns>
+                    <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                    <f:RenderField For="Users.First().Name" SortField="Name" Width="100"></f:RenderField>
+                    <f:RenderField For="Users.First().ChineseName" SortField="ChineseName" Width="100" />
+                    <f:RenderCheckField For="Users.First().Enabled" SortField="Enabled" RenderAsStaticField="true" Width="80" />
+                    <f:RenderField For="Users.First().Gender" SortField="Gender" Width="50" />
+                    <f:RenderField For="Users.First().Email" SortField="Email" Width="180" />
+                    <f:RenderField For="Users.First().Remark" ExpandUnusedSpace="true" />
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionView"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionPassword"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionEdit"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionDelete"></f:RenderField>
+                </Columns>
+                <PageItems>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:ToolbarText Text="每页记录数："></f:ToolbarText>
+                    <f:DropDownList ID="ddlGridPageSize" Width="80" SelectedValue="@PagingInfo.PageSize.ToString()"
+                                    OnSelectedIndexChanged="@Url.Handler("UserList_DoPostBack")" OnSelectedIndexChangedParameter1="@(new Parameter("actionType","changeGridPageSize",ParameterMode.String))" OnSelectedIndexChangedFields="Panel1">
+                        <Items>
+                            <f:ListItem Text="10" Value="10"></f:ListItem>
+                            <f:ListItem Text="20" Value="20"></f:ListItem>
+                            <f:ListItem Text="50" Value="50"></f:ListItem>
+                            <f:ListItem Text="100" Value="100"></f:ListItem>
+                        </Items>
+                    </f:DropDownList>
+                </PageItems>
+                <Toolbars>
+                    <f:Toolbar ID="Toolbar1" Position="Top">
+                        <Items>
+                            <f:Button ID="btnDeletedSelected" Icon="Delete" Text="删除选中记录" Enabled="@Model.PowerCoreUserDelete">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onDeleteSelectedClick"></f:Listener>
+                                </Listeners>
+                            </f:Button>
+                            <f:ToolbarSeparator></f:ToolbarSeparator>
+                            <f:Button ID="btnChangeEnableUsers" Icon="GroupEdit" Text="设置启用状态" Enabled="@Model.PowerCoreUserEdit">
+                                <Menu>
+                                    <f:MenuButton ID="btnEnableUsers" Text="启用选中记录">
+                                        <Listeners>
+                                            <f:Listener Event="click" Handler="onEnableUsersClick"></f:Listener>
+                                        </Listeners>
+                                    </f:MenuButton>
+                                    <f:MenuButton ID="btnDisableUsers" Text="禁用选中记录">
+                                        <Listeners>
+                                            <f:Listener Event="click" Handler="onDisableUsersClick"></f:Listener>
+                                        </Listeners>
+                                    </f:MenuButton>
+                                </Menu>
+                            </f:Button>
+                            <f:ToolbarFill></f:ToolbarFill>
+                            <f:Button ID="btnNew" Icon="Add" Text="新增用户" Enabled="@Model.PowerCoreUserNew">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onNewClick"></f:Listener>
+                                </Listeners>
+                            </f:Button>
+                        </Items>
+                    </f:Toolbar>
+                </Toolbars>
+            </f:Grid>
+        </Items>
+    </f:Panel>
+
+    <f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+              EnableMaximize="true" EnableIFrame="true" Width="900" Height="600"
+              OnClose="@Url.Handler("UserList_DoPostBack")" OnCloseFields="Panel1">
+    </f:Window>
+}
+
+
+@section script {
+
+    <script>
+
+    var coreUserEdit = @Convert.ToString(Model.PowerCoreUserEdit).ToLower();
+    var coreUserDelete = @Convert.ToString(Model.PowerCoreUserDelete).ToLower();
+    var coreUserChangePassword = @Convert.ToString(Model.PowerCoreUserChangePassword).ToLower();
+
+
+    function onNewClick(event) {
+        F.ui.Window1.show('@Url.Content("~/Admin/UserNew")', '新增');
+    }
+
+    function renderActionView(value, params) {
+        var imageUrl = '@Url.Content("~/res/icon/information.png")';
+        return '<a class="action-btn view" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+    }
+
+    function renderActionPassword(value, params) {
+        var imageUrl = '@Url.Content("~/res/icon/key.png")';
+        var disabledCls = coreUserChangePassword ? '' : ' f-state-disabled';
+        return '<a class="action-btn password'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+    }
+
+    function renderActionEdit(value, params) {
+        var imageUrl = '@Url.Content("~/res/icon/pencil.png")';
+        var disabledCls = coreUserEdit ? '' : ' f-state-disabled';
+        return '<a class="action-btn edit'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+    }
+
+    function renderActionDelete(value, params) {
+        var imageUrl = '@Url.Content("~/res/icon/delete.png")';
+        var disabledCls = coreUserDelete ? '' : ' f-state-disabled';
+        return '<a class="action-btn delete'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+    }
+
+    function onDeleteSelectedClick(event) {
+        var grid1 = F.ui.Grid1;
+
+        if (!grid1.hasSelection()) {
+            F.alert('请至少选择一项！');
+            return;
+        }
+
+        var selectedRows = grid1.getSelectedRows();
+        F.confirm({
+            message: '你确定要删除选中的&nbsp;<b>' + selectedRows.length + '</b>&nbsp;行数据吗？',
+            target: '_top',
+            ok: function () {
+                // 触发后台事件
+                F.doPostBack('@Url.Handler("UserList_DoPostBack")', 'Panel1', {
+                    actionType: 'delete',
+                    deletedRowIDs: selectedRows
+                });
+            }
+        });
+    }
+
+    function onEnableUsersClick(event) {
+        var grid1 = F.ui.Grid1;
+
+        if (!grid1.hasSelection()) {
+            F.alert('请至少选择一项！');
+            return;
+        }
+
+        var selectedRows = grid1.getSelectedRows();
+        F.confirm({
+            message: '你确定要启用选中的&nbsp;<b>' + selectedRows.length + '</b>&nbsp;行数据吗？',
+            target: '_top',
+            ok: function () {
+                // 触发后台事件
+                F.doPostBack('@Url.Handler("UserList_DoPostBack")', 'Panel1', {
+                        actionType: 'enable',
+                        deletedRowIDs: selectedRows
+                    });
+                }
+            });
+        }
+
+        function onDisableUsersClick(event) {
+            var grid1 = F.ui.Grid1;
+
+            if (!grid1.hasSelection()) {
+                F.alert('请至少选择一项！');
+                return;
+            }
+
+            var selectedRows = grid1.getSelectedRows();
+            F.confirm({
+                message: '你确定要禁用选中的&nbsp;<b>' + selectedRows.length + '</b>&nbsp;行数据吗？',
+                target: '_top',
+                ok: function () {
+                    // 触发后台事件
+                    F.doPostBack('@Url.Handler("UserList_DoPostBack")', 'Panel1', {
+                        actionType: 'disable',
+                        deletedRowIDs: selectedRows
+                    });
+                }
+            });
+        }
+
+        F.ready(function () {
+
+            var grid1 = F.ui.Grid1;
+            grid1.el.on('click', 'a.action-btn', function (event) {
+                var cnode = $(this);
+                var rowData = grid1.getRowData(cnode.closest('.f-grid-row'));
+
+                // 是否禁用
+                if(cnode.hasClass('f-state-disabled')) {
+                    return;
+                }
+
+                if (cnode.hasClass('delete')) {
+                    F.confirm({
+                        message: '确定删除此记录？',
+                        target: '_top',
+                        ok: function () {
+                            // 触发后台事件
+                            F.doPostBack('@Url.Handler("UserList_DoPostBack")', 'Panel1', {
+                            actionType: 'delete',
+                            deletedRowIDs: [rowData.id]
+                        });
+                    }
+                });
+            } else if (cnode.hasClass('edit')) {
+                F.ui.Window1.show('@Url.Content("~/Admin/UserEdit?id=")' + rowData.id, '编辑');
+            } else if (cnode.hasClass('view')) {
+                F.ui.Window1.show('@Url.Content("~/Admin/UserView?id=")' + rowData.id, '查看');
+            } else if (cnode.hasClass('password')) {
+                F.ui.Window1.show('@Url.Content("~/Admin/UserChangePassword?id=")' + rowData.id, '修改密码');
+            }
+        });
+
+    });
+
+    </script>
+}

@@ -1,0 +1,471 @@
+
+/*
+    Main color: #2b7dbc
+    Second color: #0063B1
+    Border color: #76A6CB
+*/
+
+
+/* Content */
+.f-widget-content {
+    border-color: #ddd;
+    background-color: #fff;
+    color: #444;
+}
+
+    .f-widget-content a {
+        color: #444;
+    }
+
+/* Header */
+.f-widget-header {
+    border-color: #ddd;
+    background-color: #fff;
+    color: #444;
+}
+
+    .f-widget-header a {
+        color: #444;
+    }
+
+    /* States */
+    .f-state-default,
+    .f-widget-content .f-state-default,
+    .f-widget-header .f-state-default {
+        border-color: #ddd;
+        background-color: #ffffff;
+        color: #444;
+    }
+
+        .f-state-default a,
+        .f-state-default a:link,
+        .f-state-default a:visited {
+            color: #444;
+        }
+
+    .f-state-hover,
+    .f-widget-content .f-state-hover,
+    .f-widget-header .f-state-hover,
+    .f-state-focus,
+    .f-widget-content .f-state-focus,
+    .f-widget-header .f-state-focus {
+        border-color: #76A6CB;
+        background-color: #fafafa;
+        color: #00599F;
+    }
+
+        .f-state-hover a,
+        .f-state-hover a:hover,
+        .f-state-hover a:link,
+        .f-state-hover a:visited,
+        .f-state-focus a,
+        .f-state-focus a:hover,
+        .f-state-focus a:link,
+        .f-state-focus a:visited {
+            color: #00599F;
+        }
+
+    .f-state-active,
+    .f-widget-content .f-state-active,
+    .f-widget-header .f-state-active {
+        border-color: #76A6CB;
+        background-color: #eee;
+        color: #00599F;
+    }
+
+        .f-state-active a,
+        .f-state-active a:link,
+        .f-state-active a:visited {
+            color: #00599F;
+        }
+
+
+    .f-state-highlight,
+    .f-widget-content .f-state-highlight,
+    .f-widget-header .f-state-highlight {
+        border-color: #BF8A8A;
+        background-color: #fff;
+        color: #000;
+    }
+
+        .f-state-highlight a,
+        .f-widget-content .f-state-highlight a,
+        .f-widget-header .f-state-highlight a {
+        }
+
+    .f-state-error,
+    .f-widget-content .f-state-error,
+    .f-widget-header .f-state-error {
+        border-color: #ffa8a8;
+        background-color: #fff8f8;
+        color: #000;
+    }
+
+        .f-state-error a,
+        .f-widget-content .f-state-error a,
+        .f-widget-header .f-state-error a {
+        }
+
+    .f-state-error-text,
+    .f-widget-content .f-state-error-text,
+    .f-widget-header .f-state-error-text {
+        color: #000;
+    }
+
+    .f-state-disabled,
+    .f-widget-content .f-state-disabled,
+    .f-widget-header .f-state-disabled {
+        opacity: .5;
+        filter: alpha(opacity=50);
+        background-image: none;
+    }
+
+        .f-state-disabled .f-icon {
+            filter: alpha(opacity=50);
+        }
+
+/* Icon font */
+.f-icon,
+.f-widget-content .f-icon {
+    color: #888;
+}
+
+.f-widget-header .f-icon {
+    color: #888;
+}
+
+.f-state-default .f-icon {
+    color: #888;
+}
+
+.f-state-hover .f-icon,
+.f-state-focus .f-icon {
+    color: #00599F;
+}
+
+.f-state-active .f-icon {
+    color: #00599F;
+}
+
+.f-state-highlight .f-icon {
+    color: #888;
+}
+
+.f-state-error .f-icon,
+.f-state-error-text .f-icon {
+    color: #ff6c6c;
+}
+
+
+/* Round corner */
+.f-corner-all,
+.f-corner-top,
+.f-corner-left,
+.f-corner-tl {
+    border-top-left-radius: 4px;
+}
+
+.f-corner-all,
+.f-corner-top,
+.f-corner-right,
+.f-corner-tr {
+    border-top-right-radius: 4px;
+}
+
+.f-corner-all,
+.f-corner-bottom,
+.f-corner-left,
+.f-corner-bl {
+    border-bottom-left-radius: 4px;
+}
+
+.f-corner-all,
+.f-corner-bottom,
+.f-corner-right,
+.f-corner-br {
+    border-bottom-right-radius: 4px;
+}
+
+/* Special - f-tabstrip-inkbar */
+.f-tabstrip-header .f-tabstrip-header-inkbar {
+    background-color: #2b7dbc;
+}
+
+.f-tabstrip-inkbar > .f-tabstrip-header .f-tab-header.f-state-active {
+    background-color: #fafafa;
+}
+
+
+/* Special - f-widget-header */
+/*.f-widget-header {
+    background-color: #fafafa;
+}
+
+    .f-widget-header .f-state-hover,
+    .f-widget-header .f-state-focus {
+        background-color: #eee;
+    }*/
+
+/* CheckBox - RadioButton */
+.f-checkbox.f-checked,
+.f-checkbox.f-checkbox-indeterminate {
+    background-color: #00599F;
+    border-color: #00599F;
+}
+
+.f-radiobutton:after {
+    background-color: #00599F;
+}
+
+.f-radiobutton.f-checked {
+    border-color: #00599F;
+}
+
+.f-state-focus .f-checkbox,
+.f-state-focus .f-radiobutton {
+    border-color: #76A6CB;
+}
+
+.f-menu-item-icon.f-menu-radiobutton.f-checked {
+    color: #00599F;
+}
+
+
+/* Special - Remove border-color for hover state */
+.f-tab-header.f-state-active,
+.f-tab-header.f-state-hover,
+.f-grid-colheader-trigger.f-state-hover,
+.f-grid-colheader.f-state-hover {
+    border-color: #ddd;
+}
+
+
+/* Special - TabStrip */
+.f-tabstrip-plain > .f-panel-bodyct > .f-panel-body,
+.f-tabstrip-plain > .f-panel-header,
+.f-tabstrip-plain > .f-panel-header .f-panel-tools,
+.f-tabstrip-bordercolor .f-tab-header {
+    border-color: #ddd;
+}
+
+.f-tabstrip-plain > .f-panel-bodyct > .f-toolbar {
+    border-left-color: #ddd;
+    border-right-color: #ddd;
+}
+
+.f-tabstrip-plain.f-tabstrip-header-top > .f-panel-header .f-tabstrip-scroller,
+.f-tabstrip-plain.f-tabstrip-header-right > .f-panel-header .f-tabstrip-scroller {
+    border-bottom-color: #ddd;
+}
+
+.f-tabstrip-plain.f-tabstrip-header-bottom > .f-panel-header .f-tabstrip-scroller,
+.f-tabstrip-plain.f-tabstrip-header-left > .f-panel-header .f-tabstrip-scroller {
+    border-top-color: #ddd;
+}
+
+.f-tab-header.f-state-active {
+    background-color: #fff;
+}
+
+
+/* Special - Grid selected cell */
+.f-grid-selectedcell-border {
+    border-color: #ddd !important;
+}
+
+
+/* Special - Grid selected row */
+.f-grid-row.f-state-active {
+}
+
+    .f-grid-row.f-state-active a,
+    .f-grid-row.f-state-active a:link,
+    .f-grid-row.f-state-active a:visited {
+    }
+
+    .f-grid-row.f-state-active .f-icon {
+    }
+
+
+/* Special - Tree header style */
+.f-tree-headerstyle .f-panel-body {
+    background-color: #fff;
+}
+
+.f-tree-headerstyle .f-tree-node.f-tree-node-toplevel .f-tree-cell-inner,
+.f-tree-minimode-item-inner {
+    border-color: #ddd;
+}
+
+.f-toolbar-buttonplain,
+.f-toolbar-buttonplain .f-buttongroup .f-btn:after {
+    border-color: #ddd !important;
+}
+
+/* Special - Button pressed state */
+.f-btn.f-state-active {
+    background-color: #00599F;
+    color: #fff;
+}
+
+    .f-btn.f-state-active .f-icon {
+        color: #fff;
+    }
+
+/* Special - Background color for bgpanel */
+.mainpanel {
+    background-image: url(./sky.jpg);
+    background-size: cover;
+    background-position: center 0px;
+    background-repeat: no-repeat;
+}
+
+.f-ie8 .mainpanel {
+    background-image: none;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/res/themes/image_black_sky/sky.jpg', sizingMethod='scale');
+}
+
+.bgpanel,
+.bgpanel .f-widget-header,
+.bgpanel .f-widget-content,
+.bgpanel .f-tree-headerstyle .f-panel-body,
+.bgpanel .f-tree-node.f-widget-header .f-tree-cell-inner,
+.bgpanel .f-tree-minimode-item .f-tree-minimode-item-inner,
+.mainpanel .f-region-split {
+    background-color: transparent;
+    border-color: transparent;
+    background-image: none;
+}
+
+    .bgpanel .f-state-hover,
+    .bgpanel .f-state-focus,
+    .bgpanel .f-state-active {
+        background-color: rgba(255, 255, 255, 0.20);
+    }
+
+.f-ie8 .bgpanel .f-state-hover,
+.f-ie8 .bgpanel .f-state-focus,
+.f-ie8 .bgpanel .f-state-active,
+.f-ie8 .bgpanel tr.f-state-hover > td,
+.f-ie8 .bgpanel tr.f-state-focus > td,
+.f-ie8 .bgpanel tr.f-state-active > td {
+    background-color: transparent;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33ffffff,endColorstr=#33ffffff);
+}
+
+.bgpanel .f-widget-header,
+.bgpanel .f-widget-content,
+.bgpanel a, .bgpanel span,
+.bgpanel .f-icon {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.f-ie8 .bgpanel .f-widget-header,
+.f-ie8 .bgpanel .f-widget-content,
+.f-ie8 .bgpanel a, .f-ie8 .bgpanel span,
+.f-ie8 .bgpanel .f-icon {
+    color: #fff;
+}
+
+
+.bgpanel a:hover,
+.bgpanel .f-state-hover,
+.bgpanel .f-state-hover a,
+.bgpanel .f-state-hover .f-icon,
+.bgpanel .f-state-focus,
+.bgpanel .f-state-focus a,
+.bgpanel .f-state-focus .f-icon,
+.bgpanel .f-state-active,
+.bgpanel .f-state-active a,
+.bgpanel .f-state-active .f-icon {
+    color: #fff;
+}
+
+.bgpanel.f-mainheader,
+.bgpanel .f-mainheader {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+
+
+/* Special - TabStrip style for center region */
+.centerregion,
+.leftregion {
+    border-width: 0;
+}
+
+.mainpanel .sidebarregion .leftregion,
+.mainpanel .bodyregion .centerregion {
+    border-width: 0;
+    border-top-width: 1px;
+}
+
+.mainpanel .bodyregion .centerregion,
+.mainpanel .bodyregion .centerregion .f-tabstrip-header {
+    border-color: #efefef;
+}
+
+/* Special - MessageBoxIcon */
+.f-messagebox-icon.f-messageicon-information,
+.f-messagebox-icon.f-messageicon-question {
+    color: #00599F;
+}
+
+
+
+/* Custom scrollbar */
+/*
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+    background-color: #efefef;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, .2);
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0, 0, 0, .25);
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+        background-color: rgba(0, 0, 0, .3);
+    }
+*/
+
+
+
+
+/* Special - progressbar */
+.f-progressbar {
+    border-width: 0;
+    background-color: #eee;
+}
+
+    .f-progressbar .f-progressbar-value {
+        background-color: #2b7dbc;
+    }
+
+
+.f-grid-row.f-grid-row-newadded > .f-grid-cell:first-child > .f-grid-cell-inner:after {
+	color: #00599F;
+}
+
+
+.f-grid-show-selected-cell .f-grid-cell-selected {
+    background-color: #e5e5e5;
+    color: #00599F;
+}
+.f-grid-show-selected-cell .f-grid-cell-selected .f-icon {
+	color: #00599F;
+}

@@ -1,0 +1,28 @@
+﻿@page
+@model Park.Mgt.Pages.Mgt.DesignModel
+@{
+    ViewData["Title"] = "停车场设计";
+}
+
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" Width="600">
+        <Items>
+            <canvas id="drawing" width="200" height="200">A drawing of something</canvas>
+        </Items>
+    </f:Panel>
+
+}
+
+@section script{
+    <script>
+        var drawing = document.getElementById("drawing");
+        //确定浏览器支持<canvas>元素
+        if (drawing.getContext) {
+            var ctx = drawing.getContext("2d");
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fillRect(0, 0, width, height);
+        }
+    </script>
+}

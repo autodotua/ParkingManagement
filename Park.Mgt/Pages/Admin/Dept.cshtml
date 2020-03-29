@@ -1,0 +1,99 @@
+﻿@page
+@model Park.Mgt.Pages.Admin.DeptModel
+@{
+    ViewData["Title"] = "Dept";
+}
+
+@section body {
+    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" ShowHeader="false" Layout="VBox" Title="部门管理" IsViewPort="true">
+        <Items>
+            <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="false" DataIDField="ID" DataTextField="Name"
+                    EnableSimulateTree="true" DataSource="@Model.Depts">
+                <Columns>
+                    <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                    <f:RenderField For="Depts.First().Name" SortField="Name" DataSimulateTreeLevelField="TreeLevel" Width="180"></f:RenderField>
+                    <f:RenderField For="Depts.First().Remark" SortField="Remark" ExpandUnusedSpace="true"></f:RenderField>
+                    <f:RenderField For="Depts.First().SortIndex" Width="80"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionEdit"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionDelete"></f:RenderField>
+                </Columns>
+                <Toolbars>
+                    <f:Toolbar ID="Toolbar1" Position="Top">
+                        <Items>
+                            <f:ToolbarFill></f:ToolbarFill>
+                            <f:Button ID="btnNew" Icon="Add" Text="新增部门" Enabled="@Model.PowerCoreDeptNew">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onNewClick"></f:Listener>
+                                </Listeners>
+                            </f:Button>
+                        </Items>
+                    </f:Toolbar>
+                </Toolbars>
+            </f:Grid>
+        </Items>
+    </f:Panel>
+
+    <f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true" EnableMaximize="true"
+              EnableIFrame="true" Width="900" Height="550"
+              OnClose="@Url.Handler("Dept_DoPostBack")" OnCloseFields="Panel1"></f:Window>
+
+}
+
+
+@section script {
+
+    <script>
+
+        var coreDeptEdit = @Convert.ToString(Model.PowerCoreDeptEdit).ToLower();
+        var coreDeptDelete = @Convert.ToString(Model.PowerCoreDeptDelete).ToLower();
+
+        function onNewClick(event) {
+            F.ui.Window1.show('@Url.Content("~/Admin/DeptNew")', '新增');
+        }
+
+        function renderActionEdit(value, params) {
+            var imageUrl = '@Url.Content("~/res/icon/pencil.png")';
+            var disabledCls = coreDeptEdit ? '' : ' f-state-disabled';
+            return '<a class="action-btn edit'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+        }
+
+        function renderActionDelete(value, params) {
+            var imageUrl = '@Url.Content("~/res/icon/delete.png")';
+            var disabledCls = coreDeptDelete ? '' : ' f-state-disabled';
+            return '<a class="action-btn delete'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+        }
+
+        F.ready(function () {
+
+            var grid1 = F.ui.Grid1;
+            grid1.el.on('click', 'a.action-btn', function (event) {
+                var cnode = $(this);
+                var rowData = grid1.getRowData(cnode.closest('.f-grid-row'));
+
+                // 是否禁用
+                if(cnode.hasClass('f-state-disabled')) {
+                    return;
+                }
+
+                if (cnode.hasClass('delete')) {
+                    F.confirm({
+                        message: '确定删除此记录？',
+                        target: '_top',
+                        ok: function () {
+                            // 触发后台事件
+                            F.doPostBack('@Url.Handler("Dept_DoPostBack")', 'Panel1', {
+                                actionType: 'delete',
+                                deletedRowID: rowData.id
+                            });
+                        }
+                    });
+                } else if (cnode.hasClass('edit')) {
+                    F.ui.Window1.show('@Url.Content("~/Admin/DeptEdit?id=")' + rowData.id, '编辑');
+                }
+            });
+
+        });
+
+    </script>
+}
+

@@ -1,0 +1,165 @@
+﻿@page
+@model Park.Mobile.Pages.IndexModel
+@{
+    ViewBag.Title = "首页";
+    var F = @Html.F();
+}
+
+@section head {
+
+    <link type="text/css" rel="stylesheet" href="~/res/css/index.css" />
+
+}
+
+@section body {
+
+    <div id="header" class="f-widget-header f-mainheader">
+        <table>
+            <tr>
+                <td>
+                    <f:Button ID="btnHomePage" EnableDefaultCorner="false" EnableDefaultState="false" IconFont="_Home" IconAlign="Top" CssClass="icononlyaction" ToolTip="官网首页" OnClientClick="window.open('http://fineui.com/core/','_blank');"></f:Button>
+
+                    <a class="logo" href="@Url.Content("~/")" title="FineUICore 空项目">
+                        FineUICore 空项目
+                        <div class="logo-subtitle">Razor Pages & Tag Helpers</div>
+                    </a>
+                </td>
+                <td style="text-align: right;">
+
+                    <f:Button ID="btnThemeSelect" EnableDefaultCorner="false" EnableDefaultState="false" IconFont="_Skin" IconAlign="Top" CssClass="icontopaction themes" Text="主题仓库">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="onThemeSelectClick"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:Button ID="btnThemeSelect" EnableDefaultCorner="false" EnableDefaultState="false" IconUrl="@Url.Content("~/res/images/my_face_80.jpg")" IconAlign="Left" CssClass="userpicaction" Text="三生石上">
+                        <Menu>
+                            <Items>
+                                <f:MenuButton IconFont="_User" Text="个人信息" OnClientClick="F.alert('尚未实现');">
+                                </f:MenuButton>
+                                <f:MenuButton IconFont="_SignOut" Text="安全退出" OnClientClick="F.alert('尚未实现');">
+                                </f:MenuButton>
+                            </Items>
+                        </Menu>
+                    </f:Button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="maincontent">
+        <h2>FineUICore</h2>
+        基于 jQuery 的专业 ASP.NET Core 控件库
+
+        <br />
+        <h2>支持的浏览器</h2>
+        Chrome、Firefox、Safari、Edge、IE8.0+
+
+        <br />
+        <h2>授权协议</h2>
+        商业授权
+
+        <br />
+        <h2>相关链接</h2>
+        <ul class="list">
+            <li>
+                首页：<a target="_blank" href="http://fineui.com/core/">http://fineui.com/core/</a>
+            </li>
+            <li>
+                更新：<a target="_blank" href="http://fineui.com/core/version/">http://fineui.com/core/version/</a>
+            </li>
+            <li>
+                示例：<a target="_blank" href="http://core.fineui.com/">http://core.fineui.com/</a>
+            </li>
+            <li>
+                论坛：<a target="_blank" href="http://fineui.com/bbs/">http://fineui.com/bbs/</a>
+            </li>
+        </ul>
+
+    </div>
+
+    <f:RegionPanel ID="RegionPanel1" ShowBorder="false" IsViewPort="true" CssClass="mainpanel">
+        <Regions>
+            <f:Region ID="Region1" ShowBorder="false" ShowHeader="false" RegionPosition="Top" CssClass="topregion bgpanel" Layout="Fit" ContentEl="#header"></f:Region>
+            <f:Region ID="Region2" ShowHeader="false" RegionPosition="Left" CssClass="leftregion bgpanel" Layout="Fit" EnableCollapse="true" Title="菜单" Width="200" RegionSplit="true" RegionSplitWidth="2" RegionSplitIcon="false">
+                <Items>
+                    <f:Tree ID="treeMenu" ShowBorder="false" ShowHeader="false">
+                        <Nodes>
+                            <f:TreeNode Text="默认分类" Expanded="true">
+                                <f:TreeNode Text="开始页面" NavigateUrl="@Url.Content("~/Hello")"></f:TreeNode>
+                                <f:TreeNode Text="登录页面" NavigateUrl="@Url.Content("~/Login")"></f:TreeNode>
+                            </f:TreeNode>
+                        </Nodes>
+                    </f:Tree>
+                </Items>
+            </f:Region>
+            <f:Region ID="mainRegion" ShowHeader="false" RegionPosition="Center" Layout="Fit" CssClass="centerregion">
+                <Items>
+                    <f:TabStrip ID="mainTabStrip" EnableTabCloseMenu="true" ShowBorder="false" ShowInkBar="true">
+                        <Tabs>
+                            <f:Tab ID="Tab1" Title="首页" BodyPadding="10" Icon="House" ContentEl="#maincontent"></f:Tab>
+                        </Tabs>
+                    </f:TabStrip>
+                </Items>
+            </f:Region>
+        </Regions>
+    </f:RegionPanel>
+
+    <f:Window ID="windowThemeRoller" Hidden="true" EnableResize="true" EnableMaximize="true" EnableClose="true" Height="600" Width="1020"
+              IsModal="true" ClearIFrameAfterClose="false" IFrameUrl="@Url.Content("~/Themes")" EnableIFrame="true" Title="主题仓库"></f:Window>
+
+}
+
+@section script {
+
+    <script>
+
+        // 点击主题仓库
+        function onThemeSelectClick(event) {
+            F.ui.windowThemeRoller.show();
+        }
+
+        // 通知框
+        function notify(msg) {
+            F.notify({
+                message: msg,
+                messageIcon: 'information',
+                target: '_top',
+                header: false,
+                displayMilliseconds: 3 * 1000,
+                positionX: 'center',
+                positionY: 'center'
+            });
+        }
+
+        // 页面控件初始化完毕后，会调用用户自定义的onReady函数
+        F.ready(function () {
+
+            if (!F.ui.treeMenu) return;
+
+
+            // 初始化主框架中的树和选项卡互动，以及地址栏的更新
+            // treeMenu： 主框架中的树控件实例，或者内嵌树控件的手风琴控件实例
+            // mainTabStrip： 选项卡实例
+            // updateHash: 切换Tab时，是否更新地址栏Hash值（默认值：true）
+            // refreshWhenExist： 添加选项卡时，如果选项卡已经存在，是否刷新内部IFrame（默认值：false）
+            // refreshWhenTabChange: 切换选项卡时，是否刷新内部IFrame（默认值：false）
+            // maxTabCount: 最大允许打开的选项卡数量
+            // maxTabMessage: 超过最大允许打开选项卡数量时的提示信息
+            F.initTreeTabStrip(F.ui.treeMenu, F.ui.mainTabStrip, {
+                maxTabCount: 10,
+                maxTabMessage: '请先关闭一些选项卡（最多允许打开 10 个）！'
+            });
+
+
+            var themeTitle = F.cookie('Theme_Title');
+            var themeName = F.cookie('Theme');
+            if (themeTitle) {
+                F.removeCookie('Theme_Title');
+                notify('主题更改为：' + themeTitle + '（' + themeName + '）');
+            }
+
+        });
+    </script>
+}
+
+
