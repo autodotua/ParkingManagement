@@ -1,0 +1,95 @@
+﻿@page
+@model Park.Admin.Pages.Admin.UserViewModel
+@{
+    ViewData["Title"] = "UserView";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true" Layout="VBox">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="F.activeWindow.hide();"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:Form ID="SimpleForm1" ShowBorder="false" ShowHeader="false" BodyPadding="10">
+                <Rows>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.Name">
+                            </f:label>
+                            <f:label For="CurrentUser.ChineseName">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.Gender">
+                            </f:label>
+                            <f:label For="CurrentUser.Enabled" Text="@(Model.CurrentUser.Enabled ? "启用" : "禁用")">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.Email">
+                            </f:label>
+                            <f:label For="CurrentUser.CompanyEmail">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.OfficePhone">
+                            </f:label>
+                            <f:label For="CurrentUser.OfficePhoneExt">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.HomePhone">
+                            </f:label>
+                            <f:label For="CurrentUser.CellPhone">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.RoleUsers" Text="@Model.RoleText">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.TitleUsers" Text="@Model.TitleText">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.Dept" Text="@Model.DeptText">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:label For="CurrentUser.Remark">
+                            </f:label>
+                        </Items>
+                    </f:FormRow>
+                </Rows>
+            </f:Form>
+        </Items>
+    </f:Panel>
+
+}
+
+

@@ -1,0 +1,46 @@
+﻿@page
+@model Park.Admin.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" Layout="Column" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true">
+        <Items>
+            <f:Panel BodyPadding="5" Width="300" ShowBorder="false" ShowHeader="false">
+                <Items>
+                    <f:Panel ID="Panel2" Title="系统公告" Height="200" CssClass="margin-bottom:5px;" BodyPadding="5" ShowBorder="true" ShowHeader="true">
+                        <Items>
+                            <f:Label ID="Label1" Text="这是系统公告"></f:Label>
+                        </Items>
+                    </f:Panel>
+                    <f:Panel ID="Panel4" Title="系统公告" Height="200" CssClass="margin-bottom:5px;" BodyPadding="5" ShowBorder="true" ShowHeader="true">
+                        <Items>
+                            <f:Label ID="Label3" Text="这是系统公告"></f:Label>
+                        </Items>
+                    </f:Panel>
+                </Items>
+            </f:Panel>
+            <f:Panel ID="Panel5" BodyPadding="5px 5px 5px 0" ColumnWidth="100%" ShowBorder="false" ShowHeader="false">
+                <Items>
+                    <f:Panel ID="Panel3" Title="代办事宜" Height="200" CssClass="margin-bottom:5px;" BodyPadding="5" ShowBorder="true" ShowHeader="true">
+                        <Items>
+                            <f:Label ID="Label2" Text="这是代办事宜列表"></f:Label>
+                        </Items>
+                    </f:Panel>
+                    <f:Panel ID="Panel6" Title="注意事项" Height="200" CssClass="margin-bottom:5px;" BodyPadding="5" ShowBorder="true" ShowHeader="true">
+                        <Items>
+                            <f:Label ID="Label4" Text="这是注意事项列表"></f:Label>
+                        </Items>
+                    </f:Panel>
+                </Items>
+            </f:Panel>
+        </Items>
+    </f:Panel>
+
+
+}
+
+
+

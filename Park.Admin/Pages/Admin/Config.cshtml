@@ -1,0 +1,30 @@
+﻿@page
+@model Park.Admin.Pages.Admin.ConfigModel
+@{
+    ViewData["Title"] = "Config";
+}
+
+@section body {
+    <f:Panel ID="Panel1" ShowHeader="false" ShowBorder="false" AutoScroll="true" Width="600">
+        <Items>
+            <f:SimpleForm ID="SimpleForm1" BodyPadding="10" LabelAlign="Top" ShowBorder="false" ShowHeader="false">
+                <Items>
+                    <f:DropDownList ID="ddlPageSize" Label="表格默认记录数" Required="true" ShowRedStar="true" SelectedValue="@ConfigHelper.PageSize.ToString()">
+                        <Items>
+                            <f:ListItem Text="10" Value="10"></f:ListItem>
+                            <f:ListItem Text="20" Value="20"></f:ListItem>
+                            <f:ListItem Text="50" Value="50"></f:ListItem>
+                            <f:ListItem Text="100" Value="100"></f:ListItem>
+                        </Items>
+                    </f:DropDownList>
+                    <f:TextArea ID="tbxHelpList" Height="320" Label="帮助下拉列表" Required="true" ShowRedStar="true" Text="@Model.HelpListText"></f:TextArea>
+                    <f:Button ID="btnSave" Icon="SystemSave" OnClick="@Url.Handler("Config_btnSave_OnClick")" OnClickFields="SimpleForm1" ValidateForms="SimpleForm1" ValidateTarget="Top" Text="保存" Enabled="@Model.PowerCoreConfigEdit"></f:Button>
+                </Items>
+            </f:SimpleForm>
+        </Items>
+    </f:Panel>
+
+}
+
+
+

@@ -1,0 +1,220 @@
+﻿@page
+@model Park.Admin.Pages.Admin.UserEditModel
+@{
+    ViewData["Title"] = "UserEdit";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true" Layout="VBox">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="F.activeWindow.hide();"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" ValidateForms="SimpleForm1" Icon="SystemSaveClose" OnClick="@Url.Handler("UserEdit_btnSaveClose_Click")" OnClickFields="SimpleForm1" Text="保存后关闭"></f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:Form ID="SimpleForm1" ShowBorder="false" ShowHeader="false" BodyPadding="10">
+                <Rows>
+                    <f:FormRow>
+                        <Items>
+                            <f:HiddenField For="CurrentUser.ID"></f:HiddenField>
+                            <f:TextBox For="CurrentUser.Name">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.ChineseName">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:RadioButtonList For="CurrentUser.Gender">
+                                <f:RadioItem Text="男" Value="男" />
+                                <f:RadioItem Text="女" Value="女" />
+                            </f:RadioButtonList>
+                            <f:CheckBox For="CurrentUser.Enabled">
+                            </f:CheckBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.Password" TextMode="Password">
+                            </f:TextBox>
+                            <f:Label></f:Label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.Email" RegexPattern="EMAIL">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.CompanyEmail" RegexPattern="EMAIL">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.OfficePhone">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.OfficePhoneExt">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.HomePhone">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.CellPhone">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TwinTriggerBox ID="tbSelectedRole" EnableEdit="false" Text="@Model.SelectedRoleNames"
+                                              Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false" ShowTrigger2="true" Label="所属角色"
+                                              OnClientTrigger1Click="onSelectedRoleTrigger1Click();"
+                                              OnClientTrigger2Click="onSelectedRoleTrigger2Click();">
+                            </f:TwinTriggerBox>
+                            <f:HiddenField ID="hfSelectedRole" Text="@Model.SelectedRoleIDs">
+                            </f:HiddenField>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TwinTriggerBox ID="tbSelectedDept" EnableEdit="false" Text="@Model.SelectedDeptName"
+                                              Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false" ShowTrigger2="true" Label="所属部门"
+                                              OnClientTrigger1Click="onSelectedDeptTrigger1Click();"
+                                              OnClientTrigger2Click="onSelectedDeptTrigger2Click();">
+                            </f:TwinTriggerBox>
+                            <f:HiddenField ID="hfSelectedDept" Text="@Model.SelectedDeptID">
+                            </f:HiddenField>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TwinTriggerBox ID="tbSelectedTitle" EnableEdit="false" Text="@Model.SelectedTitleNames"
+                                              Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false" ShowTrigger2="true" Label="拥有职称"
+                                              OnClientTrigger1Click="onSelectedTitleTrigger1Click();"
+                                              OnClientTrigger2Click="onSelectedTitleTrigger2Click();">
+                            </f:TwinTriggerBox>
+                            <f:HiddenField ID="hfSelectedTitle" Text="@Model.SelectedTitleIDs">
+                            </f:HiddenField>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextArea For="CurrentUser.Remark">
+                            </f:TextArea>
+                        </Items>
+                    </f:FormRow>
+                </Rows>
+            </f:Form>
+        </Items>
+    </f:Panel>
+
+    <f:Window ID="Window1" Title="编辑" Hidden="true" EnableIFrame="true"
+              EnableMaximize="true" EnableResize="true" Target="Top" IsModal="true" Width="550"
+              Height="350">
+    </f:Window>
+
+}
+
+
+@section script {
+
+    <script>
+
+        /////////////////////////////////////////////////////
+        function checkSelectedRoleTriggerStatus() {
+            if (F.ui.tbSelectedRole.getValue()) {
+                F.ui.tbSelectedRole.showTrigger1();
+            } else {
+                F.ui.tbSelectedRole.hideTrigger1();
+            }
+        }
+
+        function onSelectedRoleTrigger1Click() {
+            F.ui.tbSelectedRole.setValue('');
+            F.ui.hfSelectedRole.setValue('');
+            checkSelectedRoleTriggerStatus();
+        }
+
+        function onSelectedRoleTrigger2Click() {
+            F.ui.Window1.show(F.baseUrl + 'Admin/UserSelectRole?ids=' + F.ui.hfSelectedRole.getValue(), '选择用户所属的角色');
+        }
+
+        function updateSelectedRole(roleNames, roleIDs) {
+            F.ui.tbSelectedRole.setValue(roleNames);
+            F.ui.hfSelectedRole.setValue(roleIDs);
+            checkSelectedRoleTriggerStatus();
+        }
+        /////////////////////////////////////////////////////
+
+
+        /////////////////////////////////////////////////////
+        function checkSelectedDeptTriggerStatus() {
+            if (F.ui.tbSelectedDept.getValue()) {
+                F.ui.tbSelectedDept.showTrigger1();
+            } else {
+                F.ui.tbSelectedDept.hideTrigger1();
+            }
+        }
+
+        function onSelectedDeptTrigger1Click() {
+            F.ui.tbSelectedDept.setValue('');
+            F.ui.hfSelectedDept.setValue('');
+            checkSelectedDeptTriggerStatus();
+        }
+
+        function onSelectedDeptTrigger2Click() {
+            F.ui.Window1.show(F.baseUrl + 'admin/UserSelectDept?ids=' + F.ui.hfSelectedDept.getValue(), '选择用户所属的部门');
+        }
+
+        function updateSelectedDept(deptName, deptID) {
+            F.ui.tbSelectedDept.setValue(deptName);
+            F.ui.hfSelectedDept.setValue(deptID);
+            checkSelectedDeptTriggerStatus();
+        }
+        /////////////////////////////////////////////////////
+
+        /////////////////////////////////////////////////////
+        function checkSelectedTitleTriggerStatus() {
+            if (F.ui.tbSelectedTitle.getValue()) {
+                F.ui.tbSelectedTitle.showTrigger1();
+            } else {
+                F.ui.tbSelectedTitle.hideTrigger1();
+            }
+        }
+
+        function onSelectedTitleTrigger1Click() {
+            F.ui.tbSelectedTitle.setValue('');
+            F.ui.hfSelectedTitle.setValue('');
+            checkSelectedTitleTriggerStatus();
+        }
+
+        function onSelectedTitleTrigger2Click() {
+            F.ui.Window1.show(F.baseUrl + 'admin/UserSelectTitle?ids=' + F.ui.hfSelectedTitle.getValue(), '选择用户拥有的职称');
+        }
+
+        function updateSelectedTitle(titleNames, titleIDs) {
+            F.ui.tbSelectedTitle.setValue(titleNames);
+            F.ui.hfSelectedTitle.setValue(titleIDs);
+            checkSelectedTitleTriggerStatus();
+        }
+        /////////////////////////////////////////////////////
+
+        F.ready(function () {
+            checkSelectedRoleTriggerStatus();
+            checkSelectedDeptTriggerStatus();
+            checkSelectedTitleTriggerStatus();
+        });
+
+    </script>
+
+}
+

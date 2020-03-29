@@ -1,0 +1,38 @@
+﻿@page
+@model Park.Admin.Pages.Admin.DeptNewModel
+@{
+    ViewData["Title"] = "DeptNew";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true" Layout="VBox">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="F.activeWindow.hide();"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" ValidateForms="SimpleForm1" Icon="SystemSaveClose" OnClick="@Url.Handler("DeptNew_btnSaveClose_Click")" OnClickFields="SimpleForm1" Text="保存后关闭"></f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:SimpleForm ID="SimpleForm1" ShowBorder="false" ShowHeader="false" BodyPadding="10">
+                <Items>
+                    <f:TextBox For="Dept.Name" Required="true" ShowRedStar="true"></f:TextBox>
+                    <f:TextBox For="Dept.SortIndex"></f:TextBox>
+                    <f:DropDownList For="Dept.ParentID" EnableSimulateTree="true" DataTextField="Name" DataValueField="ID" DataSimulateTreeLevelField="TreeLevel"
+                                    DataEnableSelectField="Enabled" Required="true" ShowRedStar="true" DataSource="@Model.Depts"></f:DropDownList>
+                    <f:TextArea For="Dept.Remark"></f:TextArea>
+                </Items>
+            </f:SimpleForm>
+        </Items>
+    </f:Panel>
+
+}
+
+

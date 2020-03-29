@@ -1,0 +1,198 @@
+﻿@page
+@model Park.Admin.Pages.IndexModel
+
+@section head {
+
+    <link type="text/css" rel="stylesheet" href="~/res/css/index.css" />
+
+}
+
+@section body{
+
+    <div id="header" class="f-widget-header f-mainheader" style="display:none;">
+        <table>
+            <tr>
+                <td>
+                    <f:Button ID="btnHomePage" EnableDefaultCorner="false" EnableDefaultState="false" IconFont="_Home" IconAlign="Top" ToolTip="官网首页" CssClass="icononlyaction" OnClientClick="window.open('http://pages.fineui.com/','_blank');"></f:Button>
+                    <a class="logo" href="@Url.Content("~/")" title="@Model.ConfigTitle">
+                        @Model.ConfigTitle
+                    </a>
+                </td>
+                <td style="text-align: right;">
+                    <f:Button CssClass="icontopaction systemhelp" ID="Button1" Text="下载源代码" IconAlign="Top" IconFont="_Download" EnableDefaultState="false" EnableDefaultCorner="false">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="onDownloadClick"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:Button ID="btnSystemHelp" Text="系统帮助" CssClass="icontopaction systemhelp" MenuID="helpMenu" IconAlign="Top" IconFont="_Question" EnableDefaultState="false" EnableDefaultCorner="false" ShowMenuIcon="false" Menu="@Model.SystemHelpMenu">
+                    </f:Button>
+                    <f:Button CssClass="icontopaction systemhelp" ID="btnThemeSelect" Text="主题仓库" IconAlign="Top" IconFont="_Skin" EnableDefaultState="false" EnableDefaultCorner="false" TabIndex="-1">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="onThemeSelectClick" />
+                        </Listeners>
+                    </f:Button>
+                    <f:Button ID="btnUserName" CssClass="userpicaction" Text="@Model.UserName" IconUrl="@Url.Content("~/res/images/my_face_80.jpg")" IconAlign="Left"
+                              ShowMenuIcon="true" EnableDefaultState="false" EnableDefaultCorner="false">
+                        <Menu>
+                            <f:MenuButton ID="btnSignOut" Text="安全退出" IconFont="_SignOut" ConfirmText="确定退出系统？" OnClick="@Url.Handler("btnSignOut_Click")">
+                            </f:MenuButton>
+                        </Menu>
+                    </f:Button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <table id="footer" class="bottomtable f-widget-header" style="display:none;">
+        <tr>
+            <td style="width: 260px;">
+                &nbsp;版本：<a target="_blank" href="http://fineui.com/mvc">@Model.ProductVersion</a>
+            </td>
+            <td style="text-align: center;">Copyright &copy; 2008-2020 合肥三生石上软件有限公司</td>
+            <td style="width: 260px; text-align: right;">在线人数：&nbsp;@Model.OnlineUserCount</td>
+        </tr>
+    </table>
+
+    <f:RegionPanel ID="RegionPanel1" ShowBorder="false" CssClass="mainpanel" IsViewPort="true">
+        <Regions>
+            <f:Region ID="topRegion" ShowBorder="false" ShowHeader="false" RegionPosition="Top" CssClass="topregion bgpanel" ContentEl="#header"></f:Region>
+            <f:Region ID="leftRegion" ShowBorder="false" ShowHeader="true" RegionPosition="Left" CssClass="leftregion bgpanel" RegionSplitIcon="false" RegionSplitWidth="3" RegionSplit="true" Width="200" Title="系统菜单" EnableCollapse="true" Layout="Fit">
+                <Items>
+                    <f:Tree ShowBorder="false" ShowHeader="false" ID="treeMenu" EnableSingleClickExpand="true" Nodes="@Model.MenuTreeNodes"></f:Tree>
+                </Items>
+            </f:Region>
+            <f:Region ID="mainRegion" CssClass="centerregion" ShowBorder="false" ShowHeader="false" Layout="Fit" RegionPosition="Center">
+                <Items>
+                    <f:TabStrip ID="mainTabStrip" EnableTabCloseMenu="true" ShowBorder="false" ShowInkBar="true">
+                        <Tabs>
+                            <f:Tab ID="Tab1" Title="首页" Layout="Fit" Icon="House" EnableIFrame="true" IFrameUrl="~/Admin/Index"></f:Tab>
+                        </Tabs>
+                        <Tools>
+                            <f:Tool IconFont="_Refresh" CssClass="tabtool" ToolTip="刷新" ID="toolRefresh">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onToolRefreshClick"></f:Listener>
+                                </Listeners>
+                            </f:Tool>
+                            <f:Tool IconFont="_Maximize" CssClass="tabtool" ToolTip="最大化" ID="toolMaximize">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onToolMaximizeClick"></f:Listener>
+                                </Listeners>
+                            </f:Tool>
+                        </Tools>
+                    </f:TabStrip>
+                </Items>
+            </f:Region>
+            <f:Region ID="bottomRegion" EnableCollapse="false" ShowBorder="false" ShowHeader="false" RegionPosition="Bottom" CssClass="bottomregion bgpanel" ContentEl="#footer"></f:Region>
+        </Regions>
+    </f:RegionPanel>
+
+    <f:Window ID="windowThemeRoller" Hidden="true" EnableResize="true" EnableMaximize="true" EnableClose="true" Height="600" Width="1020" IsModal="true" ClearIFrameAfterClose="false" IFrameUrl="~/Themes" EnableIFrame="true" Title="主题仓库"></f:Window>
+}
+
+@section script {
+
+    <script>
+
+        // 下载源代码
+        function onDownloadClick(event) {
+            window.open('http://fineui.com/fans/', '_blank');
+        }
+
+        // 点击主题仓库
+        function onThemeSelectClick(event) {
+            F.ui.windowThemeRoller.show();
+        }
+
+        // 点击标题栏工具图标 - 刷新
+        function onToolRefreshClick(event) {
+            var mainTabStrip = F.ui.mainTabStrip;
+
+            var activeTab = mainTabStrip.getActiveTab();
+            if (activeTab.iframe) {
+                var iframeWnd = activeTab.getIFrameWindow();
+                iframeWnd.location.reload();
+            }
+        }
+
+
+        // 点击标题栏工具图标 - 最大化
+        function onToolMaximizeClick(event) {
+            var topRegion = F.ui.topRegion;
+            var leftRegion = F.ui.leftRegion;
+            var bottomRegion = F.ui.bottomRegion;
+
+            var currentTool = this;
+            F.noAnimation(function () {
+                if (currentTool.iconFont === 'f-iconfont-maximize') {
+                    currentTool.setIconFont('f-iconfont-restore');
+
+                    topRegion.collapse();
+                    leftRegion.collapse();
+                    bottomRegion.collapse();
+                } else {
+                    currentTool.setIconFont('f-iconfont-maximize');
+
+                    topRegion.expand();
+                    leftRegion.expand();
+                    bottomRegion.expand();
+                }
+            });
+        }
+
+        // 添加示例标签页
+        // id： 选项卡ID
+        // iframeUrl: 选项卡IFrame地址
+        // title： 选项卡标题
+        // icon： 选项卡图标
+        // createToolbar： 创建选项卡前的回调函数（接受tabOptions参数）
+        // refreshWhenExist： 添加选项卡时，如果选项卡已经存在，是否刷新内部IFrame
+        // iconFont： 选项卡图标字体
+        function addExampleTab(tabOptions) {
+
+            if (typeof (tabOptions) === 'string') {
+                tabOptions = {
+                    id: arguments[0],
+                    iframeUrl: arguments[1],
+                    title: arguments[2],
+                    icon: arguments[3],
+                    createToolbar: arguments[4],
+                    refreshWhenExist: arguments[5],
+                    iconFont: arguments[6]
+                };
+            }
+
+            F.addMainTab(F.ui.mainTabStrip, tabOptions);
+        }
+
+
+        // 移出当前激活选项卡
+        function removeActiveTab() {
+            var mainTabStrip = F.ui.mainTabStrip;
+
+            var activeTab = mainTabStrip.getActiveTab();
+            mainTabStrip.removeTab(activeTab.id);
+        }
+
+
+        // 页面控件初始化完毕后，会调用用户自定义的onReady函数
+        F.ready(function () {
+
+            var mainTabStrip = F.ui.mainTabStrip;
+            var treeMenu = F.ui.treeMenu;
+
+            // 初始化主框架中的树(或者Accordion+Tree)和选项卡互动，以及地址栏的更新
+            // treeMenu： 主框架中的树控件实例，或者内嵌树控件的手风琴控件实例
+            // mainTabStrip： 选项卡实例
+            // updateHash: 切换Tab时，是否更新地址栏Hash值（默认值：true）
+            // refreshWhenExist： 添加选项卡时，如果选项卡已经存在，是否刷新内部IFrame（默认值：false）
+            // refreshWhenTabChange: 切换选项卡时，是否刷新内部IFrame（默认值：false）
+            // maxTabCount: 最大允许打开的选项卡数量
+            // maxTabMessage: 超过最大允许打开选项卡数量时的提示信息
+            F.initTreeTabStrip(treeMenu, mainTabStrip, {
+                maxTabCount: 10,
+                maxTabMessage: '请先关闭一些选项卡（最多允许打开 10 个）！'
+            });
+
+        });
+    </script>
+}

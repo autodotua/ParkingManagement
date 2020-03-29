@@ -1,0 +1,42 @@
+﻿@page
+@model Park.Admin.Pages.Admin.PowerEditModel
+@{
+    ViewData["Title"] = "PowerEdit";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true" Layout="VBox">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="F.activeWindow.hide();"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" ValidateForms="SimpleForm1" Icon="SystemSaveClose" OnClick="@Url.Handler("PowerEdit_btnSaveClose_Click")" OnClickFields="SimpleForm1" Text="保存后关闭"></f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:SimpleForm ID="SimpleForm1" ShowBorder="false" ShowHeader="false" BodyPadding="10">
+                <Items>
+                    <f:HiddenField For="Power.ID"></f:HiddenField>
+                    <f:TextBox For="Power.GroupName">
+                    </f:TextBox>
+                    <f:TextBox For="Power.Name">
+                    </f:TextBox>
+                    <f:TextBox For="Power.Title">
+                    </f:TextBox>
+                    <f:TextArea For="Power.Remark"></f:TextArea>
+                </Items>
+            </f:SimpleForm>
+        </Items>
+    </f:Panel>
+
+}
+
+
+

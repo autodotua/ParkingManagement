@@ -1,0 +1,61 @@
+﻿@page
+@model Park.Admin.Pages.Admin.UserSelectDeptModel
+@{
+    ViewData["Title"] = "UserSelectDept";
+}
+
+@section body {
+
+    <f:Grid ID="Grid1" ShowBorder="false" ShowHeader="false" EnableCheckBoxSelect="true" EnableMultiSelect="false"
+            DataIDField="ID" DataTextField="Name" IsViewPort="true" EnableSimulateTree="true" 
+            DataSource="@Model.Depts" SelectedRowID="@Model.DeptSelectedRowID">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar2" Position="Top">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="F.activeWindow.hide();"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" Icon="SystemSaveClose" Text="选择后关闭">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="onSaveCloseClick"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Columns>
+            <f:RowNumberField></f:RowNumberField>
+            <f:RenderField For="Depts.First().Name" DataSimulateTreeLevelField="TreeLevel" Width="150"></f:RenderField>
+            <f:RenderField For="Depts.First().Remark" ExpandUnusedSpace="true"></f:RenderField>
+        </Columns>
+    </f:Grid>
+
+
+}
+
+
+@section script {
+
+    <script>
+
+        function onSaveCloseClick() {
+            // 数据源 - 表格
+            var grid1 = F.ui.Grid1;
+
+            var selectedRow = grid1.getSelectedRow(true);
+            var deptName = selectedRow.text;
+            var deptID = selectedRow.id;
+
+            // 返回当前活动Window对象（浏览器窗口对象通过F.getActiveWindow().window获取）
+            var activeWindow = F.getActiveWindow();
+            activeWindow.window.updateSelectedDept(deptName, deptID);
+            activeWindow.hide();
+        }
+
+    </script>
+
+}
+
