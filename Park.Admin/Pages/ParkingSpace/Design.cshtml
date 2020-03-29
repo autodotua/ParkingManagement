@@ -6,10 +6,41 @@
 
 
 @section body {
-
-    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" Width="600">
+    <canvas id="drawing"></canvas>
+    <f:Panel ID="Panel1" CssClass="blockpanel" Margin="20" ShowBorder="false" ShowHeader="false" Layout="Region" IsViewPort="true">
         <Items>
-            <canvas id="drawing" width="200" height="200">A drawing of something</canvas>
+            <f:Panel ID="panelTopRegion" RegionPosition="Top" RegionSplit="true" EnableCollapse="true" RegionPercent="20%"
+                     Title="顶部面板" ShowBorder="true" ShowHeader="false" BodyPadding="10" IconFont="_PullUp">
+                <Items>
+                    <f:Label ID="Label1" Text="顶部面板的内容（RegionPercent=20%）">
+                    </f:Label>
+                </Items>
+            </f:Panel>
+ 
+            <f:Panel ID="panelCenterRegion" RegionPosition="Center" ContentEl="#drawing"
+                     Title="中间面板" ShowBorder="true" ShowHeader="false" BodyPadding="10" IconFont="_RoundPlus">
+            
+            </f:Panel>
+                    <f:Form ID="SimpleForm1" RegionPosition="Right" RegionPercent="30%" CssClass="blockpanel" BodyPadding="5 5 0 5" LabelAlign="Left" Title="表单">
+                        <Rows>
+                            <f:FormRow>
+                                <Items>
+                                    <f:TextBox ID="txtHeight" Label="长度" Text="100"></f:TextBox>
+                                </Items>
+                            </f:FormRow>
+                            <f:FormRow>
+                                <Items>
+                                    <f:TextBox ID="txtWidth" Label="宽度" Text="100"></f:TextBox>
+                                </Items>
+                            </f:FormRow>
+                            <f:FormRow>
+                                <Items>
+                                    <f:Button Text="设置" OnClientClick="setSize()"></f:Button>
+                                </Items>
+                            </f:FormRow>
+                        </Rows>
+                    </f:Form>
+         
         </Items>
     </f:Panel>
 
@@ -17,12 +48,47 @@
 
 @section script{
     <script>
-        var drawing = document.getElementById("drawing");
+        var canvas = document.getElementById("drawing");
         //确定浏览器支持<canvas>元素
-        if (drawing.getContext) {
-            var ctx = drawing.getContext("2d");
-            ctx.fillStyle = 'rgb(0, 0, 0)';
-            ctx.fillRect(0, 0, width, height);
+        var context = drawing.getContext("2d");
+        context.fillStyle = 'rgb(0, 0, 0)';
+        context.fillRect(0, 0, 30, 30);
+
+        function setSize() {
+            drawing.width = F.ui.txtHeight.value;
+            drawing.height = F.ui.txtWidth.value;
         }
+
+        let img = new Image()
+        let stemp = 10 // 步进
+        // 计算尺寸的函数
+        let roll = function (e) {
+            e = e || window.event;
+            if (e.wheelDelta) {  //判断浏览器IE，谷歌滑轮事件
+                if (e.wheelDelta > 0) { //当滑轮向上滚动时
+                    stemp--
+                    return e.wheelDelta / 120 + stemp
+                }
+                if (e.wheelDelta < 0) { //当滑轮向下滚动时
+                    stemp++
+                    return e.wheelDelta / 120 + stemp
+                }
+            } else if (e.detail) {  //Firefox滑轮事件
+                if (e.detail > 0) { //当滑轮向上滚动时
+                    stemp--
+                    return e.wheelDelta / 120 + stemp
+                }
+                if (e.detail < 0) { //当滑轮向下滚动时
+                    stemp++
+                    return e.wheelDelta / 120 + stemp
+                }
+            }
+        };
+        //给页面绑定滑轮滚动事件
+        if (document.addEventListener) {
+            document.addEventListener('DOMMouseScroll', roll, false)
+        }
+        canvas.onmousewheel = canvas.onmousewheel = roll // 给canvas绑定滑轮滚动事件
+
     </script>
 }

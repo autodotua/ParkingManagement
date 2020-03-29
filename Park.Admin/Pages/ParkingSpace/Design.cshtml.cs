@@ -9,9 +9,8 @@ namespace Park.Admin.Pages.ParkingSpace
 {
     public class DesignModel : PageModel
     {
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync()
         {
-
             return Page();
         }
     }
