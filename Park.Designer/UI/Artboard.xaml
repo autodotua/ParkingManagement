@@ -1,9 +1,22 @@
-﻿<Canvas x:Class="Park.Designer.UI.Artboard"
+﻿<Grid
+    x:Class="Park.Designer.UI.Artboard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Park.Designer.UI"
-             mc:Ignorable="d" 
-        PreviewMouseMove="Canvas_PreviewMouseMove" PreviewMouseLeftButtonDown="Canvas_PreviewMouseLeftButtonDown">
+            PreviewKeyDown="Canvas_PreviewKeyDown"
+        PreviewMouseMove="Canvas_PreviewMouseMove" 
+    PreviewMouseLeftButtonDown="Canvas_PreviewMouseLeftButtonDown"
+         
+        Focusable="True"
+        FocusVisualStyle="{x:Null}"
+    mc:Ignorable="d" >
+    <Canvas x:Name="grid" Width="{Binding Width, ElementName=this}" Height="{Binding Height, ElementName=this}"/>
+
+    <Canvas 
+        x:Name="cvs"
+>
 </Canvas>
+
+</Grid>

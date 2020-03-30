@@ -4,12 +4,16 @@ using System.Text;
 
 namespace Park.Designer.Model
 {
-    public class ParkObjectBase
+    public abstract class ParkObjectBase
     {
+        /// <summary>
+        /// 序号
+        /// </summary>
         public int Id { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public string Class { get; set; }
+     
     }
 }

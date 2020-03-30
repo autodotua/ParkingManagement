@@ -6,7 +6,10 @@
              xmlns:local="clr-namespace:Park.Designer.UI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <UserControl.Resources>
+        <local:IsNotNull2BoolConvert x:Key="nullConverter"/>
+    </UserControl.Resources>
+    <Grid              IsEnabled="{Binding Obj, Converter={StaticResource nullConverter}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="8"/>
@@ -22,9 +25,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
         </Grid.RowDefinitions>
         <TextBlock VerticalAlignment="Center">ID：</TextBlock>
         <TextBox Grid.Column="2" VerticalAlignment="Center" Text="{Binding Obj.Id}"/>
+        <TextBlock VerticalAlignment="Center" Grid.Row="2">分类：</TextBlock>
+        <TextBox Grid.Column="2" VerticalAlignment="Center" Grid.Row="2" Text="{Binding Obj.Class}"/>
+        <Button Grid.Row="99" Grid.ColumnSpan="99" Click="DeleteButton_Click">删除</Button>
     </Grid>
 </UserControl>

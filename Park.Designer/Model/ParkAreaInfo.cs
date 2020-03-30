@@ -7,7 +7,7 @@ namespace Park.Designer.Model
 {
     public class ParkAreaInfo : INotifyPropertyChanged
     {
-        private string name="停车场";
+        private string name = "停车场";
         public string Name
         {
             get => name;

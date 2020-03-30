@@ -39,5 +39,12 @@ namespace Park.Designer.UI
             DataContext = this;
             InitializeComponent();
         }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Delete?.Invoke(this, new ParkObjectEventArgs(Obj));
+            Obj = null;
+        }
+        public event EventHandler<ParkObjectEventArgs> Delete;
     }
 }

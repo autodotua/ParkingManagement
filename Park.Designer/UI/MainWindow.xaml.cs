@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,7 +50,7 @@ namespace Park.Designer.UI
             {
                 parkAreas = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ParkAreas)));
-            
+
             }
         }
 
@@ -86,7 +87,7 @@ namespace Park.Designer.UI
                 ParkArea = ParkAreas[0];
             }
             //不用else，防止读取到的json为空
-            if(ParkAreas==null || ParkAreas.Count==0)
+            if (ParkAreas == null || ParkAreas.Count == 0)
             {
                 ParkAreas = new ObservableCollection<ParkAreaInfo>() { new ParkAreaInfo() };
                 ParkArea = ParkAreas[0];
@@ -100,14 +101,13 @@ namespace Park.Designer.UI
 
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void DrawButton_Click(object sender, RoutedEventArgs e)
         {
             boardHelper.DragEnable = false;
             ParkObjectBase obj = (sender as Button).Tag switch
             {
                 "1" => new ParkingSpace() { Height = 2.5, Width = 4.5 },
-                "2" => new ParkingSpace() { Height = 4.5, Width = 2.5 },
-                "3" => new Aisle() { Height = 2, Width = 2 },
+                "2" => new Aisle(),
                 _ => throw new NotImplementedException(),
             };
             MouseMode = 2;
@@ -140,23 +140,23 @@ namespace Park.Designer.UI
                 var oldValue = mouseMode;
                 mouseMode = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MouseMode)));
-                if (oldValue == 2)
+                if (oldValue == 2)//不再绘制
                 {
                     StopDrawButton_Click(null, null);
                 }
-                if (oldValue == 1)
+                if (oldValue == 1)//不再浏览
                 {
                     boardHelper.DragEnable = false;
                 }
-                if (value == 1)
+                if (value == 1)//开始浏览
                 {
                     boardHelper.DragEnable = true;
                 }
-                if (oldValue == 0)
+                if (oldValue == 0)//开始选取
                 {
                     cvs.CanSelect = false;
                 }
-                if (value == 0)
+                if (value == 0)//不再选取
                 {
                     cvs.CanSelect = true;
                 }
@@ -247,9 +247,9 @@ namespace Park.Designer.UI
         private void DeleteParkAreaButton_Click(object sender, RoutedEventArgs e)
         {
             ParkAreas.Remove(ParkArea);
-            if(ParkAreas.Count==0)
+            if (ParkAreas.Count == 0)
             {
-                ParkAreas.Add(new ParkAreaInfo()); 
+                ParkAreas.Add(new ParkAreaInfo());
             }
             ParkArea = ParkAreas[0];
         }
@@ -257,6 +257,39 @@ namespace Park.Designer.UI
         private void WindowBase_Closing(object sender, CancelEventArgs e)
         {
             Export("parks.json");
+        }
+
+        private void ParkObject_Delete(object sender, ParkObjectEventArgs e)
+        {
+            switch (e.ParkObject)
+            {
+                case ParkingSpace ps:
+                    ParkArea.ParkingSpaces.Remove(ps);
+                    break;
+                case Aisle a:
+                    ParkArea.Aisles.Remove(a);
+                    break;
+                default:
+                    break;
+            }
+            cvs.Remove(e.ParkObject);
+        }
+
+    }
+    public class IsNotNull2BoolConvert : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
