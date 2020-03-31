@@ -1,0 +1,17 @@
+{
+  "type": "stepHourBase", //阶梯电价，以小时为单位
+  "prices": [
+    { //5个小时之内，每个小时2元
+      "upper": 5,
+      "price": 2
+    },
+    {
+      "upper": 12,
+      "price": 1
+    },
+    {
+      "upper": -1, //表示无穷
+      "price": 0.5
+    }
+  ]
+}

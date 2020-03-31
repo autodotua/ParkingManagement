@@ -13,6 +13,10 @@ namespace Park.Core.Models
         [Display(Name = "停车区")]
         [Required]
         public ParkArea ParkArea { get; set; }
+
+        [Display(Name = "是否已停车")]
+        [Required]
+        public bool HasCar { get; set; } = false;
     }
 
 

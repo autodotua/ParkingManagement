@@ -13,9 +13,9 @@ namespace Park.Core.Models
         [StringLength(50)]
         [Required]
         public string Name { get; set; }
-        [Display(Name = "是否已停车")]
-        [Required]
-        public bool HasCar { get; set; } = false;
+
+        [Display(Name = "价格策略")]
+        public PriceStrategy PriceStrategy { get; set; }
     }
 
 

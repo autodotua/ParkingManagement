@@ -19,7 +19,39 @@ namespace Park.Core.Models
                 return;
             }
             Random r = new Random();
-            for(int i=0;i<20;i++)//车主
+            PriceStrategy priceStrategy = new PriceStrategy()
+            {
+                StrategyJson = @"{
+  ""type"": ""stepHourBase"", 
+  ""prices"": [
+    { 
+      ""upper"": 5,
+      ""price"": 2
+    },
+    {
+      ""upper"": 12,
+      ""price"": 1
+    },
+    {
+      ""upper"": -1,
+      ""price"": 0.5
+    }
+  ]
+}"
+            };
+            context.PriceStrategys.Add(priceStrategy);
+            ParkArea parkArea = new ParkArea()
+            {
+                Name = "停车场1",
+                PriceStrategy = priceStrategy
+            };
+            context.ParkAreas.Add(parkArea);
+            for (int i=0;i<100;i++)
+            {
+                context.ParkingSpaces.Add(new ParkingSpace() { ParkArea = parkArea });
+            }
+
+            for (int i = 0; i < 20; i++)//车主
             {
                 var owner = new CarOwner()
                 {
@@ -28,14 +60,16 @@ namespace Park.Core.Models
                 };
                 context.CarOwners.Add(owner);
 
-                for(int j=0;j<2;j++)//车辆
+                for (int j = 0; j < 2; j++)//车辆
                 {
                     var car = new Car()
                     {
                         LicensePlate = "浙B" + r.Next(10000, 99999),
-                        CarOwner=owner
+                        CarOwner = owner
                     };
                     context.Cars.Add(car);
+                    context.SaveChanges();
+                    //var a = context.Cars.FirstOrDefault().CarOwner == context.CarOwners.FirstOrDefault(); ;
 
                     for (int k = 0; k < 5; k++)//进出场信息
                     {
@@ -45,7 +79,7 @@ namespace Park.Core.Models
 
 
             }
-           
+
 
             context.SaveChanges();
         }

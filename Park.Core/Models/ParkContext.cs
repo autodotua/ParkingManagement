@@ -11,6 +11,9 @@ namespace Park.Core.Models
         public ParkContext(DbContextOptions<ParkContext> options) : base(options)
         {
         }
+        public ParkContext() : base()
+        {
+        }
 
         public DbSet<Car> Cars { get; set; }
         public DbSet<CarOwner> CarOwners { get; set; }
@@ -18,6 +21,7 @@ namespace Park.Core.Models
         public DbSet<ParkingSpace> ParkingSpaces { get; set; }
         public DbSet<ParkRecord> ParkRecords { get; set; }
         public DbSet<TransactionRecord> TransactionRecords { get; set; }
+        public DbSet<PriceStrategy> PriceStrategys { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

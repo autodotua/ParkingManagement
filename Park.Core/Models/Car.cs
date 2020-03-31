@@ -15,7 +15,6 @@ namespace Park.Core.Models
         public string LicensePlate { get; set; }
 
         [Display(Name = "车主")]
-        [Required]
         public CarOwner CarOwner { get; set; }
        
     }
