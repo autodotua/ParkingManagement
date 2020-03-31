@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Park.Core\Park.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="FineUICore">
       <HintPath>bin\FineUICore.dll</HintPath>
     </Reference>

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Park.Core.Models;
 
 namespace Park.Admin
 {
@@ -57,7 +58,9 @@ namespace Park.Admin
 
             // 设置数据库连接字符串（目前仅在 SQL Server 下测试通过）
             services.AddDbContext<ParkAdminContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SQLServer")));
+                options.UseSqlServer(Configuration.GetConnectionString("ParkAdminSQLServer"))); 
+            services.AddDbContext<ParkContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("ParkSQLServer")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

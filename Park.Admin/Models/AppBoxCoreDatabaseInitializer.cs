@@ -8,7 +8,7 @@ namespace Park.Admin.Models
 {
     // https://docs.microsoft.com/zh-cn/aspnet/core/data/ef-rp/intro
     public static class ParkAdminDatabaseInitializer
-    {
+    { 
         public static void Initialize(ParkAdminContext context)
         {
             context.Database.EnsureCreated();

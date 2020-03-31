@@ -22,6 +22,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using Park.Core.Models;
 
 namespace Park.Admin
 {
@@ -505,6 +506,7 @@ namespace Park.Admin
         #region Dapper
 
         private ParkAdminContext _db;
+        private ParkContext _parkDb;
         /// <summary>
         /// 每个请求共享一个数据库连接实例
         /// </summary>
@@ -518,6 +520,17 @@ namespace Park.Admin
                 }
                 return _db;
             }
+        }        
+        protected ParkContext ParkDB
+        {
+            get
+            {
+                if (_parkDb == null)
+                {
+                    _parkDb = BaseModel.GetParkDbConnection();
+                }
+                return _parkDb;
+            }
         }
 
         /// <summary>
@@ -527,6 +540,10 @@ namespace Park.Admin
         public static ParkAdminContext GetDbConnection()
         {
             return FineUICore.PageContext.GetRequestService<ParkAdminContext>();
+        }      
+        public static ParkContext GetParkDbConnection()
+        {
+            return FineUICore.PageContext.GetRequestService<ParkContext>();
         }
 
 
