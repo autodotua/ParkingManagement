@@ -46,8 +46,13 @@ namespace Park.Core.Models
         /// </summary>
         Park,
         /// <summary>
-        /// 充值，针对预付费用户和月租用户
+        /// 充值，针对预付费用户和月卡用户
+        /// 月卡用户需要先充值，然后才可以充时长
         /// </summary>
-        Recharge,
+        RechargeMoney,
+        /// <summary>
+        /// 充时长，针对月卡用户
+        /// </summary>
+        RechargeTime,
     }
 }

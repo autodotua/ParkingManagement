@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Park.Core.Models
 {
@@ -21,5 +22,7 @@ namespace Park.Core.Models
         public DateTime LeaveTime { get; set; }
         [Display(Name = "交易记录")]
         public TransactionRecord TransactionRecord { get; set; }
+
+
     }
 }

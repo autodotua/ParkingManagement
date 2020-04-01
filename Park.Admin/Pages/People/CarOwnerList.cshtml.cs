@@ -19,21 +19,12 @@ namespace Park.Admin.Pages.People
         }
         [Display(Name ="余额")]
         public double Balance { get; set; }
-        [Display(Name ="付费类别")]
-        public string DisplayType => Type switch
-        {
-            PaymentType.General => "普通",
-            PaymentType.Prepaid => "预付费",
-            PaymentType.Monthly => "月租",
-            PaymentType.Free => "免费",
-            _ => throw new NotImplementedException()
-        };
+
         public ExtendCarOwners(CarOwner owner,ParkContext db)
         {
             ID = owner.ID;
             Enabled = owner.Enabled;
             Password = owner.Password;
-            Type = owner.Type;
             Username = owner.Username;
             if (db.TransactionRecords.Any(p => p.CarOwner.ID == ID))
             {

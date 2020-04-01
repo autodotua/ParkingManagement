@@ -6,11 +6,9 @@ namespace Park.Core.Models
     {
         [Key]
         public int ID { get; set; }
-        /// <summary>
-        /// 小时数上限
-        /// </summary>
         [Required]
         public string StrategyJson { get; set; }
+        public double MonthlyPrice { get; set; }
     }
 
 

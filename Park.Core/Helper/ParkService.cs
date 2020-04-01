@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Park.Core.Helper.TransactionService;
 
 namespace Park.Core.Helper
 {
@@ -20,13 +21,13 @@ namespace Park.Core.Helper
         public async static Task<bool> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea)
         {
             //检查是否有空位
-            bool hasEmpty =await db.ParkingSpaces.AnyAsync(p => p.ParkArea == parkArea);
+            bool hasEmpty = await db.ParkingSpaces.AnyAsync(p => p.ParkArea == parkArea);
             if (!hasEmpty)
             {
                 return false;
             }
             //获取汽车
-            Car car =await GetCarAsync(db, licensePlate, true);
+            Car car = await GetCarAsync(db, licensePlate, true);
             //新增进出记录
             ParkRecord parkRecord = new ParkRecord()
             {
@@ -46,72 +47,83 @@ namespace Park.Core.Helper
         /// <returns>离开结果</returns>
         public async static Task<LeaveResult> LeaveAsync(ParkContext db, string licensePlate, ParkArea parkArea)
         {
+            LeaveResult leave = new LeaveResult() { CanLeave = true };
             DateTime leaveTime = DateTime.Now;
-            Car car =await GetCarAsync(db, licensePlate, false);
+            Car car = await GetCarAsync(db, licensePlate, false);
             if (car == null)
             {
                 //找不到车，就直接放行，省得麻烦
-                return LeaveResult.Go;
+                return leave;
             }
 
-            var a =await db.ParkRecords.ToListAsync();
-             ParkRecord parkRecord =await db.ParkRecords
-                .OrderByDescending(p=>p.EnterTime)
-                .FirstOrDefaultAsync(p => p.Car == car);
+            var a = await db.ParkRecords.ToListAsync();
+            ParkRecord parkRecord = await db.ParkRecords
+               .OrderByDescending(p => p.EnterTime)
+               .FirstOrDefaultAsync(p => p.Car == car);
             if (parkRecord == null)
             {
                 //找不到记录，就直接放行，省得麻烦
-                return LeaveResult.Go;
+                return leave;
             }
+            leave.ParkRecord = parkRecord;
             //补全进出记录
             parkRecord.LeaveTime = leaveTime;
-            db.Entry(parkRecord).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            db.Entry(parkRecord).State = EntityState.Modified;
             CarOwner owner = car.CarOwner;
-            if (owner != null && owner.Type == PaymentType.Free)
-            {
-                //免费用户
-                return LeaveResult.Go;
-            }
 
             var priceStrategy = parkArea.PriceStrategy;
             if (priceStrategy == null)
             {
                 //免费停车场
-                return LeaveResult.Go;
+                return leave;
             }
 
-            double price = GetPrice(priceStrategy, parkRecord.EnterTime, leaveTime);
-            double balance =await GetBalanceAsync(db, owner);
-
-            if (balance - price < 0)
+            switch (owner)
             {
-                return new LeaveResult()
-                {
-                    CanLeave = false,
-                    NeedToPay = balance - price
-                };
+                case CarOwner _ when owner.IsFree:
+                    //免费用户
+                    break;
+                case CarOwner _:
+                    if (await IsMonthlyCardValidAsync(db, owner))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        goto needPay;
+                    }
+                case null:
+                needPay:
+                    //非会员或普通用户
+                    double price = GetPrice(priceStrategy, parkRecord.EnterTime, leaveTime);
+                    double balance = owner == null ? 0 : await GetBalanceAsync(db, owner);
+                    //计算价格
+                    if (balance - price < 0)
+                    {
+                        //拒绝驶离，要求付费
+                        leave.CanLeave = false;
+                        leave.NeedToPay = balance - price;
+                        return leave;
+                    }
+                    TransactionRecord transaction = new TransactionRecord()
+                    {//新增扣费记录
+                        Time = leaveTime,
+                        Type = TransactionType.Park,
+                        Balance = balance - price,
+                        Value = -price,
+                        CarOwner = owner,
+                    };
+                    db.TransactionRecords.Add(transaction);
+                    parkRecord.TransactionRecord = transaction;//停车记录绑定交易记录
+                    break;
+
             }
-            TransactionRecord transaction = new TransactionRecord()
-            {//新增扣费记录
-                Time = leaveTime,
-                Type = TransactionType.Park,
-                Balance = balance - price,
-                Value = -price,
-                CarOwner = owner,
-            };
-            db.TransactionRecords.Add(transaction);
-            parkRecord.TransactionRecord = transaction;
+
+
             await db.SaveChangesAsync();
-            return LeaveResult.Go;
+            return leave;
         }
 
-        private async static Task<double> GetBalanceAsync(ParkContext db, CarOwner owner)
-        {
-            double? balance =(await db.TransactionRecords
-                .OrderByDescending(p=>p.Time)
-                .FirstOrDefaultAsync(p => p.CarOwner == owner))?.Balance;
-            return balance.HasValue ? balance.Value : 0;
-        }
 
         private static double GetPrice(PriceStrategy priceStrategy, DateTime startTime, DateTime endTime)
         {
@@ -135,7 +147,7 @@ namespace Park.Core.Helper
                     {
                         if (upper >= hour)
                         {//已经到达最大阶梯
-                            sum += (sum - lastUpper) * prices[upper];
+                            sum += (hour - lastUpper) * prices[upper];
                             break;
                         }
                         else
@@ -153,7 +165,7 @@ namespace Park.Core.Helper
 
         private async static Task<Car> GetCarAsync(ParkContext db, string licensePlate, bool autoCreate)
         {
-            Car car =await db.Cars.FirstOrDefaultAsync(p => p.LicensePlate == licensePlate);
+            Car car = await db.Cars.FirstOrDefaultAsync(p => p.LicensePlate == licensePlate);
             if (!autoCreate)
             {
                 return car;

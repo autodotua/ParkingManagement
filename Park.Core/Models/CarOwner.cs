@@ -16,31 +16,15 @@ namespace Park.Core.Models
         [StringLength(50)]
         [Required]
         public string Password { get; set; }
-        [Display(Name = "付费类型")]
+        /// <summary>
+        /// 比如车位买断制
+        /// </summary>
+        [Display(Name = "免费用户")]
         [Required]
-        public PaymentType Type { get; set; } = PaymentType.General;
+        public bool IsFree { get; set; } = false;
         [Display(Name = "是否启用")]
         [Required]
         public bool Enabled { get; set; }
     }
-    public enum PaymentType
-    {
-        /// <summary>
-        /// 普通用户
-        /// </summary>
-        General,
-        /// <summary>
-        /// 预付费
-        /// </summary>
-        Prepaid,
-        /// <summary>
-        /// 月付费
-        /// </summary>
-        Monthly,
-        /// <summary>
-        /// 免费
-        /// </summary>
-        Free
-    }
-
+   
 }

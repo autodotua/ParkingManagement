@@ -3,30 +3,49 @@ using Park.Core.Helper;
 using Park.Core.Models;
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Park.Test
 {
     class Program
     {
+        static Context db;
         async static Task Main(string[] args)
         {
             try
             {
-                Context db = new Context();
+                db = new Context();
                 db.Database.EnsureDeleted();
-                ParkDatabaseInitializer.Initialize(db);
-                await ParkService.EnterAsync(db, (await db.Cars.FirstAsync()).LicensePlate, await db.ParkAreas.FirstAsync());
-                await Task.Delay(100);
-                await ParkService.LeaveAsync(db, (await db.Cars.FirstAsync()).LicensePlate, await db.ParkAreas.FirstAsync());
-                await db.SaveChangesAsync();
+                ParkDatabaseInitializer.Initialize(db, true, true);
                 //Console.WriteLine(await db.ParkRecords.CountAsync());
-                WriteObject(await db.ParkRecords.FirstOrDefaultAsync());
+                //await TestTempCarOwnerEnterAndLeaveAsync();
+                await TestGeneralCarOwnerEnterAndLeaveAsync();
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+        private static async Task TestTempCarOwnerEnterAndLeaveAsync()
+        {
+            await ParkService.EnterAsync(db, "浙B12345", await db.ParkAreas.FirstAsync());
+            await Task.Delay(2000);
+            var result = await ParkService.LeaveAsync(db, "浙B12345", await db.ParkAreas.FirstAsync());
+            WriteObject(result);
+        }
+
+        private static async Task TestGeneralCarOwnerEnterAndLeaveAsync()
+        {
+            Car car = await db.Cars.FirstAsync();
+            await TransactionService.RechargeMoneyAsync(db, car.CarOwner, 100);//模拟充值100元
+            await ParkService.EnterAsync(db, car.LicensePlate, await db.ParkAreas.FirstAsync());
+            await Task.Delay(2000);
+            await ParkService.LeaveAsync(db, car.LicensePlate, await db.ParkAreas.FirstAsync()); 
+            WriteObject(await db.ParkRecords.LastOrDefaultRecordAsync(p => p.EnterTime));
+            WriteObject((await db.ParkRecords.LastOrDefaultRecordAsync(p => p.EnterTime)).TransactionRecord);
+
         }
         private static void WriteObject(object obj)
         {

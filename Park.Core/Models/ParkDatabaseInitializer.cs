@@ -9,19 +9,19 @@ namespace Park.Core.Models
     // https://docs.microsoft.com/zh-cn/aspnet/core/data/ef-rp/intro
     public static class ParkDatabaseInitializer
     {
-        public static void Initialize(ParkContext context)
+        public static void Initialize(ParkContext context,
+            bool addTestParkAreaDatas = true,
+            bool addTestCarDatas = true)
         {
             context.Database.EnsureCreated();
 
-            // 已经初始化
-            if (context.CarOwners.Any())
-            {
-                return;
-            }
+
             Random r = new Random();
-            PriceStrategy priceStrategy = new PriceStrategy()
+            if (addTestParkAreaDatas)
             {
-                StrategyJson = @"{
+                PriceStrategy priceStrategy = new PriceStrategy()
+                {
+                    StrategyJson = @"{
   ""type"": ""stepHourBase"", 
   ""prices"": [
     { 
@@ -37,51 +37,54 @@ namespace Park.Core.Models
       ""price"": 0.5
     }
   ]
-}"
-            };
-            context.PriceStrategys.Add(priceStrategy);
-            ParkArea parkArea = new ParkArea()
-            {
-                Name = "停车场1",
-                PriceStrategy = priceStrategy
-            };
-            context.ParkAreas.Add(parkArea);
-            for (int i=0;i<100;i++)
-            {
-                context.ParkingSpaces.Add(new ParkingSpace() { ParkArea = parkArea });
+}",MonthlyPrice=120
+                };
+                context.PriceStrategys.Add(priceStrategy);
+                ParkArea parkArea = new ParkArea()
+                {
+                    Name = "停车场1",
+                    PriceStrategy = priceStrategy
+                };
+                context.ParkAreas.Add(parkArea);
+                for (int i = 0; i < 100; i++)
+                {
+                    context.ParkingSpaces.Add(new ParkingSpace() { ParkArea = parkArea });
+                }
+                context.SaveChanges();
             }
 
-            for (int i = 0; i < 20; i++)//车主
+
+            if (addTestCarDatas)
             {
-                var owner = new CarOwner()
+                for (int i = 0; i < 20; i++)//车主
                 {
-                    Username = "user" + r.Next(0, short.MaxValue),
-                    Password = "1234",
-                };
-                context.CarOwners.Add(owner);
-
-                for (int j = 0; j < 2; j++)//车辆
-                {
-                    var car = new Car()
+                    var owner = new CarOwner()
                     {
-                        LicensePlate = "浙B" + r.Next(10000, 99999),
-                        CarOwner = owner
+                        Username = "user" + r.Next(0, short.MaxValue),
+                        Password = "1234",
                     };
-                    context.Cars.Add(car);
-                    context.SaveChanges();
-                    //var a = context.Cars.FirstOrDefault().CarOwner == context.CarOwners.FirstOrDefault(); ;
+                    context.CarOwners.Add(owner);
 
-                    for (int k = 0; k < 5; k++)//进出场信息
+                    for (int j = 0; j < 2; j++)//车辆
                     {
+                        var car = new Car()
+                        {
+                            LicensePlate = "浙B" + r.Next(10000, 99999),
+                            CarOwner = owner
+                        };
+                        context.Cars.Add(car);
+                        context.SaveChanges();
+                        //var a = context.Cars.FirstOrDefault().CarOwner == context.CarOwners.FirstOrDefault(); ;
 
+                        for (int k = 0; k < 5; k++)//进出场信息
+                        {
+
+                        }
                     }
                 }
 
-
+                context.SaveChanges();
             }
-
-
-            context.SaveChanges();
         }
 
 
