@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing.Imaging;
+using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FineUICore;
@@ -12,95 +15,56 @@ using Park.Admin.Models;
 using Park.Core.Models;
 using Park.Core.Service;
 
-namespace Park.Admin.Pages.People
+namespace Park.Admin.Pages.Parking
 {
-    public class ExtendCarOwners : CarOwner
+   
+    public class ParkingSpaceListModel : BaseModel
     {
-        public ExtendCarOwners()
-        {
-        }
-        [Display(Name = "余额")]
-        public double Balance { get; set; }
+        
+        public IEnumerable<ParkingSpace> ParkingSpaces { get; set; }
+        public List<ParkArea> ParkAreas { get; set; }
 
-        public async Task<ExtendCarOwners> Apply(CarOwner owner, ParkContext db)
-        {
-            ID = owner.ID;
-            Enabled = owner.Enabled;
-            Password = owner.Password;
-            Username = owner.Username;
-            IsFree = owner.IsFree;
-            Balance = await TransactionService.GetBalanceAsync(db, owner);
-            return this;
-        }
-    }
-    public class CarOwnerListModel : BaseModel
-    {
-        public IEnumerable<ExtendCarOwners> CarOwners { get; set; }
-
-        public PagingInfoViewModel PagingInfo { get; set; }
-
-        public bool PowerCoreUserNew { get; set; }
-        public bool PowerCoreUserEdit { get; set; }
-        public bool PowerCoreUserDelete { get; set; }
-        public bool PowerCoreUserChangePassword { get; set; }
+        public int CurrentParkAreaID { get; set; }
 
         public async Task OnGetAsync()
         {
-            await UserList_LoadDataAsync();
-        }
-
-        private async Task UserList_LoadDataAsync()
-        {
-            PowerCoreUserNew = CheckPower("CoreUserNew");
-            PowerCoreUserEdit = CheckPower("CoreUserEdit");
-            PowerCoreUserDelete = CheckPower("CoreUserDelete");
-            PowerCoreUserChangePassword = CheckPower("CoreUserChangePassword");
-
-            var pagingInfo = new PagingInfoViewModel
+            ParkAreas =await ParkDB.ParkAreas.ToListAsync();
+            if (ParkAreas.Count > 0)
             {
-                SortField = "Username",
-                SortDirection = "DESC",
-                PageIndex = 0,
-                PageSize = ConfigHelper.PageSize
-            };
-
-            PagingInfo = pagingInfo;
-
-            CarOwners = await UserList_GetDataAsync(pagingInfo, string.Empty);
-        }
-
-        private async Task<IEnumerable<ExtendCarOwners>> UserList_GetDataAsync(PagingInfoViewModel pagingInfo, string ttbSearchMessage)
-        {
-            IQueryable<CarOwner> q = ParkDB.CarOwners;
-
-            string searchText = ttbSearchMessage?.Trim();
-            if (!String.IsNullOrEmpty(searchText))
-            {
-                q = q.Where(u => u.Username.Contains(searchText));
+                CurrentParkAreaID = ParkAreas[0].ID;
             }
-
-            if (GetIdentityName() != "admin")
-            {
-                q = q.Where(u => u.Username != "admin");
-            }
-
-            // 过滤启用状态
-            //if (rblEnableStatus != "all")
-            //{
-            //    q = q.Where(u => u.Enabled == (rblEnableStatus == "enabled" ? true : false));
-            //}
-
-
-            // 获取总记录数（在添加条件之后，排序和分页之前）
-            pagingInfo.RecordCount = await q.CountAsync();
-
-            // 排列和数据库分页
-            q = SortAndPage(q, pagingInfo);
-
-            return (await q.ToListAsync()).Select(p => new ExtendCarOwners().Apply(p, ParkDB).Result);
+            ParkingSpaces =await ParkDB.ParkingSpaces.ToListAsync();
         }
 
-        public async Task<IActionResult> OnPostUserList_DoPostBackAsync(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
+        public async Task<IActionResult> OnPostGridParkArea_RowSelectAsync(string rowId)
+        {
+            int id = int.Parse(rowId);
+            ParkArea parkArea = ParkDB.ParkAreas.Find(id);
+            ParkingSpaces = parkArea.ParkingSpaces;
+            UIHelper.Grid("grdParkingSpace").DataSource(ParkingSpaces);
+
+         var map=   ParkingSpaceService.GetMap(ParkDB, parkArea);
+            System.IO.MemoryStream ms = new MemoryStream();
+            map.Save(ms, ImageFormat.Png);
+            byte[] byteImage = ms.ToArray();
+            var SigBase64 = Convert.ToBase64String(byteImage);
+
+            UIHelper.Image("imgMap").ImageUrl("data:image/png;base64,"+ SigBase64);
+
+            return UIHelper.Result();
+        }
+
+
+
+        private async Task<IEnumerable<ParkingSpace>> ParkingSpaceList_GetDataAsync( )
+        {
+            IQueryable<ParkingSpace> q = ParkDB.ParkingSpaces;
+
+
+            return await q.ToListAsync();
+        }
+
+        public async Task<IActionResult> OnPostParkingSpaceList_DoPostBackAsync(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
             string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
         {
             List<int> ids = new List<int>();
@@ -188,7 +152,7 @@ namespace Park.Admin.Pages.People
                 PageSize = ddlGridPageSize
             };
 
-            var users = await UserList_GetDataAsync(pagingInfo, ttbSearchMessage);
+            var users = await ParkingSpaceList_GetDataAsync( );
             // 1. 设置总项数
             grid1UI.RecordCount(pagingInfo.RecordCount);
             // 2. 设置每页显示项数

@@ -11,9 +11,12 @@ namespace Park.Core.Models
     {
         [Key]
         public int ID { get; set; }
-        [Display(Name = "车主")]
+        [Display(Name = "车")]
         [Required]
         public Car Car { get; set; }
+        [Display(Name = "车")]
+        [Required]
+        public int CarID { get; set; }
         [Display(Name = "进场时间")]
         [Required]
         public DateTime EnterTime { get; set; }

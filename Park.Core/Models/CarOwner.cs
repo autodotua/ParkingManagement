@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Park.Core.Models
 {
@@ -24,7 +25,8 @@ namespace Park.Core.Models
         public bool IsFree { get; set; } = false;
         [Display(Name = "是否启用")]
         [Required]
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
+        public List<Car> Cars { get; set; }
     }
    
 }

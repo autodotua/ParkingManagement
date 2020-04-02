@@ -2,7 +2,7 @@
 
 namespace Park.Core.Models
 {
-    public class ParkingSpace
+    public class ParkingSpace: IParkObject
     {
         [Key]
         public int ID { get; set; }
@@ -12,11 +12,18 @@ namespace Park.Core.Models
         public string Class { get; set; } = "";
         [Display(Name = "停车区")]
         [Required]
+        public int ParkAreaID { get; set; }
         public ParkArea ParkArea { get; set; }
 
         [Display(Name = "是否已停车")]
         [Required]
         public bool HasCar { get; set; } = false;
+
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public double RotateAngle { get; set; }
     }
 
 

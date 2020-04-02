@@ -6,14 +6,14 @@ using System.Web;
 
 namespace Park.Core.Models
 {
-    // https://docs.microsoft.com/zh-cn/aspnet/core/data/ef-rp/intro
     public static class ParkDatabaseInitializer
     {
         public static void Initialize(ParkContext context,
             bool addTestParkAreaDatas = true,
             bool addTestCarDatas = true)
         {
-            context.Database.EnsureCreated();
+            if (!context.Database.EnsureCreated())
+            { return; }
 
 
             Random r = new Random();
@@ -37,18 +37,24 @@ namespace Park.Core.Models
       ""price"": 0.5
     }
   ]
-}",MonthlyPrice=120
+}",
+                    MonthlyPrice = 120
                 };
                 context.PriceStrategys.Add(priceStrategy);
-                ParkArea parkArea = new ParkArea()
+                for (int i = 0; i < 3; i++)
                 {
-                    Name = "停车场1",
-                    PriceStrategy = priceStrategy
-                };
-                context.ParkAreas.Add(parkArea);
-                for (int i = 0; i < 100; i++)
-                {
-                    context.ParkingSpaces.Add(new ParkingSpace() { ParkArea = parkArea });
+                    ParkArea parkArea = new ParkArea()
+                    {
+                        Name = "停车场"+(i+1),
+                        PriceStrategy = priceStrategy,
+                        Length=100,
+                        Width=50
+                    };
+                    context.ParkAreas.Add(parkArea);
+                    for (int j = 0; j < r.Next(50,100); j++)
+                    {
+                        context.ParkingSpaces.Add(new ParkingSpace() { ParkArea = parkArea });
+                    }
                 }
                 context.SaveChanges();
             }
@@ -65,7 +71,7 @@ namespace Park.Core.Models
                     };
                     context.CarOwners.Add(owner);
 
-                    for (int j = 0; j < 2; j++)//车辆
+                    for (int j = 0; j < r.Next(2,5); j++)//车辆
                     {
                         var car = new Car()
                         {

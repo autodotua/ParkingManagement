@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Park.Core.Helper.TransactionService;
+using static Park.Core.Service.TransactionService;
 
-namespace Park.Core.Helper
+namespace Park.Core.Service
 {
     public static class ParkService
     {

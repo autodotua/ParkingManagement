@@ -7,25 +7,30 @@
 
 }
 
-@section body{
 
+@section body{
+    <style>
+        .logo{
+            margin-left:4px;
+        }
+    </style>
     <div id="header" class="f-widget-header f-mainheader" style="display:none;">
         <table>
             <tr>
                 <td>
-                    <f:Button ID="btnHomePage" EnableDefaultCorner="false" EnableDefaultState="false" IconFont="_Home" IconAlign="Top" ToolTip="官网首页" CssClass="icononlyaction" OnClientClick="window.open('http://pages.fineui.com/','_blank');"></f:Button>
+                    @*<f:Button ID="btnHomePage" EnableDefaultCorner="false" EnableDefaultState="false" IconFont="_Home" IconAlign="Top" ToolTip="官网首页" CssClass="icononlyaction" OnClientClick="window.open('http://pages.fineui.com/','_blank');"></f:Button>*@
                     <a class="logo" href="@Url.Content("~/")" title="@Model.ConfigTitle">
                         @Model.ConfigTitle
                     </a>
                 </td>
                 <td style="text-align: right;">
-                    <f:Button CssClass="icontopaction systemhelp" ID="Button1" Text="下载源代码" IconAlign="Top" IconFont="_Download" EnableDefaultState="false" EnableDefaultCorner="false">
+                    @*<f:Button CssClass="icontopaction systemhelp" ID="Button1" Text="下载源代码" IconAlign="Top" IconFont="_Download" EnableDefaultState="false" EnableDefaultCorner="false">
                         <Listeners>
                             <f:Listener Event="click" Handler="onDownloadClick"></f:Listener>
                         </Listeners>
                     </f:Button>
                     <f:Button ID="btnSystemHelp" Text="系统帮助" CssClass="icontopaction systemhelp" MenuID="helpMenu" IconAlign="Top" IconFont="_Question" EnableDefaultState="false" EnableDefaultCorner="false" ShowMenuIcon="false" Menu="@Model.SystemHelpMenu">
-                    </f:Button>
+                    </f:Button>*@
                     <f:Button CssClass="icontopaction systemhelp" ID="btnThemeSelect" Text="主题仓库" IconAlign="Top" IconFont="_Skin" EnableDefaultState="false" EnableDefaultCorner="false" TabIndex="-1">
                         <Listeners>
                             <f:Listener Event="click" Handler="onThemeSelectClick" />
@@ -46,19 +51,22 @@
     <table id="footer" class="bottomtable f-widget-header" style="display:none;">
         <tr>
             <td style="width: 260px;">
-                &nbsp;版本：<a target="_blank" href="http://fineui.com/mvc">@Model.ProductVersion</a>
+                &nbsp;版本：@Model.ProductVersion
             </td>
-            <td style="text-align: center;">Copyright &copy; 2008-2020 合肥三生石上软件有限公司</td>
-            <td style="width: 260px; text-align: right;">在线人数：&nbsp;@Model.OnlineUserCount</td>
+            <td style="text-align: center;">地信171第6组</td>
+            @*<td style="width: 260px; text-align: right;">在线人数：&nbsp;@Model.OnlineUserCount</td>*@
         </tr>
     </table>
 
     <f:RegionPanel ID="RegionPanel1" ShowBorder="false" CssClass="mainpanel" IsViewPort="true">
         <Regions>
             <f:Region ID="topRegion" ShowBorder="false" ShowHeader="false" RegionPosition="Top" CssClass="topregion bgpanel" ContentEl="#header"></f:Region>
-            <f:Region ID="leftRegion" ShowBorder="false" ShowHeader="true" RegionPosition="Left" CssClass="leftregion bgpanel" RegionSplitIcon="false" RegionSplitWidth="3" RegionSplit="true" Width="200" Title="系统菜单" EnableCollapse="true" Layout="Fit">
+            <f:Region ID="leftRegion" ShowBorder="false" ShowHeader="true" 
+                      RegionPosition="Left" CssClass="leftregion bgpanel" 
+                      RegionSplitIcon="false" RegionSplitWidth="3" RegionSplit="true"
+                      Width="200" Title="系统菜单" EnableCollapse="true"   Layout="Fit">
                 <Items>
-                    <f:Tree ShowBorder="false" ShowHeader="false" ID="treeMenu" EnableSingleClickExpand="true" Nodes="@Model.MenuTreeNodes"></f:Tree>
+                    <f:Tree  ShowBorder="false" ShowHeader="false" ID="treeMenu" EnableSingleClickExpand="true" Nodes="@Model.MenuTreeNodes"></f:Tree>
                 </Items>
             </f:Region>
             <f:Region ID="mainRegion" CssClass="centerregion" ShowBorder="false" ShowHeader="false" Layout="Fit" RegionPosition="Center">
@@ -92,6 +100,7 @@
 @section script {
 
     <script>
+
 
         // 下载源代码
         function onDownloadClick(event) {
@@ -192,7 +201,21 @@
                 maxTabCount: 10,
                 maxTabMessage: '请先关闭一些选项卡（最多允许打开 10 个）！'
             });
-
+            if (!isPC()) {
+                F.ui.leftRegion.collapse();
+            }
+            //console.log(F.ui.leftRegion)
         });
+
+
+        function isPC() {
+            var userAgentInfo = navigator.userAgent;
+            var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
+            var flag = true;
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }
+            }
+            return flag;
+        }
     </script>
 }

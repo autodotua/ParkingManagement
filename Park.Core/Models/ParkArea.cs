@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Park.Core.Models
 {
@@ -15,7 +16,12 @@ namespace Park.Core.Models
         public string Name { get; set; }
 
         [Display(Name = "价格策略")]
+        public int? PriceStrategyID { get; set; }
         public PriceStrategy PriceStrategy { get; set; }
+        public List<ParkingSpace> ParkingSpaces { get; set; }
+
+        public double Length { get; set; }
+        public double Width { get; set; }
     }
 
 

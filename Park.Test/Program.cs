@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Park.Core.Helper;
+using Park.Core.Service;
 using Park.Core.Models;
 using System;
 using System.ComponentModel;
@@ -18,6 +18,7 @@ namespace Park.Test
                 db = new Context();
                 db.Database.EnsureDeleted();
                 ParkDatabaseInitializer.Initialize(db, true, true);
+                db.Remove(await db.CarOwners.FirstAsync());
                 //Console.WriteLine(await db.ParkRecords.CountAsync());
                 //await TestTempCarOwnerEnterAndLeaveAsync();
                 await TestGeneralCarOwnerEnterAndLeaveAsync();

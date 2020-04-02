@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 namespace Park.Core.Models
 {
-
-
     public static class DbHelper
     {
         public static Task<T> LastOrDefaultRecordAsync<T>(this IQueryable<T> db, Expression<Func<T, DateTime>> key, Expression<Func<T, bool>> predicate = null) where T : class

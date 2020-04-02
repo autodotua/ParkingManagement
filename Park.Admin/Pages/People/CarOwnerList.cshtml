@@ -1,7 +1,7 @@
 ﻿@page
 @model Park.Admin.Pages.People.CarOwnerListModel
 @{
-    ViewData["Title"] = "停车场设计";
+    ViewData["Title"] = "车主管理";
     var PagingInfo = Model.PagingInfo;
 }
 
@@ -11,7 +11,7 @@
     <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="VBox" ShowHeader="false" Title="用户管理" IsViewPort="true">
         <Items>
             <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true" DataIDField="ID" DataTextField="Username" AllowSorting="true"
-                    AllowPaging="true" IsDatabasePaging="true"
+                    AllowPaging="true" IsDatabasePaging="true" AllowCellEditing="true"
                     SortField="@PagingInfo.SortField" SortDirection="@PagingInfo.SortDirection"
                     PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.CarOwners"
                     OnSort="@Url.Handler("UserList_DoPostBack")" OnSortFields="Panel1"
@@ -19,12 +19,11 @@
                 <Columns>
                     <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
                     <f:RenderField For="CarOwners.First().Username" SortField="Username" Width="100"></f:RenderField>
-                    <f:RenderField For="CarOwners.First().DisplayType" SortField="DisplayType" Width="100"></f:RenderField>
                     <f:RenderField For="CarOwners.First().Balance" SortField="Balance" Width="100"></f:RenderField>
-                    <f:RenderCheckField For="CarOwners.First().Enabled" SortField="Enabled" RenderAsStaticField="true" Width="80" />
-                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionView"></f:RenderField>
-                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionPassword"></f:RenderField>
-                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionEdit"></f:RenderField>
+                    <f:RenderCheckField For="CarOwners.First().Enabled" SortField="Enabled" RenderAsStaticField="false" Width="80" />
+                    @*<f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionView"></f:RenderField>*@
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="100" RendererFunction="renderActionPassword"></f:RenderField>
+                    @*<f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionEdit"></f:RenderField>*@
                     <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="50" RendererFunction="renderActionDelete"></f:RenderField>
 
                 </Columns>
@@ -60,6 +59,8 @@
                                     <f:Listener Event="click" Handler="onNewClick"></f:Listener>
                                 </Listeners>
                             </f:Button>
+                            <f:Button ID="btnSubmit" Text="保存数据" OnClick="@Url.Handler("btnSubmit_Click")" OnClickFields="Grid1"></f:Button>
+
                         </Items>
                     </f:Toolbar>
                 </Toolbars>
@@ -67,16 +68,16 @@
         </Items>
     </f:Panel>
 
-    <f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+    @*<f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
               EnableMaximize="true" EnableIFrame="true" Width="900" Height="600"
               OnClose="@Url.Handler("UserList_DoPostBack")" OnCloseFields="Panel1">
-    </f:Window>
+    </f:Window>*@
 }
 
 @section script{
 
     <script>
-      
+
     var coreUserEdit = @Convert.ToString(Model.PowerCoreUserEdit).ToLower();
     var coreUserDelete = @Convert.ToString(Model.PowerCoreUserDelete).ToLower();
     var coreUserChangePassword = @Convert.ToString(Model.PowerCoreUserChangePassword).ToLower();
@@ -86,27 +87,27 @@
         F.ui.Window1.show('@Url.Content("~/Admin/UserNew")', '新增');
     }
 
-    function renderActionView(value, params) {
+    @*function renderActionView(value, params) {
         var imageUrl = '@Url.Content("~/res/icon/information.png")';
         return '<a class="action-btn view" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
-    }
+    }*@
 
     function renderActionPassword(value, params) {
         var imageUrl = '@Url.Content("~/res/icon/key.png")';
         var disabledCls = coreUserChangePassword ? '' : ' f-state-disabled';
-        return '<a class="action-btn password'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+        return '<a class="action-btn password'+ disabledCls +'" href="javascript:;">重置密码</a>';
     }
 
-    function renderActionEdit(value, params) {
+    @*function renderActionEdit(value, params) {
         var imageUrl = '@Url.Content("~/res/icon/pencil.png")';
         var disabledCls = coreUserEdit ? '' : ' f-state-disabled';
         return '<a class="action-btn edit'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
-    }
+    }*@
 
     function renderActionDelete(value, params) {
         var imageUrl = '@Url.Content("~/res/icon/delete.png")';
         var disabledCls = coreUserDelete ? '' : ' f-state-disabled';
-        return '<a class="action-btn delete'+ disabledCls +'" href="javascript:;"><img class="f-grid-cell-icon" src="' + imageUrl + '"></a>';
+        return '<a class="action-btn delete'+ disabledCls +'" href="javascript:;">删除</a>';
     }
 
     function onDeleteSelectedClick(event) {
@@ -153,7 +154,7 @@
             });
         }
 
-        function onDisableUsersClick(event) {
+        @*function onDisableUsersClick(event) {
             var grid1 = F.ui.Grid1;
 
             if (!grid1.hasSelection()) {
@@ -173,7 +174,7 @@
                     });
                 }
             });
-        }
+        }*@
 
         F.ready(function () {
 
@@ -199,12 +200,25 @@
                         });
                     }
                 });
-            } else if (cnode.hasClass('edit')) {
+                }
+                @*else if (cnode.hasClass('edit')) {
                 F.ui.Window1.show('@Url.Content("~/Admin/UserEdit?id=")' + rowData.id, '编辑');
             } else if (cnode.hasClass('view')) {
                 F.ui.Window1.show('@Url.Content("~/Admin/UserView?id=")' + rowData.id, '查看');
-            } else if (cnode.hasClass('password')) {
-                F.ui.Window1.show('@Url.Content("~/Admin/UserChangePassword?id=")' + rowData.id, '修改密码');
+                }*@
+                else if (cnode.hasClass('password')) {
+                    F.confirm({
+                        message: '是否重置密码？',
+                        target: '_top',
+                        ok: function () {
+                            // 触发后台事件
+                            F.doPostBack('@Url.Handler("UserList_DoPostBack")', 'Panel1', {
+                                actionType: 'pswd',
+                                deletedRowIDs: [rowData.id]
+                            });
+                        }
+                    });
+                //F.ui.Window1.show('@Url.Content("~/Admin/UserChangePassword?id=")' + rowData.id, '修改密码');
             }
         });
 

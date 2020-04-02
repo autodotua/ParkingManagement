@@ -1,0 +1,136 @@
+﻿@page
+@model Park.Admin.Pages.Parking.ParkingSpaceListModel
+@{
+    ViewData["Title"] = "停车场设计";
+}
+
+
+@section body {
+    <f:Panel ID="OutPanel" BodyPadding="5" ShowBorder="false" Layout="Region" ShowHeader="false" Title="用户管理" IsViewPort="true">
+        <Items>
+            <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="HBox"
+                     RegionPosition="Top" RegionPercent="50%"
+                     ShowHeader="false">
+                <Items>
+                    <f:Grid ID="grdParkArea" BoxFlex="1" ShowBorder="true" ShowHeader="false" DataIDField="ID" DataTextField="Name" AllowSorting="true"
+                            DataSource="@Model.ParkAreas"
+                            OnPageIndexChanged="@Url.Handler("ParkingSpaceList_DoPostBack")" OnPageIndexChangedFields="Panel1">
+                        <Columns>
+                            <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                            <f:RenderField For="ParkAreas.First().Name" Width="100"></f:RenderField>
+                            <f:RenderField For="ParkAreas.First().ParkingSpaces.Count" HeaderText="停车位数量" Width="100"></f:RenderField>
+
+                        </Columns>
+                        <Listeners>
+                            <f:Listener Event="rowselect" Handler="onGrid1RowSelect"></f:Listener>
+                        </Listeners>
+                    </f:Grid>
+                    <f:Grid ID="grdParkingSpace" BoxFlex="2" ShowBorder="true" ShowHeader="false"
+                            DataIDField="ID" DataTextField="Username"
+                            DataSource="@Model.ParkingSpaces"
+                            OnSort="@Url.Handler("ParkingSpaceList_DoPostBack")" OnSortFields="Panel1"
+                            OnPageIndexChanged="@Url.Handler("ParkingSpaceList_DoPostBack")" OnPageIndexChangedFields="Panel1">
+                        <Columns>
+                            <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                            <f:RenderField For="ParkingSpaces.First().Class" SortField="Class" Width="100"></f:RenderField>
+                            <f:RenderCheckField For="ParkingSpaces.First().HasCar" SortField="HasCar" RenderAsStaticField="true" Width="180" />
+
+                        </Columns>
+                    </f:Grid>
+
+                </Items>
+            </f:Panel>
+            <f:Panel ID="Panel2" BodyPadding="5" ShowBorder="false" Layout="HBox"
+                     RegionPosition="Bottom" RegionPercent="50%"
+                     ShowHeader="false">
+                <Items>
+                    <f:Image ID="imgMap"></f:Image>
+                </Items>
+            </f:Panel>
+
+        </Items>
+    </f:Panel>
+
+}
+
+@section script{
+
+    <script>
+            function doPostBack(rowId, isDeselect) {
+
+            var grd = F.ui.grdParkArea;
+                var rowData = grd.getRowData(rowId);
+                var column = grd.getColumn(grd.getSelectedCell()[1]);
+
+            // 触发后台事件
+            F.doPostBack('@Url.Handler("GridParkArea_RowSelect")', {
+                rowId: rowData.id,
+                //rowText: rowData.text,
+                //rowIndex: rowData.index,
+                //columnText: column.text,
+                //isDeselect: !!isDeselect
+            });
+        }
+
+        function onGrid1RowSelect(event, rowId) {
+            doPostBack(rowId);
+        }
+    function onNewClick(event) {
+        F.ui.Window1.show('@Url.Content("~/Admin/UserNew")', '新增');
+    }
+
+    function renderActionDelete(value, params) {
+        var imageUrl = '@Url.Content("~/res/icon/delete.png")';
+        var disabledCls = coreUserDelete ? '' : ' f-state-disabled';
+        return '<a class="action-btn delete'+ disabledCls +'" href="javascript:;">删除</a>';
+    }
+
+    function onDeleteSelectedClick(event) {
+        var grid1 = F.ui.Grid1;
+
+        if (!grid1.hasSelection()) {
+            F.alert('请至少选择一项！');
+            return;
+        }
+
+        var selectedRows = grid1.getSelectedRows();
+    }
+
+
+
+        F.ready(function () {
+
+            var grid1 = F.ui.grdParkingSpace;
+            grid1.el.on('click', 'a.action-btn', function (event) {
+                var cnode = $(this);
+                var rowData = grid1.getRowData(cnode.closest('.f-grid-row'));
+
+                // 是否禁用
+                if(cnode.hasClass('f-state-disabled')) {
+                    return;
+                }
+
+                if (cnode.hasClass('delete')) {
+                    F.confirm({
+                        message: '确定删除此记录？',
+                        target: '_top',
+                        ok: function () {
+                            // 触发后台事件
+                            F.doPostBack('@Url.Handler("ParkingSpaceList_DoPostBack")', 'Panel1', {
+                            actionType: 'delete',
+                            deletedRowIDs: [rowData.id]
+                        });
+                    }
+                });
+                }
+                @*else if (cnode.hasClass('edit')) {
+                F.ui.Window1.show('@Url.Content("~/Admin/UserEdit?id=")' + rowData.id, '编辑');
+            } else if (cnode.hasClass('view')) {
+                F.ui.Window1.show('@Url.Content("~/Admin/UserView?id=")' + rowData.id, '查看');
+                }*@
+        });
+
+    });
+
+    </script>
+}

@@ -13,6 +13,7 @@ namespace Park.Core.Models
 
         [Display(Name = "车主")]
         [Required]
+        public int CarOwnerID { get; set; }
         public CarOwner CarOwner { get; set; }
         [Display(Name = "交易时间")]
         [Required]

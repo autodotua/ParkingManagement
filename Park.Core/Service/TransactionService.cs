@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Park.Core.Helper
+namespace Park.Core.Service
 {
     public static class TransactionService
     {

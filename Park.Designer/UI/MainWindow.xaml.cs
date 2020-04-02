@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using Park.Core.Models;
 using Park.Designer.Model;
 using System;
 using System.Collections.Generic;
@@ -104,7 +105,7 @@ namespace Park.Designer.UI
         private void DrawButton_Click(object sender, RoutedEventArgs e)
         {
             boardHelper.DragEnable = false;
-            ParkObjectBase obj = (sender as Button).Tag switch
+            IParkObject obj = (sender as Button).Tag switch
             {
                 "1" => new ParkingSpace() { Height = 2.5, Width = 4.5 },
                 "2" => new Aisle(),
@@ -177,11 +178,11 @@ namespace Park.Designer.UI
             switch (e.ParkObject)
             {
                 case ParkingSpace ps:
-                    ps.Id = ParkArea.ParkingSpaces.Any() ? ParkArea.ParkingSpaces.Max(p => p.Id) + 1 : 0;
+                    ps.ID = ParkArea.ParkingSpaces.Any() ? ParkArea.ParkingSpaces.Max(p => p.ID) + 1 : 0;
                     ParkArea.ParkingSpaces.Add(ps);
                     break;
                 case Aisle a:
-                    a.Id = ParkArea.Aisles.Any() ? ParkArea.Aisles.Max(p => p.Id) + 1 : 0;
+                    a.ID = ParkArea.Aisles.Any() ? ParkArea.Aisles.Max(p => p.ID) + 1 : 0;
                     ParkArea.Aisles.Add(a);
                     break;
             }

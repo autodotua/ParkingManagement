@@ -16,7 +16,10 @@ namespace Park.Core.Models
 
         [Display(Name = "车主")]
         public CarOwner CarOwner { get; set; }
-       
+        [Display(Name = "车主")]
+        public int? CarOwnerID { get; set; }
+
+        public List<ParkRecord> ParkRecords { get; set; }
     }
 
 

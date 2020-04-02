@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Park.Designer.Model
+namespace Park.Core.Models
 {
-    public abstract class ParkObjectBase
+    public interface IParkObject
     {
         /// <summary>
         /// 序号
         /// </summary>
-        public int Id { get; set; }
+        public int ID { get; set; }
         /// <summary>
         /// 分类
         /// </summary>

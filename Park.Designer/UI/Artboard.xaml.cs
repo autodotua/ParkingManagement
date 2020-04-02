@@ -1,4 +1,5 @@
-﻿using Park.Designer.Model;
+﻿using Park.Core.Models;
+using Park.Designer.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,9 @@ namespace Park.Designer.UI
     /// </summary>
     public partial class Artboard : Grid, INotifyPropertyChanged
     {
+        public static readonly double AisleWidth = 2;
+        public static readonly Brush ParkingSpaceBrush = Brushes.Red;
+        public static readonly Brush AisleBrush = Brushes.Green;
         private ParkAreaInfo parkArea = new ParkAreaInfo();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -40,7 +44,7 @@ namespace Park.Designer.UI
         /// <summary>
         /// 当前的模板
         /// </summary>
-        public ParkObjectBase Template { get; private set; }
+        public IParkObject Template { get; private set; }
         /// <summary>
         /// 是否处于选择模式
         /// </summary>
@@ -58,7 +62,7 @@ namespace Park.Designer.UI
         /// 开始绘制
         /// </summary>
         /// <param name="template"></param>
-        public void StartDrawing(ParkObjectBase template)
+        public void StartDrawing(IParkObject template)
         {
             StartDraw(template, true);
         }
@@ -67,7 +71,7 @@ namespace Park.Designer.UI
         /// </summary>
         /// <param name="template"></param>
         /// <param name="cleanCurrent"></param>
-        private void StartDraw(ParkObjectBase template, bool cleanCurrent)
+        private void StartDraw(IParkObject template, bool cleanCurrent)
         {
             Template = template;
 
@@ -87,9 +91,9 @@ namespace Park.Designer.UI
                     drawingMode = DrawingMode.Aisle1;
                     currentShape = new Rectangle()
                     {
-                        Height = Aisle.Width,
-                        Width = Aisle.Width,
-                        Fill = Aisle.Brush,
+                        Height = AisleWidth,
+                        Width = AisleWidth,
+                        Fill = AisleBrush,
                         RenderTransformOrigin = new Point(0.5, 0.5)
                     };
 
@@ -129,7 +133,7 @@ namespace Park.Designer.UI
                 Height = ps.Height,
                 Width = ps.Width,
                 RenderTransformOrigin = new Point(0.5, 0.5),
-                Fill = ParkingSpace.Brush,
+                Fill = ParkingSpaceBrush,
                 RenderTransform = new RotateTransform(ps.RotateAngle),
                 Stroke = Brushes.Gray,
                 StrokeThickness = 0,
@@ -148,8 +152,8 @@ namespace Park.Designer.UI
                 Y1 = a.Y1,
                 X2 = a.X2,
                 Y2 = a.Y2,
-                Stroke = Aisle.Brush,
-                StrokeThickness = Aisle.Width,
+                Stroke = AisleBrush,
+                StrokeThickness = AisleWidth,
                 RenderTransformOrigin = new Point(0.5, 0.5)
             };
         }
@@ -267,7 +271,7 @@ namespace Park.Designer.UI
             }
         }
 
-        internal void Remove(ParkObjectBase parkObject)
+        internal void Remove(IParkObject parkObject)
         {
             cvs.Children.Remove(cvs.Children.OfType<Shape>().First(p => p.Tag == parkObject));
         }
@@ -279,7 +283,7 @@ namespace Park.Designer.UI
         /// <param name="e"></param>
         private void Canvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ParkObjectBase obj = null;
+            IParkObject obj = null;
             switch (drawingMode)
             {
                 case DrawingMode.None:
@@ -308,8 +312,8 @@ namespace Park.Designer.UI
                     cvs.Children.Remove(currentShape);
                     currentShape = new Line()
                     {
-                        StrokeThickness = Aisle.Width,
-                        Stroke = Aisle.Brush,
+                        StrokeThickness = AisleWidth,
+                        Stroke = AisleBrush,
                         RenderTransformOrigin = new Point(0.5, 0.5),
                         X1 = x,
                         Y1 = y,
@@ -375,7 +379,7 @@ namespace Park.Designer.UI
             {
                 if (CanSelect)
                 {
-                    ParkObjectSelected?.Invoke(this, new ParkObjectEventArgs((s as Shape).Tag as ParkObjectBase));
+                    ParkObjectSelected?.Invoke(this, new ParkObjectEventArgs((s as Shape).Tag as IParkObject));
                 }
             };
         }
@@ -417,12 +421,12 @@ namespace Park.Designer.UI
     /// </summary>
     public class ParkObjectEventArgs : EventArgs
     {
-        public ParkObjectEventArgs(ParkObjectBase obj)
+        public ParkObjectEventArgs(IParkObject obj)
         {
             ParkObject = obj;
         }
 
-        public ParkObjectBase ParkObject { get; }
+        public IParkObject ParkObject { get; }
     }
     /// <summary>
     /// 绘制模式

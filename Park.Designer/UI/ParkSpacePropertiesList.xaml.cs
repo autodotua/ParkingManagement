@@ -1,4 +1,5 @@
-﻿using Park.Designer.Model;
+﻿using Park.Core.Models;
+using Park.Designer.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,11 +21,11 @@ namespace Park.Designer.UI
     /// </summary>
     public partial class ParkSpacePropertiesList : UserControl,INotifyPropertyChanged
     {
-        private ParkObjectBase obj;
+        private IParkObject obj;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ParkObjectBase Obj
+        public IParkObject Obj
         {
             get => obj;
             set

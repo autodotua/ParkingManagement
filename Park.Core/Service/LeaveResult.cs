@@ -1,6 +1,6 @@
 ﻿using Park.Core.Models;
 
-namespace Park.Core.Helper
+namespace Park.Core.Service
 {
     public class LeaveResult
     {

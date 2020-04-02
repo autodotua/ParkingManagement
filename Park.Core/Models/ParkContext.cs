@@ -1,4 +1,4 @@
-﻿  using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -27,6 +27,42 @@ namespace Park.Core.Models
         {
             base.OnModelCreating(modelBuilder);
 
+            //车与车主
+            modelBuilder.Entity<Car>()
+                .HasOne(c => c.CarOwner)
+                .WithMany(o => o.Cars)
+                .HasForeignKey(c => c.CarOwnerID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //车与停车记录
+            modelBuilder.Entity<ParkRecord>()
+                .HasOne(p => p.Car)
+                .WithMany(c => c.ParkRecords)
+                .HasForeignKey(p => p.CarID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //停车区和停车策略
+            modelBuilder.Entity<ParkArea>()
+                .HasOne(a=>a.PriceStrategy)
+                .WithMany()
+                .HasForeignKey(a=>a.PriceStrategyID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //停车位和停车区
+            modelBuilder.Entity<ParkingSpace>()
+                .HasOne(s=>s.ParkArea)
+                .WithMany(a=>a.ParkingSpaces)
+                .HasForeignKey(s=>s.ParkAreaID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);   
+            //车主和交易记录
+            modelBuilder.Entity<TransactionRecord>()
+                .HasOne(t=>t.CarOwner)
+                .WithMany()
+                .HasForeignKey(t=>t.CarOwnerID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }
