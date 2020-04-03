@@ -19,6 +19,7 @@ namespace Park.Core.Models
         public int? PriceStrategyID { get; set; }
         public PriceStrategy PriceStrategy { get; set; }
         public List<ParkingSpace> ParkingSpaces { get; set; }
+        public List<Aisle> Aisles { get; set; }
 
         public double Length { get; set; }
         public double Width { get; set; }

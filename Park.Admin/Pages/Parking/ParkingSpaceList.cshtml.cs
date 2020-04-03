@@ -17,10 +17,10 @@ using Park.Core.Service;
 
 namespace Park.Admin.Pages.Parking
 {
-   
+
     public class ParkingSpaceListModel : BaseModel
     {
-        
+
         public IEnumerable<ParkingSpace> ParkingSpaces { get; set; }
         public List<ParkArea> ParkAreas { get; set; }
 
@@ -28,35 +28,278 @@ namespace Park.Admin.Pages.Parking
 
         public async Task OnGetAsync()
         {
-            ParkAreas =await ParkDB.ParkAreas.ToListAsync();
-            if (ParkAreas.Count > 0)
-            {
-                CurrentParkAreaID = ParkAreas[0].ID;
-            }
-            ParkingSpaces =await ParkDB.ParkingSpaces.ToListAsync();
+            ParkAreas = await ParkDB.ParkAreas.ToListAsync();
+            //if (ParkAreas.Count > 0)
+            //{
+            //    CurrentParkAreaID = ParkAreas[0].ID;
+            //}
         }
 
         public async Task<IActionResult> OnPostGridParkArea_RowSelectAsync(string rowId)
         {
+            await ParkingSpaceService.ImportFromJsonAsync(ParkDB, @"[
+    {
+        ""Name"":""停车场"",
+        ""Width"":135,
+        ""Length"":55,
+        ""ParkingSpaces"":[
+            {
+                ""ID"":0,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":3.5,
+                ""Y"":8.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":0
+            },
+            {
+                ""ID"":1,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":9,
+                ""Y"":9.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":0
+            },
+            {
+                ""ID"":2,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":14,
+                ""Y"":12.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":0
+            },
+            {
+                ""ID"":3,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":9,
+                ""Y"":19.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":45
+            },
+            {
+                ""ID"":4,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":27.5,
+                ""Y"":25,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":-30
+            },
+            {
+                ""ID"":5,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":36.5,
+                ""Y"":6.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":45
+            },
+            {
+                ""ID"":6,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":40.5,
+                ""Y"":16,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":45
+            },
+            {
+                ""ID"":7,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":36.5,
+                ""Y"":26.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":45
+            },
+            {
+                ""ID"":8,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":12.5,
+                ""Y"":28.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":45
+            },
+            {
+                ""ID"":9,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":16.5,
+                ""Y"":6.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":45
+            },
+            {
+                ""ID"":10,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":23.5,
+                ""Y"":3.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":-60
+            },
+            {
+                ""ID"":11,
+                ""Class"":null,
+                ""ParkAreaID"":0,
+                ""ParkArea"":null,
+                ""HasCar"":false,
+                ""X"":46,
+                ""Y"":9.5,
+                ""Width"":4.5,
+                ""Height"":2.5,
+                ""RotateAngle"":-60
+            }
+        ],
+        ""Aisles"":[
+            {
+                ""X1"":0,
+                ""Y1"":0,
+                ""X2"":0,
+                ""Y2"":0,
+                ""ID"":0,
+                ""Class"":null
+            },
+            {
+                ""X1"":0,
+                ""Y1"":0,
+                ""X2"":0,
+                ""Y2"":0,
+                ""ID"":1,
+                ""Class"":null
+            },
+            {
+                ""X1"":0,
+                ""Y1"":0,
+                ""X2"":0,
+                ""Y2"":0,
+                ""ID"":2,
+                ""Class"":null
+            },
+            {
+                ""X1"":0,
+                ""Y1"":0,
+                ""X2"":0,
+                ""Y2"":0,
+                ""ID"":3,
+                ""Class"":null
+            },
+            {
+                ""X1"":0,
+                ""Y1"":0,
+                ""X2"":0,
+                ""Y2"":0,
+                ""ID"":4,
+                ""Class"":null
+            },
+            {
+                ""X1"":0,
+                ""Y1"":0,
+                ""X2"":0,
+                ""Y2"":0,
+                ""ID"":5,
+                ""Class"":null
+            },
+            {
+                ""X1"":0,
+                ""Y1"":0,
+                ""X2"":0,
+                ""Y2"":0,
+                ""ID"":6,
+                ""Class"":null
+            },
+            {
+                ""X1"":29,
+                ""Y1"":9,
+                ""X2"":36,
+                ""Y2"":23,
+                ""ID"":7,
+                ""Class"":null
+            },
+            {
+                ""X1"":23,
+                ""Y1"":25.5,
+                ""X2"":23,
+                ""Y2"":12,
+                ""ID"":8,
+                ""Class"":null
+            },
+            {
+                ""X1"":7,
+                ""Y1"":3,
+                ""X2"":18,
+                ""Y2"":16.5,
+                ""ID"":9,
+                ""Class"":null
+            },
+            {
+                ""X1"":14,
+                ""Y1"":24.5,
+                ""X2"":33.5,
+                ""Y2"":13,
+                ""ID"":10,
+                ""Class"":null
+            }
+        ]
+    }
+]");
             int id = int.Parse(rowId);
-            ParkArea parkArea = ParkDB.ParkAreas.Find(id);
+            //ParkArea parkArea =await ParkDB.ParkAreas.Include(p=>p.ParkingSpaces).SingleOrDefaultAsync(p=>p.ID==id);
+            ParkArea parkArea = await ParkDB.ParkAreas.Include(p => p.ParkingSpaces).FirstAsync();
             ParkingSpaces = parkArea.ParkingSpaces;
             UIHelper.Grid("grdParkingSpace").DataSource(ParkingSpaces);
 
-         var map=   ParkingSpaceService.GetMap(ParkDB, parkArea);
-            System.IO.MemoryStream ms = new MemoryStream();
+            var map = ParkingSpaceService.GetMap(ParkDB, parkArea);
+            MemoryStream ms = new MemoryStream();
             map.Save(ms, ImageFormat.Png);
             byte[] byteImage = ms.ToArray();
             var SigBase64 = Convert.ToBase64String(byteImage);
 
-            UIHelper.Image("imgMap").ImageUrl("data:image/png;base64,"+ SigBase64);
+            UIHelper.Image("imgMap").ImageUrl("data:image/png;base64," + SigBase64);
 
             return UIHelper.Result();
         }
 
 
 
-        private async Task<IEnumerable<ParkingSpace>> ParkingSpaceList_GetDataAsync( )
+        private async Task<IEnumerable<ParkingSpace>> ParkingSpaceList_GetDataAsync()
         {
             IQueryable<ParkingSpace> q = ParkDB.ParkingSpaces;
 
@@ -152,7 +395,7 @@ namespace Park.Admin.Pages.Parking
                 PageSize = ddlGridPageSize
             };
 
-            var users = await ParkingSpaceList_GetDataAsync( );
+            var users = await ParkingSpaceList_GetDataAsync();
             // 1. 设置总项数
             grid1UI.RecordCount(pagingInfo.RecordCount);
             // 2. 设置每页显示项数
@@ -166,7 +409,7 @@ namespace Park.Admin.Pages.Parking
             return UIHelper.Result();
         }
 
-        public async Task<IActionResult> OnPostBtnSubmit_Click(string[] Grid1_fields, JArray Grid1_modifiedData,  int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
+        public async Task<IActionResult> OnPostBtnSubmit_Click(string[] Grid1_fields, JArray Grid1_modifiedData, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
             string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
         {
 

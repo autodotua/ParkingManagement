@@ -3,7 +3,18 @@
 @{
     ViewData["Title"] = "停车场设计";
 }
-
+@section head{ 
+<style>
+    #imgMap img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        border: 2px solid red ;
+        border-radius:2px
+    }
+</style>
+}
 
 @section body {
     <f:Panel ID="OutPanel" BodyPadding="5" ShowBorder="false" Layout="Region" ShowHeader="false" Title="用户管理" IsViewPort="true">
@@ -26,7 +37,7 @@
                         </Listeners>
                     </f:Grid>
                     <f:Grid ID="grdParkingSpace" BoxFlex="2" ShowBorder="true" ShowHeader="false"
-                            DataIDField="ID" DataTextField="Username"
+                            DataIDField="ID" 
                             DataSource="@Model.ParkingSpaces"
                             OnSort="@Url.Handler("ParkingSpaceList_DoPostBack")" OnSortFields="Panel1"
                             OnPageIndexChanged="@Url.Handler("ParkingSpaceList_DoPostBack")" OnPageIndexChangedFields="Panel1">

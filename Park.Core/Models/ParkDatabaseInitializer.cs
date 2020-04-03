@@ -13,7 +13,9 @@ namespace Park.Core.Models
             bool addTestCarDatas = true)
         {
             if (!context.Database.EnsureCreated())
-            { return; }
+            {
+                return;
+            }
 
 
             Random r = new Random();
@@ -45,18 +47,27 @@ namespace Park.Core.Models
                 {
                     ParkArea parkArea = new ParkArea()
                     {
-                        Name = "停车场"+(i+1),
+                        Name = "停车场" + (i + 1),
                         PriceStrategy = priceStrategy,
-                        Length=100,
-                        Width=50
+                        Length = 100,
+                        Width = 50
                     };
                     context.ParkAreas.Add(parkArea);
-                    for (int j = 0; j < r.Next(50,100); j++)
+                    for (int j = 0; j < r.Next(50, 100); j++)
                     {
-                        context.ParkingSpaces.Add(new ParkingSpace() { ParkArea = parkArea });
+                        context.ParkingSpaces.Add(new ParkingSpace()
+                        {
+                            ParkArea = parkArea,
+                            X = r.Next(0, 50),
+                            Y = r.Next(0, 50),
+                            Width = 5,
+                            Height = 2.5,
+                            RotateAngle = r.Next(0, 90)
+                        });
                     }
                 }
                 context.SaveChanges();
+                var a = context.ParkAreas.First().ParkingSpaces;
             }
 
 
@@ -71,7 +82,7 @@ namespace Park.Core.Models
                     };
                     context.CarOwners.Add(owner);
 
-                    for (int j = 0; j < r.Next(2,5); j++)//车辆
+                    for (int j = 0; j < r.Next(2, 5); j++)//车辆
                     {
                         var car = new Car()
                         {

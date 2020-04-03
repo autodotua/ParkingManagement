@@ -17,5 +17,9 @@ namespace Park.Core.Models
         [StringLength(50)]
         [Required]
         public string Class { get; set; } = "";
+        [Display(Name = "停车区")]
+        [Required]
+        public int ParkAreaID { get; set; }
+        public ParkArea ParkArea { get; set; }
     }
 }

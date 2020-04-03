@@ -19,6 +19,7 @@ namespace Park.Core.Models
         public DbSet<CarOwner> CarOwners { get; set; }
         public DbSet<ParkArea> ParkAreas { get; set; }
         public DbSet<ParkingSpace> ParkingSpaces { get; set; }
+        public DbSet<Aisle> Aisles { get; set; }
         public DbSet<ParkRecord> ParkRecords { get; set; }
         public DbSet<TransactionRecord> TransactionRecords { get; set; }
         public DbSet<PriceStrategy> PriceStrategys { get; set; }
@@ -44,23 +45,31 @@ namespace Park.Core.Models
 
             //停车区和停车策略
             modelBuilder.Entity<ParkArea>()
-                .HasOne(a=>a.PriceStrategy)
+                .HasOne(a => a.PriceStrategy)
                 .WithMany()
-                .HasForeignKey(a=>a.PriceStrategyID)
+                .HasForeignKey(a => a.PriceStrategyID)
                 .OnDelete(DeleteBehavior.Cascade);
 
             //停车位和停车区
             modelBuilder.Entity<ParkingSpace>()
-                .HasOne(s=>s.ParkArea)
-                .WithMany(a=>a.ParkingSpaces)
-                .HasForeignKey(s=>s.ParkAreaID)
+                .HasOne(s => s.ParkArea)
+                .WithMany(a => a.ParkingSpaces)
+                .HasForeignKey(s => s.ParkAreaID)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);   
+                .OnDelete(DeleteBehavior.Cascade);
+            //停车区和过道
+            modelBuilder.Entity<Aisle>()
+                .HasOne(a => a.ParkArea)
+                .WithMany(a => a.Aisles)
+                .HasForeignKey(s => s.ParkAreaID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
             //车主和交易记录
             modelBuilder.Entity<TransactionRecord>()
-                .HasOne(t=>t.CarOwner)
+                .HasOne(t => t.CarOwner)
                 .WithMany()
-                .HasForeignKey(t=>t.CarOwnerID)
+                .HasForeignKey(t => t.CarOwnerID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }
