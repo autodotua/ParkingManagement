@@ -2,7 +2,7 @@
 
 namespace Park.Core.Models
 {
-    public class PriceStrategy
+    public class PriceStrategy:IDbModel
     {
         [Key]
         public int ID { get; set; }

@@ -7,10 +7,16 @@ namespace Park.Core.Models
     /// <summary>
     /// 停车记录
     /// </summary>
-    public class ParkRecord
+    public class ParkRecord : IDbModel
     {
         [Key]
         public int ID { get; set; }
+
+        public ParkArea ParkArea { get; set; }
+        [Display(Name = "停车区")]
+        [Required]
+        public int ParkAreaID { get; set; }
+
         [Display(Name = "车")]
         [Required]
         public Car Car { get; set; }

@@ -6,7 +6,7 @@ namespace Park.Core.Models
     /// <summary>
     /// 停车区
     /// </summary>
-    public class ParkArea
+    public class ParkArea : IDbModel
     {
         [Key]
         public int ID { get; set; }

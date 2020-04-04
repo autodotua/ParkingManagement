@@ -4,12 +4,8 @@ using System.Text;
 
 namespace Park.Core.Models
 {
-    public interface IParkObject
+    public interface IParkObject:IDbModel
     {
-        /// <summary>
-        /// 序号
-        /// </summary>
-        public int ID { get; set; }
         /// <summary>
         /// 分类
         /// </summary>

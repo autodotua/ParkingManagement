@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Park.Core.Models
 {
-    public class Car
+    public class Car:IDbModel
     {
         [Key]
         public int ID { get; set; }

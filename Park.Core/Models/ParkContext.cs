@@ -68,10 +68,19 @@ namespace Park.Core.Models
             //车主和交易记录
             modelBuilder.Entity<TransactionRecord>()
                 .HasOne(t => t.CarOwner)
-                .WithMany()
+                .WithMany(o=>o.TransactionRecords)
                 .HasForeignKey(t => t.CarOwnerID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //停车区和停车记录
+            modelBuilder.Entity<ParkRecord>()
+                .HasOne(r=>r.ParkArea)
+                .WithMany()
+                .HasForeignKey(r=>r.ParkAreaID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
     }

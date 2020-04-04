@@ -14,48 +14,36 @@ using Park.Core.Service;
 
 namespace Park.Admin.Pages.People
 {
-    public class ExtendCarOwners : CarOwner
+    public class ExtendCarOwner : CarOwner
     {
-        public ExtendCarOwners()
+        public ExtendCarOwner()
         {
         }
         [Display(Name = "余额")]
         public double Balance { get; set; }
 
-        public async Task<ExtendCarOwners> Apply(CarOwner owner, ParkContext db)
+        public async Task<ExtendCarOwner> Apply(CarOwner owner, ParkContext db)
         {
             ID = owner.ID;
             Enabled = owner.Enabled;
             Password = owner.Password;
             Username = owner.Username;
             IsFree = owner.IsFree;
+            Cars = owner.Cars;
+            TransactionRecords = owner.TransactionRecords;
             Balance = await TransactionService.GetBalanceAsync(db, owner);
             return this;
         }
     }
-    public class CarOwnerListModel : BaseModel
+    public class CarOwnerListModel : GridBaseModel<CarOwner>
     {
-        public IEnumerable<ExtendCarOwners> CarOwners { get; set; }
+        public IEnumerable<ExtendCarOwner> CarOwners { get; set; }
 
-        public PagingInfoViewModel PagingInfo { get; set; }
 
-        public bool PowerCoreUserNew { get; set; }
-        public bool PowerCoreUserEdit { get; set; }
-        public bool PowerCoreUserDelete { get; set; }
-        public bool PowerCoreUserChangePassword { get; set; }
+        public override DbSet<CarOwner> DbSets => ParkDB.CarOwners;
 
         public async Task OnGetAsync()
         {
-            await UserList_LoadDataAsync();
-        }
-
-        private async Task UserList_LoadDataAsync()
-        {
-            PowerCoreUserNew = CheckPower("CoreUserNew");
-            PowerCoreUserEdit = CheckPower("CoreUserEdit");
-            PowerCoreUserDelete = CheckPower("CoreUserDelete");
-            PowerCoreUserChangePassword = CheckPower("CoreUserChangePassword");
-
             var pagingInfo = new PagingInfoViewModel
             {
                 SortField = "Username",
@@ -66,10 +54,12 @@ namespace Park.Admin.Pages.People
 
             PagingInfo = pagingInfo;
 
-            CarOwners = await UserList_GetDataAsync(pagingInfo, string.Empty);
+            CarOwners = (await GetDataAsync(pagingInfo, string.Empty)).Cast<ExtendCarOwner>();
         }
 
-        private async Task<IEnumerable<ExtendCarOwners>> UserList_GetDataAsync(PagingInfoViewModel pagingInfo, string ttbSearchMessage)
+    
+
+        protected override async Task<IEnumerable<CarOwner>> GetDataAsync(PagingInfoViewModel pagingInfo, string ttbSearchMessage)
         {
             IQueryable<CarOwner> q = ParkDB.CarOwners;
 
@@ -84,12 +74,7 @@ namespace Park.Admin.Pages.People
                 q = q.Where(u => u.Username != "admin");
             }
 
-            // 过滤启用状态
-            //if (rblEnableStatus != "all")
-            //{
-            //    q = q.Where(u => u.Enabled == (rblEnableStatus == "enabled" ? true : false));
-            //}
-
+        
 
             // 获取总记录数（在添加条件之后，排序和分页之前）
             pagingInfo.RecordCount = await q.CountAsync();
@@ -97,10 +82,11 @@ namespace Park.Admin.Pages.People
             // 排列和数据库分页
             q = SortAndPage(q, pagingInfo);
 
-            return (await q.ToListAsync()).Select(p => new ExtendCarOwners().Apply(p, ParkDB).Result);
+            return (await q.Include(p=>p.TransactionRecords).Include(p=>p.Cars).ToListAsync())
+                .Select(p => new ExtendCarOwner().Apply(p, ParkDB).Result);
         }
 
-        public async Task<IActionResult> OnPostUserList_DoPostBackAsync(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
+        public async Task<IActionResult> OnPostCarOwnerList_DoPostBackAsync(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
             string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
         {
             List<int> ids = new List<int>();
@@ -177,59 +163,72 @@ namespace Park.Admin.Pages.People
             return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
         }
 
-        private async Task<IActionResult> LoadGrid(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection, string ttbSearchMessage, int ddlGridPageSize, string actionType)
+        protected async override Task OtherPostBackAsync(string actionType,List<int> ids)
         {
-            var grid1UI = UIHelper.Grid("Grid1");
-            var pagingInfo = new PagingInfoViewModel
+            if (actionType == "pswd")
             {
-                SortField = Grid1_sortField,
-                SortDirection = Grid1_sortDirection,
-                PageIndex = Grid1_pageIndex,
-                PageSize = ddlGridPageSize
-            };
-
-            var users = await UserList_GetDataAsync(pagingInfo, ttbSearchMessage);
-            // 1. 设置总项数
-            grid1UI.RecordCount(pagingInfo.RecordCount);
-            // 2. 设置每页显示项数
-            if (actionType == "changeGridPageSize")
-            {
-                grid1UI.PageSize(ddlGridPageSize);
-            }
-            // 3.设置分页数据
-            grid1UI.DataSource(users, Grid1_fields);
-
-            return UIHelper.Result();
-        }
-
-        public async Task<IActionResult> OnPostBtnSubmit_Click(string[] Grid1_fields, JArray Grid1_modifiedData,  int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
-            string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
-        {
-
-            var a = Grid1_modifiedData.ToString();
-            foreach (JObject modifiedRow in Grid1_modifiedData)
-            {
-                string status = modifiedRow.Value<string>("status");
-                int rowId = Convert.ToInt32(modifiedRow.Value<string>("id"));
-
-                if (status == "modified")
+                foreach (var owner in ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList())
                 {
-                    var owner = ParkDB.CarOwners.Find(rowId);
-                    owner.Enabled = modifiedRow["values"]["Enabled"].Value<bool>();
-                    ParkDB.Entry(owner).State = EntityState.Modified;
+                    await CarOwnerService.SetPasswordAsync(ParkDB, owner, "123456");
                 }
+                ShowNotify("已重设密码为123456");
+                await DB.SaveChangesAsync();
             }
-            await ParkDB.SaveChangesAsync();
-            //UIHelper.Grid("Grid1").DataSource(source, Grid1_fields);
-            //UIHelper.Label("labResult").Text(String.Format("用户修改的数据：<pre>{0}</pre>", Grid1_modifiedData.ToString(Newtonsoft.Json.Formatting.Indented)), false);
-            ShowNotify("数据保存成功！");
-
-            return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
-
-
-
-            //return UIHelper.Result();
         }
+
+        //private async Task<IActionResult> LoadGrid(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection, string ttbSearchMessage, int ddlGridPageSize, string actionType)
+        //{
+        //    var grid1UI = UIHelper.Grid("Grid1");
+        //    var pagingInfo = new PagingInfoViewModel
+        //    {
+        //        SortField = Grid1_sortField,
+        //        SortDirection = Grid1_sortDirection,
+        //        PageIndex = Grid1_pageIndex,
+        //        PageSize = ddlGridPageSize
+        //    };
+
+        //    var users = await GetDataAsync(pagingInfo, ttbSearchMessage);
+        //    // 1. 设置总项数
+        //    grid1UI.RecordCount(pagingInfo.RecordCount);
+        //    // 2. 设置每页显示项数
+        //    if (actionType == "changeGridPageSize")
+        //    {
+        //        grid1UI.PageSize(ddlGridPageSize);
+        //    }
+        //    // 3.设置分页数据
+        //    grid1UI.DataSource(users, Grid1_fields);
+
+        //    return UIHelper.Result();
+        //}
+
+        //public async Task<IActionResult> OnPostBtnSubmit_Click(string[] Grid1_fields, JArray Grid1_modifiedData,  int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
+        //    string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
+        //{
+
+        //    var a = Grid1_modifiedData.ToString();
+        //    foreach (JObject modifiedRow in Grid1_modifiedData)
+        //    {
+        //        string status = modifiedRow.Value<string>("status");
+        //        int rowId = Convert.ToInt32(modifiedRow.Value<string>("id"));
+
+        //        if (status == "modified")
+        //        {
+        //            var owner = ParkDB.CarOwners.Find(rowId);
+        //            owner.Enabled = modifiedRow["values"]["Enabled"].Value<bool>();
+        //            ParkDB.Entry(owner).State = EntityState.Modified;
+        //        }
+        //    }
+        //    await ParkDB.SaveChangesAsync();
+        //    //UIHelper.Grid("Grid1").DataSource(source, Grid1_fields);
+        //    //UIHelper.Label("labResult").Text(String.Format("用户修改的数据：<pre>{0}</pre>", Grid1_modifiedData.ToString(Newtonsoft.Json.Formatting.Indented)), false);
+        //    ShowNotify("数据保存成功！");
+
+        //    return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
+
+
+
+        //    //return UIHelper.Result();
+        //}
 
     }
 }

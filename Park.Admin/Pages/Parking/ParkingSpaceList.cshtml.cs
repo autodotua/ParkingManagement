@@ -343,24 +343,11 @@ namespace Park.Admin.Pages.Parking
             }
             else if (actionType == "enable")
             {
-                // 在操作之前进行权限检查
-                if (!CheckPower("CoreUserEdit"))
-                {
-                    CheckPowerFailWithAlert();
-                    return UIHelper.Result();
-                }
-
                 ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList().ForEach(u => u.Enabled = true);
                 await DB.SaveChangesAsync();
             }
             else if (actionType == "pswd")
             {
-                if (!CheckPower("CoreUserEdit"))
-                {
-                    CheckPowerFailWithAlert();
-                    return UIHelper.Result();
-                }
-
                 foreach (var owner in ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList())
                 {
                     await CarOwnerService.SetPasswordAsync(ParkDB, owner, "123456");

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Park.Core.Models
 {
-    public class CarOwner
+    public class CarOwner:IDbModel
     {
         [Key]
         public int ID { get; set; }
@@ -27,6 +27,8 @@ namespace Park.Core.Models
         [Required]
         public bool Enabled { get; set; } = true;
         public List<Car> Cars { get; set; }
+
+        public List<TransactionRecord> TransactionRecords { get; set; }
     }
    
 }
