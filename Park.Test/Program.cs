@@ -17,7 +17,7 @@ namespace Park.Test
             {
                 db = new Context();
                 db.Database.EnsureDeleted();
-                ParkDatabaseInitializer.Initialize(db, true, true);
+                ParkDatabaseInitializer.InitializeAsync(db, true, true);
                 db.Remove(await db.CarOwners.FirstAsync());
                 //Console.WriteLine(await db.ParkRecords.CountAsync());
                 //await TestTempCarOwnerEnterAndLeaveAsync();

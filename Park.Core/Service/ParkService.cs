@@ -33,6 +33,7 @@ namespace Park.Core.Service
             {
                 Car = car,
                 EnterTime = DateTime.Now,
+                ParkArea=parkArea
             };
             db.ParkRecords.Add(parkRecord);
             await db.SaveChangesAsync();

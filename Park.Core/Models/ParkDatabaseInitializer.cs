@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Park.Core.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 
@@ -8,7 +11,7 @@ namespace Park.Core.Models
 {
     public static class ParkDatabaseInitializer
     {
-        public static void Initialize(ParkContext context,
+        public async static Task InitializeAsync(ParkContext context,
             bool addTestParkAreaDatas = true,
             bool addTestCarDatas = true)
         {
@@ -17,7 +20,7 @@ namespace Park.Core.Models
                 return;
             }
 
-
+            List<ParkArea> parkAreas = new List<ParkArea>();
             Random r = new Random();
             if (addTestParkAreaDatas)
             {
@@ -43,6 +46,7 @@ namespace Park.Core.Models
                     MonthlyPrice = 120
                 };
                 context.PriceStrategys.Add(priceStrategy);
+
                 for (int i = 0; i < 3; i++)
                 {
                     ParkArea parkArea = new ParkArea()
@@ -52,6 +56,7 @@ namespace Park.Core.Models
                         Length = 100,
                         Width = 50
                     };
+                    parkAreas.Add(parkArea);
                     context.ParkAreas.Add(parkArea);
                     for (int j = 0; j < r.Next(50, 100); j++)
                     {
@@ -81,7 +86,10 @@ namespace Park.Core.Models
                         Password = "1234",
                     };
                     context.CarOwners.Add(owner);
-
+                    for(int j=0;j<3;j++)//充值
+                    {
+                       await TransactionService.RechargeMoneyAsync(context, owner, r.Next(2, 20));
+                    }
                     for (int j = 0; j < r.Next(2, 5); j++)//车辆
                     {
                         var car = new Car()
@@ -93,9 +101,10 @@ namespace Park.Core.Models
                         context.SaveChanges();
                         //var a = context.Cars.FirstOrDefault().CarOwner == context.CarOwners.FirstOrDefault(); ;
 
-                        for (int k = 0; k < 5; k++)//进出场信息
+                        for (int k = 0; k < 3; k++)//进出场信息
                         {
-
+                            await ParkService.EnterAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)]);
+                            await ParkService.LeaveAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)]);
                         }
                     }
                 }
