@@ -1,147 +1,135 @@
 ﻿@page
-@model Park.Admin.Pages.Parking.ParkingSpaceListModel
+@model Park.Admin.Pages.CarAndOwner.ParkingSpaceListModel
 @{
-    ViewData["Title"] = "停车场设计";
+    ViewData["Title"] = "车主管理";
+    var PagingInfo = Model.PagingInfo;
 }
-@section head{ 
-<style>
-    #imgMap img {
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-        border: 2px solid red ;
-        border-radius:2px
-    }
-</style>
-}
-
+@using System.Diagnostics
 @section body {
-    <f:Panel ID="OutPanel" BodyPadding="5" ShowBorder="false" Layout="Region" ShowHeader="false" Title="用户管理" IsViewPort="true">
+    <style>
+        .action-btn {
+            margin-right: 12px;
+        }
+    </style>
+    <input type="hidden" id="urls" data-postback="@Url.Handler("DoPostBack")" />
+    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="VBox" ShowHeader="false" Title="用户管理" IsViewPort="true">
         <Items>
-            <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="HBox"
-                     RegionPosition="Top" RegionPercent="50%"
-                     ShowHeader="false">
-                <Items>
-                    <f:Grid ID="grdParkArea" BoxFlex="1" ShowBorder="true" ShowHeader="false" DataIDField="ID" DataTextField="Name" AllowSorting="true"
-                            DataSource="@Model.ParkAreas"
-                            OnPageIndexChanged="@Url.Handler("ParkingSpaceList_DoPostBack")" OnPageIndexChangedFields="Panel1">
-                        <Columns>
-                            <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
-                            <f:RenderField For="ParkAreas.First().Name" Width="100"></f:RenderField>
-                            <f:RenderField For="ParkAreas.First().ParkingSpaces.Count" HeaderText="停车位数量" Width="100"></f:RenderField>
+            <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true" DataIDField="ID" DataTextField="Username" AllowSorting="true"
+                    AllowPaging="true" IsDatabasePaging="true" AllowCellEditing="true"
+                    SortField="@PagingInfo.SortField" SortDirection="@PagingInfo.SortDirection"
+                    PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.ParkingSpaces"
+                    OnSort="@Url.Handler("DoPostBack")" OnSortFields="Panel1"
+                    OnPageIndexChanged="@Url.Handler("DoPostBack")" OnPageIndexChangedFields="Panel1">
+                <Columns>
+                    <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                    <f:RenderCheckField For="ParkingSpaces.First().HasCar" RenderAsStaticField="true" Width="80" />
+                    <f:RenderField For="ParkingSpaces.First().DeviceToken" SortField="DeviceToken" Width="100">
+                        <Editor>
+                            <f:TextBox ID="tbxDeviceToken" Required="true"></f:TextBox>
+                        </Editor>
+                    </f:RenderField>
 
-                        </Columns>
-                        <Listeners>
-                            <f:Listener Event="rowselect" Handler="onGrid1RowSelect"></f:Listener>
-                        </Listeners>
-                    </f:Grid>
-                    <f:Grid ID="grdParkingSpace" BoxFlex="2" ShowBorder="true" ShowHeader="false"
-                            DataIDField="ID" 
-                            DataSource="@Model.ParkingSpaces"
-                            OnSort="@Url.Handler("ParkingSpaceList_DoPostBack")" OnSortFields="Panel1"
-                            OnPageIndexChanged="@Url.Handler("ParkingSpaceList_DoPostBack")" OnPageIndexChangedFields="Panel1">
-                        <Columns>
-                            <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
-                            <f:RenderField For="ParkingSpaces.First().Class" SortField="Class" Width="100"></f:RenderField>
-                            <f:RenderCheckField For="ParkingSpaces.First().HasCar" SortField="HasCar" RenderAsStaticField="true" Width="180" />
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="240" RendererFunction="renderBtns"></f:RenderField>
 
-                        </Columns>
-                    </f:Grid>
+                </Columns>
+                <PageItems>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:ToolbarText Text="每页记录数："></f:ToolbarText>
+                    <f:DropDownList ID="ddlGridPageSize" Width="80" SelectedValue="@PagingInfo.PageSize.ToString()"
+                                    OnSelectedIndexChanged="@Url.Handler("DoPostBack")" OnSelectedIndexChangedParameter1="@(new Parameter("actionType","changeGridPageSize",ParameterMode.String))" OnSelectedIndexChangedFields="Panel1">
+                        <Items>
+                            <f:ListItem Text="10" Value="10"></f:ListItem>
+                            <f:ListItem Text="20" Value="20"></f:ListItem>
+                            <f:ListItem Text="50" Value="50"></f:ListItem>
+                            <f:ListItem Text="100" Value="100"></f:ListItem>
+                        </Items>
+                    </f:DropDownList>
+                </PageItems>
+                <Toolbars>
+                    <f:Toolbar ID="Toolbar1" Position="Top">
+                        <Items>
 
-                </Items>
-            </f:Panel>
-            <f:Panel ID="Panel2" BodyPadding="5" ShowBorder="false" Layout="HBox"
-                     RegionPosition="Bottom" RegionPercent="50%"
-                     ShowHeader="false">
-                <Items>
-                    <f:Image ID="imgMap"></f:Image>
-                </Items>
-            </f:Panel>
+                            <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="搜索" Trigger1Icon="Clear" Trigger2Icon="Search"
+                                              ShowTrigger1="false" OnTrigger2Click="@Url.Handler("DoPostBack")" OnTrigger2ClickParameter1="@(new Parameter("actionType","trigger2",ParameterMode.String))" OnTrigger2ClickFields="Panel1"
+                                              OnTrigger1Click="@Url.Handler("DoPostBack")" OnTrigger1ClickParameter1="@(new Parameter("actionType","trigger1",ParameterMode.String))" OnTrigger1ClickFields="Panel1">
+                            </f:TwinTriggerBox>
+                            <f:ToolbarFill></f:ToolbarFill>
+                            <f:Button ID="btnDeletedSelected" Icon="Delete" Text="删除选中记录" AttributeDataTag="@Url.Handler("DoPostBack")" data-url="@Url.Handler("DoPostBack")">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onDeleteSelectedClick"></f:Listener>
+                                </Listeners>
+                            </f:Button>
+                            <f:Button ID="btnNew" Icon="Add" Text="新增用户">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onNewClick"></f:Listener>
+                                </Listeners>
+                            </f:Button>
+                            <f:Button ID="btnSubmit" Text="保存数据" OnClick="@Url.Handler("SaveData")" OnClickFields="Grid1"></f:Button>
 
+                        </Items>
+                    </f:Toolbar>
+                </Toolbars>
+            </f:Grid>
         </Items>
     </f:Panel>
 
+    @*<f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+                  EnableMaximize="true" EnableIFrame="true" Width="900" Height="600"
+                  OnClose="@Url.Handler("UserList_DoPostBack")" OnCloseFields="Panel1">
+        </f:Window>*@
 }
 
 @section script{
-
+    <script src="~/res/js/grid.js"></script>
     <script>
-            function doPostBack(rowId, isDeselect) {
 
-            var grd = F.ui.grdParkArea;
-                var rowData = grd.getRowData(rowId);
-                var column = grd.getColumn(grd.getSelectedCell()[1]);
 
-            // 触发后台事件
-            F.doPostBack('@Url.Handler("GridParkArea_RowSelect")', {
-                rowId: rowData.id,
-                //rowText: rowData.text,
-                //rowIndex: rowData.index,
-                //columnText: column.text,
-                //isDeselect: !!isDeselect
-            });
-        }
 
-        function onGrid1RowSelect(event, rowId) {
-            doPostBack(rowId);
-        }
     function onNewClick(event) {
-        F.ui.Window1.show('@Url.Content("~/Admin/UserNew")', '新增');
+        //F.ui.Window1.show('@Url.Content("~/Admin/UserNew")', '新增');
     }
+        function renderCars(value, params) {
+            return renderButtons([{ class: "car", text: value+" 辆" }]);
+        } function renderTransactions(value, params) {
 
-    function renderActionDelete(value, params) {
-        var imageUrl = '@Url.Content("~/res/icon/delete.png")';
-        var disabledCls = coreUserDelete ? '' : ' f-state-disabled';
-        return '<a class="action-btn delete'+ disabledCls +'" href="javascript:;">删除</a>';
+            return renderButtons([{ class: "tra", text: value + " 笔" }]);
     }
-
-    function onDeleteSelectedClick(event) {
-        var grid1 = F.ui.Grid1;
-
-        if (!grid1.hasSelection()) {
-            F.alert('请至少选择一项！');
-            return;
-        }
-
-        var selectedRows = grid1.getSelectedRows();
+        function renderBtns(value, params) {
+            return renderButtons([{ class: "password", text: "重置密码" },
+                { class: "delete", text: "删除" }]);
     }
 
 
-
-        F.ready(function () {
-
-            var grid1 = F.ui.grdParkingSpace;
-            grid1.el.on('click', 'a.action-btn', function (event) {
-                var cnode = $(this);
-                var rowData = grid1.getRowData(cnode.closest('.f-grid-row'));
-
-                // 是否禁用
-                if(cnode.hasClass('f-state-disabled')) {
-                    return;
-                }
-
-                if (cnode.hasClass('delete')) {
+        function otherActionButtonActions(cnode, rowData) {
+                if (cnode.hasClass('password')) {
                     F.confirm({
-                        message: '确定删除此记录？',
+                        message: '是否重置密码？',
                         target: '_top',
                         ok: function () {
                             // 触发后台事件
-                            F.doPostBack('@Url.Handler("ParkingSpaceList_DoPostBack")', 'Panel1', {
-                            actionType: 'delete',
-                            deletedRowIDs: [rowData.id]
-                        });
-                    }
+                            F.doPostBack('@Url.Handler("DoPostBack")', 'Panel1', {
+                                actionType: 'pswd',
+                                deletedRowIDs: [rowData.id]
+                            });
+                        }
+                    });
+            }
+          else  if (cnode.hasClass('car')) {
+                parent.addExampleTab({
+                    id: 'car_withOwner',
+                    iframeUrl: '@Url.Content("~/CarAndOwner/CarList")?carOwnerID=' + rowData.id,
+                    title: '车辆管理 - ' + rowData.text,
+                    refreshWhenExist: true
                 });
-                }
-                @*else if (cnode.hasClass('edit')) {
-                F.ui.Window1.show('@Url.Content("~/Admin/UserEdit?id=")' + rowData.id, '编辑');
-            } else if (cnode.hasClass('view')) {
-                F.ui.Window1.show('@Url.Content("~/Admin/UserView?id=")' + rowData.id, '查看');
-                }*@
-        });
-
-    });
+                } else if (cnode.hasClass('tra')) {
+                parent.addExampleTab({
+                    id: 'transactionRecord_withOwner',
+                    iframeUrl: '@Url.Content("~/CarAndOwner/TransactionRecordList")?carOwnerID=' + rowData.id,
+                    title: '交易记录 - ' + rowData.text,
+                    refreshWhenExist: true
+                });
+            }
+        }
 
     </script>
 }

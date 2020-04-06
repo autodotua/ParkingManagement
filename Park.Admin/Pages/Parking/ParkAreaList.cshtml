@@ -129,8 +129,8 @@
            if (cnode.hasClass('record')) {
                 parent.addExampleTab({
                     id: 'parkRecord_withCar',
-                    iframeUrl: '@Url.Content("~/People/ParkRecordList")?carID=' + rowData.id,
-                    title: '停车记录 - ' + rowData.text,
+                    iframeUrl: '@Url.Content("~/Parking/ParkingSpaceList")?parkAreaID=' + rowData.id,
+                    title: '停车位表 - ' + rowData.text,
                     refreshWhenExist: true
                 });
             }

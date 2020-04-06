@@ -1,0 +1,38 @@
+﻿@page
+@model Park.Admin.Pages.SimulateModel
+@{
+    ViewData["Title"] = "模拟";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true" Layout="VBox">
+        <Items>
+            <f:Button Text="测试">
+                <Listeners>
+                    <f:Listener Event="click" Handler="test"></f:Listener>
+                </Listeners>
+            </f:Button>
+        </Items>
+    </f:Panel>
+
+}
+
+@section script{
+    <script>
+        function test() {
+            $.ajax({
+                url: "http://localhost:8520/Park/GetOhh",
+                success: data => {
+                    console.log(data);
+                },
+                error: (e1, e2, e3) => {
+                    console.log(e1);
+                }
+            })
+            console.log("test");
+        }
+    </script>
+}
+
+

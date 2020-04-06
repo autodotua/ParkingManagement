@@ -201,34 +201,27 @@ namespace Park.Admin.Pages.CarAndOwner
         //    return UIHelper.Result();
         //}
 
-        //public async Task<IActionResult> OnPostBtnSubmit_Click(string[] Grid1_fields, JArray Grid1_modifiedData,  int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
-        //    string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
-        //{
+        public async Task<IActionResult> OnPostSaveDataAsync(string[] Grid1_fields, JArray Grid1_modifiedData, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
+            string ttbSearchMessage, int ddlGridPageSize, string actionType)
+        {
 
-        //    var a = Grid1_modifiedData.ToString();
-        //    foreach (JObject modifiedRow in Grid1_modifiedData)
-        //    {
-        //        string status = modifiedRow.Value<string>("status");
-        //        int rowId = Convert.ToInt32(modifiedRow.Value<string>("id"));
+            foreach (JObject modifiedRow in Grid1_modifiedData)
+            {
+                string status = modifiedRow.Value<string>("status");
+                int rowId = Convert.ToInt32(modifiedRow.Value<string>("id"));
 
-        //        if (status == "modified")
-        //        {
-        //            var owner = ParkDB.CarOwners.Find(rowId);
-        //            owner.Enabled = modifiedRow["values"]["Enabled"].Value<bool>();
-        //            ParkDB.Entry(owner).State = EntityState.Modified;
-        //        }
-        //    }
-        //    await ParkDB.SaveChangesAsync();
-        //    //UIHelper.Grid("Grid1").DataSource(source, Grid1_fields);
-        //    //UIHelper.Label("labResult").Text(String.Format("用户修改的数据：<pre>{0}</pre>", Grid1_modifiedData.ToString(Newtonsoft.Json.Formatting.Indented)), false);
-        //    ShowNotify("数据保存成功！");
+                if (status == "modified")
+                {
+                    var owner = ParkDB.CarOwners.Find(rowId);
+                    owner.Enabled = modifiedRow["values"]["Enabled"].Value<bool>();
+                    ParkDB.Entry(owner).State = EntityState.Modified;
+                }
+            }
+            await ParkDB.SaveChangesAsync();
+            ShowNotify("数据保存成功！");
 
-        //    return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
-
-
-
-        //    //return UIHelper.Result();
-        //}
+            return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
+        }
 
     }
 }
