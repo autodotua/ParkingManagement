@@ -24,6 +24,8 @@ namespace Park.Core.Models
         public double Width { get; set; }
         public double Height { get; set; }
         public double RotateAngle { get; set; }
+        [Display(Name = "传感器的token")]
+        public string DeviceToken { get; set; }
     }
 
 

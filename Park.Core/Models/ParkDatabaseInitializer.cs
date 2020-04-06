@@ -49,30 +49,33 @@ namespace Park.Core.Models
 
                 for (int i = 0; i < 3; i++)
                 {
-                    ParkArea parkArea = new ParkArea()
-                    {
-                        Name = "停车场" + (i + 1),
-                        PriceStrategy = priceStrategy,
-                        Length = 100,
-                        Width = 50
-                    };
-                    parkAreas.Add(parkArea);
-                    context.ParkAreas.Add(parkArea);
-                    for (int j = 0; j < r.Next(50, 100); j++)
-                    {
-                        context.ParkingSpaces.Add(new ParkingSpace()
-                        {
-                            ParkArea = parkArea,
-                            X = r.Next(0, 50),
-                            Y = r.Next(0, 50),
-                            Width = 5,
-                            Height = 2.5,
-                            RotateAngle = r.Next(0, 90)
-                        });
-                    }
+                    await ParkingSpaceService.ImportFromJsonAsync(context, parkAreaJson.Replace("停车场","停车场"+r.Next(0,10000)));
                 }
-                context.SaveChanges();
-                var a = context.ParkAreas.First().ParkingSpaces;
+                //ParkArea parkArea = new ParkArea()
+                //{
+                //    Name = "停车场" + (i + 1),
+                //    PriceStrategy = priceStrategy,
+                //    Length = 100,
+                //    Width = 50
+                //};
+                //    context.ParkAreas.Add(parkArea);
+                //    for (int j = 0; j < r.Next(50, 100); j++)
+                //    {
+                //        context.ParkingSpaces.Add(new ParkingSpace()
+                //        {
+                //            ParkArea = parkArea,
+                //            X = r.Next(0, 50),
+                //            Y = r.Next(0, 50),
+                //            Width = 5,
+                //            Height = 2.5,
+                //            RotateAngle = r.Next(0, 90)
+                //        });
+                //    }
+                //}
+                //context.SaveChanges();
+                //var a = context.ParkAreas.First().ParkingSpaces;
+
+                parkAreas = await context.ParkAreas.ToListAsync();
             }
 
 
@@ -113,6 +116,8 @@ namespace Park.Core.Models
             }
         }
 
-
+        private static string parkAreaJson = @"
+[{""Name"":""停车场"",""Width"":20,""Length"":40,""ParkingSpaces"":[{""ID"":0,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":10.0,""Y"":4.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":1,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":10.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":2,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":13.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":3,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":16.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":4,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":19.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":5,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":22.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":6,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":25.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":7,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":25.0,""Y"":4.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":8,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":22.0,""Y"":4.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":9,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":13.0,""Y"":4.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":10,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":16.0,""Y"":4.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":11,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":19.0,""Y"":4.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":90.0,""DeviceToken"":null},{""ID"":12,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":31.0,""Y"":3.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":0.0,""DeviceToken"":null},{""ID"":13,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":7.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":-90.0,""DeviceToken"":null},{""ID"":14,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null,""HasCar"":false,""X"":4.0,""Y"":13.0,""Width"":4.5,""Height"":2.5,""RotateAngle"":-90.0,""DeviceToken"":null}],""Aisles"":[{""X1"":1.5,""Y1"":5.5,""X2"":9.0,""Y2"":5.5,""ID"":0,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":8.0,""Y1"":5.5,""X2"":8.0,""Y2"":10.0,""ID"":1,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":7.0,""Y1"":10.0,""X2"":30.5,""Y2"":10.0,""ID"":2,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":29.5,""Y1"":10.0,""X2"":29.5,""Y2"":3.5,""ID"":3,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null}],""Walls"":[{""X1"":3.0,""Y1"":2.0,""X2"":38.0,""Y2"":2.0,""ID"":0,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":30.5,""Y1"":17.5,""X2"":3.0,""Y2"":17.5,""ID"":5,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":4.0,""Y1"":17.5,""X2"":4.0,""Y2"":8.5,""ID"":6,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":32.0,""Y1"":8.0,""X2"":32.0,""Y2"":18.5,""ID"":12,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":32.0,""Y1"":17.5,""X2"":3.0,""Y2"":17.5,""ID"":14,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":33.0,""Y1"":17.5,""X2"":3.0,""Y2"":17.5,""ID"":18,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":31.0,""Y1"":8.0,""X2"":38.0,""Y2"":8.0,""ID"":19,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null},{""X1"":37.0,""Y1"":2.0,""X2"":37.0,""Y2"":8.0,""ID"":20,""Class"":"""",""ParkAreaID"":0,""ParkArea"":null}],""ID"":0,""PriceStrategyID"":null,""PriceStrategy"":null}]
+";
     }
 }

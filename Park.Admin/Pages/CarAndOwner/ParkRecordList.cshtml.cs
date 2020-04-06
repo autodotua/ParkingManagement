@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using Park.Admin.Models;
 using Park.Core.Models;
 
-namespace Park.Admin.Pages.People
+namespace Park.Admin.Pages.CarAndOwner
 {
     public class ParkRecordListModel: GridBaseModel<ParkRecord>
     {
@@ -23,7 +23,7 @@ namespace Park.Admin.Pages.People
             this.carID = carOwnerID;
             PagingInfo = new PagingInfoViewModel
             {
-                SortField = "EnterTime",
+                SortField = "LeaveTime",
                 SortDirection = "DESC",
                 PageIndex = 0,
                 PageSize = ConfigHelper.PageSize
@@ -53,7 +53,7 @@ namespace Park.Admin.Pages.People
             // 排列和数据库分页
             q = SortAndPage(q, pagingInfo);
 
-            return (await q.Include(p => p.ParkArea).ToListAsync());
+            return (await q.Include(p => p.ParkArea).Include(p=>p.Car).Include(p=>p.Car.CarOwner).ToListAsync());
         }
     }
 }

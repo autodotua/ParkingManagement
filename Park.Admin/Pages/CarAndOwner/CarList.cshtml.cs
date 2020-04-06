@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using Park.Admin.Models;
 using Park.Core.Models;
 
-namespace Park.Admin.Pages.People
+namespace Park.Admin.Pages.CarAndOwner
 {
     public class CarListModel:GridBaseModel<Car>
     {

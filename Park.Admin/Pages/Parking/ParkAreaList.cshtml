@@ -1,5 +1,5 @@
 ﻿@page
-@model Park.Admin.Pages.People.CarListModel
+@model Park.Admin.Pages.People.ParkAreaListModel
 @{
     ViewData["Title"] = "车辆管理";
     var PagingInfo = Model.PagingInfo;
@@ -14,22 +14,23 @@
     </style>
     <input type="hidden" id="urls" data-postback="@Url.Handler("DoPostBack")" />
 
-    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="VBox" ShowHeader="false" Title="用户管理" IsViewPort="true">
+    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="Region"  ShowHeader="false" Title="用户管理" IsViewPort="true">
         <Items>
             <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true" DataIDField="ID" DataTextField="LicensePlate"
                     AllowPaging="true" IsDatabasePaging="true" AllowCellEditing="true"
-                    SortField="@PagingInfo.SortField" SortDirection="@PagingInfo.SortDirection"
-                    PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.Cars"
-                    OnSort="@Url.Handler("DoPostBack")" OnSortFields="Panel1" AllowSorting="true"
+                    RegionPercent="40%" RegionPosition="Top"
+                    PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.ParkAreas"
                     OnPageIndexChanged="@Url.Handler("DoPostBack")" OnPageIndexChangedFields="Panel1">
                 <Columns>
                     <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
-                    <f:RenderField For="Cars.First().CarOwner.Username" Width="100"></f:RenderField>
-                    <f:RenderField For="Cars.First().LicensePlate" SortField="LicensePlate" Width="100"></f:RenderField>
-                    <f:RenderField For="Cars.First().ParkRecords.Count" HeaderText="停放记录" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderParkRecords"></f:RenderField>
+                    <f:RenderField For="ParkAreas.First().Name" Width="100"></f:RenderField>
+                    <f:RenderField For="ParkAreas.First().ParkingSpaces.Count" HeaderText="停车位" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderParkRecords"></f:RenderField>
                     <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="240" RendererFunction="renderBtns"></f:RenderField>
 
                 </Columns>
+                <Listeners>
+                    <f:Listener Event="rowselect" Handler="onGrid1RowSelect"></f:Listener>
+                </Listeners>
                 <PageItems>
                     <f:ToolbarSeparator></f:ToolbarSeparator>
                     <f:ToolbarText Text="每页记录数："></f:ToolbarText>
@@ -54,6 +55,14 @@
                     </f:Toolbar>
                 </Toolbars>
             </f:Grid>
+                <f:Panel ID="Panel2" BodyPadding="5" ShowBorder="false" Layout="HBox"
+                                  RegionPosition="Bottom" RegionPercent="60%"
+                                  ShowHeader="false">
+                <Items>
+                    <f:Image ID="imgMap"></f:Image>
+                </Items>
+            </f:Panel>
+
         </Items>
     </f:Panel>
 
@@ -66,9 +75,27 @@
 
     <script src="~/res/js/grid.js"></script>
     <script>
+             function doPostBack(rowId, isDeselect) {
 
+            var grd = F.ui.Grid1;
+                var rowData = grd.getRowData(rowId);
+                var column = grd.getColumn(grd.getSelectedCell()[1]);
+
+            // 触发后台事件
+            F.doPostBack('@Url.Handler("GridParkArea_RowSelect")', {
+                rowId: rowData.id,
+                //rowText: rowData.text,
+                //rowIndex: rowData.index,
+                //columnText: column.text,
+                //isDeselect: !!isDeselect
+            });
+        }
+
+        function onGrid1RowSelect(event, rowId) {
+            doPostBack(rowId);
+        }
         function renderParkRecords(value, params) {
-            return renderButtons([{class:"record",text:value+" 次"}])
+            return renderButtons([{class:"ps",text:value+" 个"}])
         }
         function renderBtns(value, params) {
             return renderButtons([{class:"delete",text:"删除"}])
@@ -101,9 +128,9 @@
           function otherActionButtonActions(cnode, rowData) {
            if (cnode.hasClass('record')) {
                 parent.addExampleTab({
-                    id: 'car_withOwner',
+                    id: 'parkRecord_withCar',
                     iframeUrl: '@Url.Content("~/People/ParkRecordList")?carID=' + rowData.id,
-                    title: '停车管理 - ' + rowData.text,
+                    title: '停车记录 - ' + rowData.text,
                     refreshWhenExist: true
                 });
             }

@@ -23,9 +23,10 @@ namespace Park.Designer.UI
     /// </summary>
     public partial class Artboard : Grid, INotifyPropertyChanged
     {
-        public static readonly double AisleWidth = 2;
-        public static readonly Brush ParkingSpaceBrush = Brushes.Red;
-        public static readonly Brush AisleBrush = Brushes.Green;
+        public static readonly double LineWidth = 2;
+        public static readonly Brush ParkingSpaceBrush = Brushes.Green;
+        public static readonly Brush AisleBrush = Brushes.Gray;
+        public static readonly Brush WallBrush = Brushes.Red;
         private ParkAreaInfo parkArea = new ParkAreaInfo();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -84,23 +85,29 @@ namespace Park.Designer.UI
                 case ParkingSpace ps:
                     drawingMode = DrawingMode.ParkingSpace;
                     currentShape = GetParkingSpacesRect(ps);
-
-                    cvs.Children.Add(currentShape);
                     break;
                 case Aisle _:
-                    drawingMode = DrawingMode.Aisle1;
+                    drawingMode = DrawingMode.Line1;
                     currentShape = new Rectangle()
                     {
-                        Height = AisleWidth,
-                        Width = AisleWidth,
+                        Height = LineWidth,
+                        Width = LineWidth,
                         Fill = AisleBrush,
                         RenderTransformOrigin = new Point(0.5, 0.5)
                     };
-
-
-                    cvs.Children.Add(currentShape);
+                    break;        
+                case Wall _:
+                    drawingMode = DrawingMode.Line1;
+                    currentShape = new Rectangle()
+                    {
+                        Height = LineWidth,
+                        Width = LineWidth,
+                        Fill = WallBrush,
+                        RenderTransformOrigin = new Point(0.5, 0.5)
+                    };
                     break;
             }
+            cvs.Children.Add(currentShape);
         }
         /// <summary>
         /// 停止绘制
@@ -142,18 +149,18 @@ namespace Park.Designer.UI
         /// <summary>
         /// 从通道对象获取图形
         /// </summary>
-        /// <param name="a"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        private Line GetAisleLine(Aisle a)
+        private Line GetLine(LineParkObjectBase obj)
         {
             return new Line()
             {
-                X1 = a.X1,
-                Y1 = a.Y1,
-                X2 = a.X2,
-                Y2 = a.Y2,
-                Stroke = AisleBrush,
-                StrokeThickness = AisleWidth,
+                X1 = obj.X1,
+                Y1 = obj.Y1,
+                X2 = obj.X2,
+                Y2 = obj.Y2,
+                Stroke =obj is Aisle? AisleBrush:WallBrush,
+                StrokeThickness = LineWidth,
                 RenderTransformOrigin = new Point(0.5, 0.5)
             };
         }
@@ -173,9 +180,9 @@ namespace Park.Designer.UI
                 cvs.Children.Add(rect);
                 AddSelectEvents(rect);
             }
-            foreach (var obj in ParkArea.Aisles)
+            foreach (var obj in ParkArea.Aisles.Union<LineParkObjectBase>(parkArea.Walls))
             {
-                var line = GetAisleLine(obj);
+                var line = GetLine(obj);
                 line.Tag = obj;
                 cvs.Children.Add(line);
                 AddSelectEvents(line);
@@ -233,13 +240,13 @@ namespace Park.Designer.UI
             switch (drawingMode)
             {
                 case DrawingMode.ParkingSpace:
-                case DrawingMode.Aisle1:
+                case DrawingMode.Line1:
                     double x = Math.Round(2 * pos.X - currentShape.Width) / 2;
                     double y = Math.Round(2 * pos.Y - currentShape.Height) / 2;
                     Canvas.SetLeft(currentShape, x);
                     Canvas.SetTop(currentShape, y);
                     break;
-                case DrawingMode.Aisle2:
+                case DrawingMode.Line2:
                     Line line = currentShape as Line;
                     double width = Math.Round(2 * pos.X - 2 * line.X1) / 2;
                     double height = Math.Round(2 * pos.Y - 2 * line.Y1) / 2;
@@ -304,16 +311,16 @@ namespace Park.Designer.UI
                     };
                     ParkObjectPlaced?.Invoke(this, new ParkObjectEventArgs(obj));
                     break;
-                case DrawingMode.Aisle1:
-                    drawingMode = DrawingMode.Aisle2;
+                case DrawingMode.Line1:
+                    drawingMode = DrawingMode.Line2;
                     var x = Canvas.GetLeft(currentShape) + currentShape.Width / 2;
                     var y = Canvas.GetTop(currentShape) + currentShape.Height / 2;
                     //aisleStartPoint = new Point(x, y);
                     cvs.Children.Remove(currentShape);
                     currentShape = new Line()
                     {
-                        StrokeThickness = AisleWidth,
-                        Stroke = AisleBrush,
+                        StrokeThickness = LineWidth,
+                        Stroke = Template is Aisle ? AisleBrush : WallBrush,
                         RenderTransformOrigin = new Point(0.5, 0.5),
                         X1 = x,
                         Y1 = y,
@@ -322,15 +329,28 @@ namespace Park.Designer.UI
                     };
                     cvs.Children.Add(currentShape);
                     break;
-                case DrawingMode.Aisle2:
+                case DrawingMode.Line2:
                     Line line = currentShape as Line;
-                    obj = new Aisle()
+                    if (Template is Aisle)
                     {
-                        X1 = line.X1,
-                        Y1 = line.Y1,
-                        X2 = line.X2,
-                        Y2 = line.Y2
-                    };
+                        obj = new Aisle()
+                        {
+                            X1 = line.X1,
+                            Y1 = line.Y1,
+                            X2 = line.X2,
+                            Y2 = line.Y2
+                        };
+                    }
+                    else if(Template is Wall)
+                    {
+                        obj = new Wall()
+                        {
+                            X1 = line.X1,
+                            Y1 = line.Y1,
+                            X2 = line.X2,
+                            Y2 = line.Y2
+                        };
+                    }
 
                     ParkObjectPlaced?.Invoke(this, new ParkObjectEventArgs(obj));
                     break;
@@ -435,7 +455,7 @@ namespace Park.Designer.UI
     {
         None,
         ParkingSpace,
-        Aisle1,
-        Aisle2
+        Line1,
+        Line2
     }
 }

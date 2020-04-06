@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Park.Designer.Model
 {
-    public class ParkAreaInfo : INotifyPropertyChanged
+    public class ParkAreaInfo : ParkArea
     {
         private string name = "停车场";
-        public string Name
+        public override string Name
         {
             get => name;
             set
@@ -20,7 +20,7 @@ namespace Park.Designer.Model
         }
 
         private int width = 35;
-        public int Width
+        public override int Width
         {
             get => width;
             set
@@ -33,7 +33,7 @@ namespace Park.Designer.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public int Length
+        public override int Length
         {
             get => length;
             set
@@ -42,8 +42,9 @@ namespace Park.Designer.Model
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Length)));
             }
         }
-        public List<ParkingSpace> ParkingSpaces { get; set; } = new List<ParkingSpace>();
-        public List<Aisle> Aisles { get; set; } = new List<Aisle>();
+        public override List<ParkingSpace> ParkingSpaces { get; set; } = new List<ParkingSpace>();
+        public override List<Aisle> Aisles { get; set; } = new List<Aisle>();
+        public override List<Wall> Walls { get; set; } = new List<Wall>();
         public override string ToString()
         {
             return Name;

@@ -5,12 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using FineUICore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Park.Admin.Models;
 using Park.Core.Models;
 using Park.Core.Service;
 
-namespace Park.Admin.Pages.People
+namespace Park.Admin.Pages
 {
     public abstract class GridBaseModel<T> : BaseModel where T : class, IDbModel
     {
@@ -57,15 +58,15 @@ namespace Park.Admin.Pages.People
             //    ShowNotify("已重设密码为123456");
             //    await DB.SaveChangesAsync();
             //}
-            OtherPostBack(actionType,ids);
-            await OtherPostBackAsync(actionType,ids);
+            OtherPostBack(actionType, ids);
+            await OtherPostBackAsync(actionType, ids);
             return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
         }
         protected virtual void OtherPostBack(string actionType, List<int> ids)
         {
 
         }
-        protected async virtual Task OtherPostBackAsync(string actionType,List<int> ids)
+        protected async virtual Task OtherPostBackAsync(string actionType, List<int> ids)
         {
 
         }
@@ -98,4 +99,29 @@ namespace Park.Admin.Pages.People
 
 
     }
+    [HtmlTargetElement("SGrid")]
+    [RestrictChildren("Columns", new string[]
+{
+    "Tools",
+    "Toolbars",
+    "Listeners",
+    "Attributes",
+    "PageItems"
+})]
+
+    public class SGridTagHelper : GridTagHelper
+    {
+        public SGridTagHelper(): base()
+        {
+  
+        }
+     
+
+        public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        {
+            output.TagName = "f:Grid";
+            return base.ProcessAsync(context, output);
+        }
+    }
+
 }

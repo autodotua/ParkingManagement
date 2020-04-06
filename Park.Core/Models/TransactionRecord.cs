@@ -6,7 +6,7 @@ namespace Park.Core.Models
     /// <summary>
     /// 交易记录
     /// </summary>
-    public class TransactionRecord:IDbModel
+    public class TransactionRecord : IDbModel
     {
         [Key]
         public int ID { get; set; }
@@ -42,6 +42,7 @@ namespace Park.Core.Models
     }
     public enum TransactionType
     {
+        [Display(Name = "停车")]
         /// <summary>
         /// 停车
         /// </summary>

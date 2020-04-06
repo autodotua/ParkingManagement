@@ -20,6 +20,7 @@ namespace Park.Core.Models
         public DbSet<ParkArea> ParkAreas { get; set; }
         public DbSet<ParkingSpace> ParkingSpaces { get; set; }
         public DbSet<Aisle> Aisles { get; set; }
+        public DbSet<Wall> Walls { get; set; }
         public DbSet<ParkRecord> ParkRecords { get; set; }
         public DbSet<TransactionRecord> TransactionRecords { get; set; }
         public DbSet<PriceStrategy> PriceStrategys { get; set; }
@@ -61,6 +62,13 @@ namespace Park.Core.Models
             modelBuilder.Entity<Aisle>()
                 .HasOne(a => a.ParkArea)
                 .WithMany(a => a.Aisles)
+                .HasForeignKey(s => s.ParkAreaID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade); 
+            //停车区和墙
+            modelBuilder.Entity<Wall>()
+                .HasOne(a => a.ParkArea)
+                .WithMany(p=>p.Walls)
                 .HasForeignKey(s => s.ParkAreaID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);

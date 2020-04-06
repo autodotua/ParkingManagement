@@ -1,5 +1,5 @@
 ﻿@page
-@model Park.Admin.Pages.People.CarOwnerListModel
+@model Park.Admin.Pages.CarAndOwner.CarOwnerListModel
 @{
     ViewData["Title"] = "车主管理";
     var PagingInfo = Model.PagingInfo;
@@ -115,8 +115,15 @@
           else  if (cnode.hasClass('car')) {
                 parent.addExampleTab({
                     id: 'car_withOwner',
-                    iframeUrl: '@Url.Content("~/People/CarList")?carOwnerID=' + rowData.id,
+                    iframeUrl: '@Url.Content("~/CarAndOwner/CarList")?carOwnerID=' + rowData.id,
                     title: '车辆管理 - ' + rowData.text,
+                    refreshWhenExist: true
+                });
+                } else if (cnode.hasClass('tra')) {
+                parent.addExampleTab({
+                    id: 'transactionRecord_withOwner',
+                    iframeUrl: '@Url.Content("~/CarAndOwner/TransactionRecordList")?carOwnerID=' + rowData.id,
+                    title: '交易记录 - ' + rowData.text,
                     refreshWhenExist: true
                 });
             }

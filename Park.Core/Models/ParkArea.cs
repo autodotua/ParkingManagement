@@ -13,16 +13,17 @@ namespace Park.Core.Models
         [Display(Name = "名称")]
         [StringLength(50)]
         [Required]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         [Display(Name = "价格策略")]
         public int? PriceStrategyID { get; set; }
         public PriceStrategy PriceStrategy { get; set; }
-        public List<ParkingSpace> ParkingSpaces { get; set; }
-        public List<Aisle> Aisles { get; set; }
+        public virtual List<ParkingSpace> ParkingSpaces { get; set; }
+        public virtual  List<Aisle> Aisles { get; set; }
+        public virtual List<Wall> Walls { get; set; }
 
-        public double Length { get; set; }
-        public double Width { get; set; }
+        public virtual int Length { get; set; }
+        public virtual int Width { get; set; }
     }
 
 

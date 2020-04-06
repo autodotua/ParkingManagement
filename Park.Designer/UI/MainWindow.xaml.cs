@@ -34,6 +34,10 @@ namespace Park.Designer.UI
             get => parkArea;
             set
             {
+                if (value == null)
+                {
+                    return;
+                }
                 parkArea = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ParkArea)));
 
@@ -75,6 +79,7 @@ namespace Park.Designer.UI
         {
             parkArea.Length = int.Parse(txtLength.Text);
             parkArea.Width = int.Parse(txtWidth.Text);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ParkArea)));
             cvs.Restore();
         }
 
@@ -109,6 +114,7 @@ namespace Park.Designer.UI
             {
                 "1" => new ParkingSpace() { Height = 2.5, Width = 4.5 },
                 "2" => new Aisle(),
+                "3" => new Wall(),
                 _ => throw new NotImplementedException(),
             };
             MouseMode = 2;
@@ -185,6 +191,10 @@ namespace Park.Designer.UI
                     a.ID = ParkArea.Aisles.Any() ? ParkArea.Aisles.Max(p => p.ID) + 1 : 0;
                     ParkArea.Aisles.Add(a);
                     break;
+                case Wall w:
+                    w.ID = ParkArea.Walls.Any() ? ParkArea.Walls.Max(p => p.ID) + 1 : 0;
+                    ParkArea.Walls.Add(w);
+                    break;
             }
             props.Obj = e.ParkObject;
 
@@ -195,9 +205,12 @@ namespace Park.Designer.UI
             props.Obj = e.ParkObject;
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-
+            Export("parks.json");
+            (sender as Button).Content = "√";
+            await Task.Delay(1000);
+            (sender as Button).Content = "保存";
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -270,12 +283,23 @@ namespace Park.Designer.UI
                 case Aisle a:
                     ParkArea.Aisles.Remove(a);
                     break;
+                case Wall w:
+                    ParkArea.Walls.Remove(w);
+                    break;
                 default:
                     break;
             }
             cvs.Remove(e.ParkObject);
         }
 
+        private async void CopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            string json = JsonConvert.SerializeObject(ParkAreas);
+            Clipboard.SetText(json);
+            (sender as Button).Content = "√";
+            await Task.Delay(1000);
+            (sender as Button).Content = "复制";
+        }
     }
     public class IsNotNull2BoolConvert : IValueConverter
     {

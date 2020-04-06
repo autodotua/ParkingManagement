@@ -1,7 +1,7 @@
 ﻿@page
-@model Park.Admin.Pages.People.ParkRecordListModel
+@model Park.Admin.Pages.CarAndOwner.CarListModel
 @{
-    ViewData["Title"] = "停车记录";
+    ViewData["Title"] = "车辆管理";
     var PagingInfo = Model.PagingInfo;
 }
 
@@ -19,15 +19,14 @@
             <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true" DataIDField="ID" DataTextField="LicensePlate"
                     AllowPaging="true" IsDatabasePaging="true" AllowCellEditing="true"
                     SortField="@PagingInfo.SortField" SortDirection="@PagingInfo.SortDirection"
-                    PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.ParkRecords"
+                    PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.Cars"
                     OnSort="@Url.Handler("DoPostBack")" OnSortFields="Panel1" AllowSorting="true"
                     OnPageIndexChanged="@Url.Handler("DoPostBack")" OnPageIndexChangedFields="Panel1">
                 <Columns>
                     <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
-                    <f:RenderField For="ParkRecords.First().EnterTime" Width="100"></f:RenderField>
-                    <f:RenderField For="ParkRecords.First().LeaveTime" Width="100"></f:RenderField>
-                    <f:RenderField For="ParkRecords.First().Car.LicensePlate" SortField="LicensePlate" Width="100"></f:RenderField>
-                    <f:RenderField For="ParkRecords.First().ParkArea.Name" HeaderText="停车区" EnableColumnHide="false" EnableHeaderMenu="false" ></f:RenderField>
+                    <f:RenderField For="Cars.First().CarOwner.Username" Width="100"></f:RenderField>
+                    <f:RenderField For="Cars.First().LicensePlate" SortField="LicensePlate" Width="100"></f:RenderField>
+                    <f:RenderField For="Cars.First().ParkRecords.Count" HeaderText="停放记录" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderParkRecords"></f:RenderField>
                     <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="240" RendererFunction="renderBtns"></f:RenderField>
 
                 </Columns>
@@ -47,7 +46,7 @@
                 <Toolbars>
                     <f:Toolbar ID="Toolbar1" Position="Top">
                         <Items>
-                            <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="搜索" Trigger1Icon="Clear" Trigger2Icon="Search"
+                            <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="在用户名称中搜索" Trigger1Icon="Clear" Trigger2Icon="Search"
                                               ShowTrigger1="false" OnTrigger2Click="@Url.Handler("DoPostBack")" OnTrigger2ClickParameter1="@(new Parameter("actionType","trigger2",ParameterMode.String))" OnTrigger2ClickFields="Panel1"
                                               OnTrigger1Click="@Url.Handler("DoPostBack")" OnTrigger1ClickParameter1="@(new Parameter("actionType","trigger1",ParameterMode.String))" OnTrigger1ClickFields="Panel1">
                             </f:TwinTriggerBox>
@@ -100,24 +99,11 @@
         }
 
           function otherActionButtonActions(cnode, rowData) {
-                if (cnode.hasClass('password')) {
-                    F.confirm({
-                        message: '是否重置密码？',
-                        target: '_top',
-                        ok: function () {
-                            // 触发后台事件
-                            F.doPostBack('@Url.Handler("DoPostBack")', 'Panel1', {
-                                actionType: 'pswd',
-                                deletedRowIDs: [rowData.id]
-                            });
-                        }
-                    });
-            }
-          else  if (cnode.hasClass('car')) {
+           if (cnode.hasClass('record')) {
                 parent.addExampleTab({
-                    id: 'car_withOwner',
-                    iframeUrl: '@Url.Content("~/People/CarList")?carOwnerID=' + rowData.id,
-                    title: '车辆管理 - ' + rowData.text,
+                    id: 'parkRecord_withCar',
+                    iframeUrl: '@Url.Content("~/CarAndOwner/ParkRecordList")?carID=' + rowData.id,
+                    title: '停车记录 - ' + rowData.text,
                     refreshWhenExist: true
                 });
             }

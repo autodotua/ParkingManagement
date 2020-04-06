@@ -12,7 +12,7 @@ using Park.Admin.Models;
 using Park.Core.Models;
 using Park.Core.Service;
 
-namespace Park.Admin.Pages.People
+namespace Park.Admin.Pages.CarAndOwner
 {
     public class ExtendCarOwner : CarOwner
     {
