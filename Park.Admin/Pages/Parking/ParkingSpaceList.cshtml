@@ -23,7 +23,7 @@
                 <Columns>
                     <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
                     <f:RenderCheckField For="ParkingSpaces.First().HasCar" RenderAsStaticField="true" Width="80" />
-                    <f:RenderField For="ParkingSpaces.First().DeviceToken" SortField="DeviceToken" Width="100">
+                    <f:RenderField For="ParkingSpaces.First().SensorToken" SortField="DeviceToken" Width="100">
                         <Editor>
                             <f:TextBox ID="tbxDeviceToken" Required="true"></f:TextBox>
                         </Editor>
@@ -95,8 +95,7 @@
             return renderButtons([{ class: "tra", text: value + " 笔" }]);
     }
         function renderBtns(value, params) {
-            return renderButtons([{ class: "password", text: "重置密码" },
-                { class: "delete", text: "删除" }]);
+            return renderButtons([{ class: "delete", text: "删除" }]);
     }
 
 

@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Park.Test", "Park.Test\Park.Test.csproj", "{ED47DF3D-F4E8-4976-B054-7BC48FC37317}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Park.API", "Park.API\Park.API.csproj", "{63223044-5E24-4B70-8233-FDEB0DE7A90C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Park.API", "Park.API\Park.API.csproj", "{63223044-5E24-4B70-8233-FDEB0DE7A90C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

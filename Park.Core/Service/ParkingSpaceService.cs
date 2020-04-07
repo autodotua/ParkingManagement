@@ -53,7 +53,7 @@ namespace Park.Core.Service
             return bitmap;
         }
 
-        public static async Task ImportFromJsonAsync(ParkContext db, string json)
+        public static async Task<List<ParkArea> > ImportFromJsonAsync(ParkContext db, string json)
         {
             List<ParkArea> parkAreas = JsonConvert.DeserializeObject<List<ParkArea>>(json);
             var existedParks = db.ParkAreas.Where(p => parkAreas.Select(q => q.Name).Contains(p.Name));
@@ -82,6 +82,7 @@ namespace Park.Core.Service
                 db.Add(parkArea);
             }
             await db.SaveChangesAsync();
+            return parkAreas;
         }
     }
 }

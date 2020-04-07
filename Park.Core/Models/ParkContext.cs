@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Park.Core.Models
 {
@@ -64,11 +65,11 @@ namespace Park.Core.Models
                 .WithMany(a => a.Aisles)
                 .HasForeignKey(s => s.ParkAreaID)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
             //停车区和墙
             modelBuilder.Entity<Wall>()
                 .HasOne(a => a.ParkArea)
-                .WithMany(p=>p.Walls)
+                .WithMany(p => p.Walls)
                 .HasForeignKey(s => s.ParkAreaID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -76,16 +77,16 @@ namespace Park.Core.Models
             //车主和交易记录
             modelBuilder.Entity<TransactionRecord>()
                 .HasOne(t => t.CarOwner)
-                .WithMany(o=>o.TransactionRecords)
+                .WithMany(o => o.TransactionRecords)
                 .HasForeignKey(t => t.CarOwnerID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             //停车区和停车记录
             modelBuilder.Entity<ParkRecord>()
-                .HasOne(r=>r.ParkArea)
+                .HasOne(r => r.ParkArea)
                 .WithMany()
-                .HasForeignKey(r=>r.ParkAreaID)
+                .HasForeignKey(r => r.ParkAreaID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -48,7 +48,7 @@ namespace Park.Admin.Pages.CarAndOwner
             string searchText = ttbSearchMessage?.Trim();
             if (!String.IsNullOrEmpty(searchText))
             {
-                q = q.Where(u => u.DeviceToken.Contains(searchText));
+                q = q.Where(u => u.SensorToken.Contains(searchText));
             }
             if(parkAreaID.HasValue)
             {
@@ -79,7 +79,7 @@ namespace Park.Admin.Pages.CarAndOwner
                 if (status == "modified")
                 {
                     var ps = ParkDB.ParkingSpaces.Find(rowId);
-                    ps.DeviceToken = modifiedRow["values"]["DeviceToken"].Value<string>();
+                    ps.SensorToken = modifiedRow["values"]["DeviceToken"].Value<string>();
                     ParkDB.Entry(ps).State = EntityState.Modified;
                 }
             }

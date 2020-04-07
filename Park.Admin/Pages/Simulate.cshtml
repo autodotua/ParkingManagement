@@ -3,35 +3,123 @@
 @{
     ViewData["Title"] = "模拟";
 }
+@section head{
+    <style>
+        body {
+            margin-left: 8px;
+        }
 
+            body .f-btn {
+                margin-left: 8px;
+            }
+
+            body .f-field-dropdownlist-wrap {
+                margin-left: 8px;
+            }
+    </style>
+}
 @section body {
-
-    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" AutoScroll="true" IsViewPort="true" Layout="VBox">
+    <h1>业务模拟</h1>
+    <h3>当前页面模拟道闸杆和传感器等设备，来测试对外接口的正常运行。</h3>
+    <br />
+    <f:Form ID="SimpleForm1" ShowHeader="false" BodyPadding="5 5 0 5">
         <Items>
-            <f:Button Text="测试">
-                <Listeners>
-                    <f:Listener Event="click" Handler="test"></f:Listener>
-                </Listeners>
-            </f:Button>
-        </Items>
-    </f:Panel>
+            <f:Panel ShowHeader="false" CssClass="" ShowBorder="false" Layout="Column" BodyPadding="8">
+                <Items>
+                    <f:DropDownList ID="ddlParkArea" DataTextField="Name" Label="停车区"
+                                    OnSelectedIndexChanged="@Url.Handler("ParkAreaDropDownList_SelectedChanged")"
+                                    OnSelectedIndexChangedFields="ddlParkArea" Width="360"
+                                    DataValueField="ID" DataSource="@ViewBag.ParkAreas">
+                    </f:DropDownList>
+                    <f:DropDownList ID="ddlParkAreaTokens" Label="道闸杆token" Width="360">
+                    </f:DropDownList>
+                    <f:Button ID="Button4" CssClass="btn-in-form" Text="按钮一">
+                        <Listeners>
+                        </Listeners>
+                    </f:Button>
+                </Items>
+            </f:Panel>
+            <f:Panel ShowHeader="true" Title="车位传感器模拟" CssClass="" BodyPadding="8" ShowBorder="false" Layout="Column">
+                <Items>
+                    <f:DropDownList ID="ddlParkingSpace" DataTextField="Text" Label="停车位"
+                                    Width="360" DataValueField="Token">
+                    </f:DropDownList>
+                    <f:Button CssClass="btn-in-form" Text="设置为空闲">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="setParkingSpaceEmpty"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:Button ID="Button4" CssClass="btn-in-form" Text="设置为有车">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="setParkingSpaceHacCar"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                </Items>
+            </f:Panel>
 
+            <f:Panel ShowHeader="true" Title="道闸杆模拟" CssClass="" BodyPadding="8" ShowBorder="false" Layout="Column">
+                <Items>
+                    <f:DropDownList ID="ddlCars" DataTextField="Text" Label="车辆"
+                                    DataSource="@ViewBag.Cars" Width="360"
+                                    DataValueField="ID">
+                    </f:DropDownList>
+                    <f:Button CssClass="btn-in-form" Text="驶入">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="enter"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                    <f:Button CssClass="btn-in-form" Text="驶出">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="leave"></f:Listener>
+                        </Listeners>
+                    </f:Button>
+                </Items>
+            </f:Panel>
+
+        </Items>
+    </f:Form>
 }
 
 @section script{
     <script>
-        function test() {
-            $.ajax({
-                url: "http://localhost:8520/Park/GetOhh",
+        function setParkingSpaceEmpty() {
+            setParkingSpaceStatus(false);
+        }
+        function setParkingSpaceHacCar() {
+            setParkingSpaceStatus(true);
+        }
+        function setParkingSpaceStatus(hasCar) {
+            post("ps", {
+                token: F.ui.ddlParkingSpace.getValue(),
+                hasCar: hasCar
+            })
+        }
+        function enter() {
+            post("enter", { licensePlate:F.ui.ddlCars.getValue(),token:F.ui.ddlParkAreaTokens.getText()})
+        }  function leave() {
+            post("leave", { licensePlate:F.ui.ddlCars.getValue(),token:F.ui.ddlParkAreaTokens.getText()})
+        }
+
+        function post(action,data) {
+            $.post({
+                url: "http://localhost:8520/Park/"+action,
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json",
                 success: data => {
-                    console.log(data);
+                    console.log(data)
+                    new F.MessageBox({ message: JSON.stringify(data), messageType: "alert" }).show();
                 },
                 error: (e1, e2, e3) => {
                     console.log(e1);
                 }
             })
-            console.log("test");
         }
+        F.ready(() => {
+            F.doPostBack('@Url.Handler("ParkAreaDropDownList_SelectedChanged")', 'ddlParkArea', {
+
+                    });
+        })
     </script>
 }
 
