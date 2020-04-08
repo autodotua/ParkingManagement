@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Park.Core.Service;
+using Park.Models;
+using Park.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 
 
-namespace Park.Core.Models
+namespace Park.Service
 {
     public static class ParkDatabaseInitializer
     {

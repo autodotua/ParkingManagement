@@ -7,7 +7,7 @@ using Park.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Park.Core.Models;
+using Park.Models;
 using FineUICore;
 
 namespace Park.Admin.Pages

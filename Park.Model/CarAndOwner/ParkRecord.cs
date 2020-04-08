@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     /// <summary>
     /// 停车记录

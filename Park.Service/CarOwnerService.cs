@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Park.Core.Models;
+using Park.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Park.Core.Service
+namespace Park.Service
 {
-  public static  class CarOwnerService
+    public static class CarOwnerService
     {
-        public async static Task SetPasswordAsync(ParkContext db,CarOwner carOwner,string password)
+        public async static Task SetPasswordAsync(ParkContext db, CarOwner carOwner, string password)
         {
             carOwner.Password = CreateMD5(carOwner.Username + password);
             db.Entry(carOwner).State = EntityState.Modified;
-         await   db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
         public static string CreateMD5(string input)
         {

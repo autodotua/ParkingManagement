@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Park.Admin.Models;
-using Park.Core.Models;
+using Park.Models;
 
 namespace Park.Admin.Pages.CarAndOwner
 {

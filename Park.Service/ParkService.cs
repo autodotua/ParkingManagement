@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using Park.Core.Models;
+using Park.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Park.Core.Service.TransactionService;
+using static Park.Service.TransactionService;
 
-namespace Park.Core.Service
+namespace Park.Service
 {
     public static class ParkService
     {

@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     public static class DbHelper
     {

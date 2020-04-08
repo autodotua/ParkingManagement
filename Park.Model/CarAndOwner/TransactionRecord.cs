@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     /// <summary>
     /// 交易记录

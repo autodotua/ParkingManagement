@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     public interface IDbModel
     {

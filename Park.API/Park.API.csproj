@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Park.Core\Park.Core.csproj" />
+    <ProjectReference Include="..\Park.Service\Park.Service.csproj" />
   </ItemGroup>
 
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Park.Core.Service;
-using Park.Core.Models;
+using Park.Service;
+using Park.Models;
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;

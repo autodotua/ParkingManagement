@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Park.Admin.Models;
-using Park.Core.Models;
-using Park.Core.Service;
+using Park.Models;
+using Park.Service;
 
 namespace Park.Admin.Pages
 {

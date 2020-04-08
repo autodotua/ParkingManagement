@@ -22,7 +22,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using Park.Core.Models;
+using Park.Models;
 
 namespace Park.Admin
 {

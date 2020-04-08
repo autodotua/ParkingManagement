@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Park.Core.Models;
+using Park.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Park.Core.Service
+namespace Park.Service
 {
     public static class TransactionService
     {

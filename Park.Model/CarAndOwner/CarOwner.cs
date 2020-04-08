@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     public class CarOwner:IDbModel
     {

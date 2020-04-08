@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     public class Car:IDbModel
     {

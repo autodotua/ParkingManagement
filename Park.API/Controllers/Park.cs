@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Park.Core.Models;
-using Park.Core.Service;
+using Park.Models;
+using Park.Service;
 
 
 namespace Park.API.Controllers

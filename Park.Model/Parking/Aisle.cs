@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     public class Aisle : LineParkObjectBase
     {

@@ -5,7 +5,7 @@ using System.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Park.Core.Models
+namespace Park.Models
 {
     public class ParkContext : DbContext
     {
