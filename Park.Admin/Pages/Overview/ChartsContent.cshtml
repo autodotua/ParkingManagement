@@ -1,0 +1,42 @@
+﻿@page
+@model Park.Admin.Pages.Overview.ChartsContentModel
+@using System.Linq
+@{
+    ViewBag.Title = "";
+    Layout = "";
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" style="height: 100%">
+<head>
+    <title></title>
+    <script src="~/res/js/echarts.min.js"></script>
+</head>
+<body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%"></div>
+    <script>
+        var dom = document.getElementById("container");
+        var chart = echarts.init(dom);
+        chart.setOption({
+    title: {
+        text: '近日停车场入场车辆'
+    },
+    tooltip: {},
+    xAxis: {
+        data: ['@Html.Raw(string.Join("','", ViewBag.RecentParkCountX))']
+    },
+    yAxis: {},
+    series: [{
+        name: '数量',
+        type: 'line',
+        data: [@string.Join(",", ViewBag.RecentParkCountY)]
+            }]
+        });
+
+        window.onresize = function () {
+            chart.resize(); 
+        }
+    </script>
+</body>
+</html>

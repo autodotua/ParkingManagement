@@ -14,6 +14,8 @@ using Park.Service;
 
 namespace Park.Admin.Pages.CarAndOwner
 {
+    [CheckPower(Name = "ParkPower")]
+
     public class ParkingSpaceListModel : GridBaseModel<ParkingSpace>
     {
         private int? parkAreaID;

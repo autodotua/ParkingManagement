@@ -14,6 +14,8 @@ using Park.Service;
 
 namespace Park.Admin.Pages.CarAndOwner
 {
+    [CheckPower(Name = "CarAndOwnerPower")]
+
     public class ExtendCarOwner : CarOwner
     {
         public ExtendCarOwner()

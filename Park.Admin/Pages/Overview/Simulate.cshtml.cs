@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Park.Models;
 using FineUICore;
 
-namespace Park.Admin.Pages
+namespace Park.Admin.Pages.Overview
 {
     public class SimulateModel : BaseModel
     {

@@ -36,7 +36,7 @@ namespace Park.Admin
                     var context = services.GetRequiredService<ParkAdminContext>();
                     var parkContext = services.GetRequiredService<ParkContext>();
                     ParkAdminDatabaseInitializer.Initialize(context);
-                    ParkDatabaseInitializer.InitializeAsync(parkContext).Wait();
+                    ParkDatabaseInitializer.Initialize(parkContext);
 
                 }
                 catch (Exception ex)

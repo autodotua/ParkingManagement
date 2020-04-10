@@ -16,6 +16,8 @@ using Park.Service;
 
 namespace Park.Admin.Pages.People
 {
+    [CheckPower(Name = "ParkPower")]
+
     public class ParkAreaListModel : GridBaseModel<ParkArea>
     {
         public IEnumerable<ParkArea> ParkAreas { get; set; }

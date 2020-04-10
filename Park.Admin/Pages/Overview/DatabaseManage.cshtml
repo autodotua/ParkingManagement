@@ -1,0 +1,99 @@
+﻿@page
+@model Park.Admin.Pages.Overview.DatabaseManageModel
+@{
+    ViewData["Title"] = "模拟";
+}
+@section head{
+    <style>
+        body {
+            margin-left: 8px;
+        }
+
+            body .f-btn {
+                margin-left: 8px;
+            }
+
+            body .f-field-dropdownlist-wrap {
+                margin-left: 8px;
+            }
+    </style>
+}
+@section body {
+    <f:Form ID="SimpleForm1" IsFluid="true" IsViewPort="true" ShowHeader="false" BodyPadding="5 5 0 5">
+      <Rows>
+          <f:FormRow>
+              <Items>
+                  <f:Label Text="重置数据库"></f:Label>
+                  <f:Button Text="执行">
+                      <Listeners>
+                          <f:Listener Event="click" Handler="resetDatabase"></f:Listener>
+                      </Listeners>
+                  </f:Button>
+              </Items>
+          </f:FormRow>    <f:FormRow>
+              <Items>
+                  <f:Label Text="重置管理员数据库"></f:Label>
+                  <f:Button Text="执行">
+                      <Listeners>
+                          <f:Listener Event="click" Handler="resetAdminDatabase"></f:Listener>
+                      </Listeners>
+                  </f:Button>
+              </Items>
+          </f:FormRow>  
+          <f:FormRow>
+              <Items>
+                  <f:Label Text="生成测试数据"></f:Label>
+                  <f:Button Text="执行">
+                      <Listeners>
+                          <f:Listener Event="click" Handler="generateTestData"></f:Listener>
+                      </Listeners>
+                  </f:Button>
+              </Items>
+          </f:FormRow>
+      </Rows>
+    </f:Form>
+}
+
+@section script{
+    <script>
+   
+        function resetDatabase() {
+            // F.confirm是异步函数，直接返回
+            F.confirm({
+                message: '危险操作！是否重置数据库？',
+                ok: function () {
+                      F.doPostBack('@Url.Handler("ResetDatabase")');
+                },
+                cancel: function () {
+                }
+            });
+        }
+        function resetAdminDatabase() {
+            // F.confirm是异步函数，直接返回
+            F.confirm({
+                message: '危险操作！是否重置数据库？',
+                ok: function () {
+                      F.doPostBack('@Url.Handler("ResetAdminDatabase")');
+                },
+                cancel: function () {
+                }
+            });
+        }
+        function generateTestData() {
+            // F.confirm是异步函数，直接返回
+            F.confirm({
+                message: '是否生成测试数据？',
+                ok: function () {
+                      F.doPostBack('@Url.Handler("GenerateTestData")');
+                },
+                cancel: function () {
+                }
+            });
+        }
+        F.ready(() => {
+
+        })
+    </script>
+}
+
+

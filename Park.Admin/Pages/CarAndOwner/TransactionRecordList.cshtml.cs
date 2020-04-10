@@ -12,6 +12,7 @@ using Park.Models;
 
 namespace Park.Admin.Pages.CarAndOwner
 {
+    [CheckPower(Name = "CarAndOwnerPower")]
     public class TransactionRecordListModel : GridBaseModel<TransactionRecord>
     {
         public IEnumerable<TransactionRecord> TransactionRecords { get; set; }

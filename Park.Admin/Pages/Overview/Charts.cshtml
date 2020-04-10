@@ -1,0 +1,33 @@
+﻿@page
+@model Park.Admin.Pages.Overview.ChartsModel
+@{
+    ViewData["Title"] = "模拟";
+}
+@section head{
+    <style>
+
+    </style>
+}
+@section body {
+    <f:Panel ID="Panel1" IsViewPort="true" IsFluid="true" CssClass="blockpanel" Margin="10px"
+            ShowHeader="false" ShowBorder="false"  EnableIFrame="true" IFrameUrl="@Url.Content("~/Overview/ChartsContent")">
+        <Toolbars>
+            @*<f:Toolbar>
+                <Items>
+                  
+                </Items>
+            </f:Toolbar>*@
+        </Toolbars>
+    </f:Panel>
+}
+
+@section script{
+    <script>
+    
+        F.ready(() => {
+
+        })
+    </script>
+}
+
+

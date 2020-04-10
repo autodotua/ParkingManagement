@@ -12,22 +12,14 @@ namespace Park.Service
 {
     public static class ParkDatabaseInitializer
     {
-        public async static Task InitializeAsync(ParkContext context,
-            bool addTestParkAreaDatas = true,
-            bool addTestCarDatas = true)
+        public async static Task GenerateTestDatasAsync(ParkContext context)
         {
-            if (!context.Database.EnsureCreated())
-            {
-                return;
-            }
 
             List<ParkArea> parkAreas = new List<ParkArea>();
             Random r = new Random();
-            if (addTestParkAreaDatas)
+            PriceStrategy priceStrategy = new PriceStrategy()
             {
-                PriceStrategy priceStrategy = new PriceStrategy()
-                {
-                    StrategyJson = @"{
+                StrategyJson = @"{
   ""type"": ""stepHourBase"", 
   ""prices"": [
     { 
@@ -44,82 +36,91 @@ namespace Park.Service
     }
   ]
 }",
-                    MonthlyPrice = 120
-                };
-                context.PriceStrategys.Add(priceStrategy);
+                MonthlyPrice = 120
+            };
+            context.PriceStrategys.Add(priceStrategy);
 
-                //for (int i = 0; i < 3; i++)
-                //{
-                    parkAreas= await ParkingSpaceService.ImportFromJsonAsync(context, parkAreaJson);
-                foreach (var parkArea in parkAreas)
-                {
-                    parkArea.GateTokens = GenerateToken()+";" + GenerateToken();
-                    parkArea.ParkingSpaces.ForEach(p => p.SensorToken = GenerateToken());
-                }
-                //}
-                //ParkArea parkArea = new ParkArea()
-                //{
-                //    Name = "停车场" + (i + 1),
-                //    PriceStrategy = priceStrategy,
-                //    Length = 100,
-                //    Width = 50
-                //};
-                //    context.ParkAreas.Add(parkArea);
-                //    for (int j = 0; j < r.Next(50, 100); j++)
-                //    {
-                //        context.ParkingSpaces.Add(new ParkingSpace()
-                //        {
-                //            ParkArea = parkArea,
-                //            X = r.Next(0, 50),
-                //            Y = r.Next(0, 50),
-                //            Width = 5,
-                //            Height = 2.5,
-                //            RotateAngle = r.Next(0, 90)
-                //        });
-                //    }
-                //}
-                //context.SaveChanges();
-                //var a = context.ParkAreas.First().ParkingSpaces;
-
-                //parkAreas = await context.ParkAreas.ToListAsync();
-            }
-
-
-            if (addTestCarDatas)
+            //for (int i = 0; i < 3; i++)
+            //{
+            parkAreas = await ParkingSpaceService.ImportFromJsonAsync(context, parkAreaJson);
+            foreach (var parkArea in parkAreas)
             {
-                for (int i = 0; i < 20; i++)//车主
-                {
-                    var owner = new CarOwner()
-                    {
-                        Username = "user" + r.Next(0, short.MaxValue),
-                        Password = "1234",
-                    };
-                    context.CarOwners.Add(owner);
-                    for(int j=0;j<3;j++)//充值
-                    {
-                       await TransactionService.RechargeMoneyAsync(context, owner, r.Next(2, 20));
-                    }
-                    for (int j = 0; j < r.Next(2, 5); j++)//车辆
-                    {
-                        var car = new Car()
-                        {
-                            LicensePlate = "浙B" + r.Next(10000, 99999),
-                            CarOwner = owner
-                        };
-                        context.Cars.Add(car);
-                        context.SaveChanges();
-                        //var a = context.Cars.FirstOrDefault().CarOwner == context.CarOwners.FirstOrDefault(); ;
+                parkArea.GateTokens = GenerateToken() + ";" + GenerateToken();
+                parkArea.ParkingSpaces.ForEach(p => p.SensorToken = GenerateToken());
+            }
+            //}
+            //ParkArea parkArea = new ParkArea()
+            //{
+            //    Name = "停车场" + (i + 1),
+            //    PriceStrategy = priceStrategy,
+            //    Length = 100,
+            //    Width = 50
+            //};
+            //    context.ParkAreas.Add(parkArea);
+            //    for (int j = 0; j < r.Next(50, 100); j++)
+            //    {
+            //        context.ParkingSpaces.Add(new ParkingSpace()
+            //        {
+            //            ParkArea = parkArea,
+            //            X = r.Next(0, 50),
+            //            Y = r.Next(0, 50),
+            //            Width = 5,
+            //            Height = 2.5,
+            //            RotateAngle = r.Next(0, 90)
+            //        });
+            //    }
+            //}
+            //context.SaveChanges();
+            //var a = context.ParkAreas.First().ParkingSpaces;
 
-                        for (int k = 0; k < 3; k++)//进出场信息
+            //parkAreas = await context.ParkAreas.ToListAsync();
+
+            for (int i = 0; i < 20; i++)//车主
+            {
+                var owner = new CarOwner()
+                {
+                    Username = "user" + r.Next(0, short.MaxValue),
+                    Password = "1234",
+                };
+                context.CarOwners.Add(owner);
+                for (int j = 0; j < 3; j++)//充值
+                {
+                    await TransactionService.RechargeMoneyAsync(context, owner, r.Next(2, 20));
+                }
+                for (int j = 0; j < r.Next(2, 5); j++)//车辆
+                {
+                    var car = new Car()
+                    {
+                        LicensePlate = "浙B" + r.Next(10000, 99999),
+                        CarOwner = owner
+                    };
+                    context.Cars.Add(car);
+                    context.SaveChanges();
+                    //var a = context.Cars.FirstOrDefault().CarOwner == context.CarOwners.FirstOrDefault(); ;
+
+                    for (int k = 0; k < 3; k++)//进出场信息
+                    {
+                        DateTime enterTime = DateTime.Now.AddDays(-r.NextDouble() * 5);
+                        DateTime leaveTime;
+                        do
                         {
-                            await ParkService.EnterAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)]);
-                            await ParkService.LeaveAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)]);
-                        }
+                            leaveTime = DateTime.Now.AddDays(-r.NextDouble() * 5);
+                        } while (leaveTime > enterTime);
+                        await ParkService.EnterAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)],enterTime);
+                        await ParkService.LeaveAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)],leaveTime);
                     }
                 }
-
-                context.SaveChanges();
             }
+
+            context.SaveChanges();
+        }
+
+        public static void Initialize(ParkContext context,
+            bool addTestParkAreaDatas = true,
+            bool addTestCarDatas = true)
+        {
+            context.Database.EnsureCreated();
+
         }
         private static string GenerateToken()
         {

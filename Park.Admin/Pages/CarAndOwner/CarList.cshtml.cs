@@ -12,6 +12,7 @@ using Park.Models;
 
 namespace Park.Admin.Pages.CarAndOwner
 {
+    [CheckPower(Name = "CarAndOwnerPower")]
     public class CarListModel:GridBaseModel<Car>
     {
         public IEnumerable<Car> Cars { get; set; }

@@ -18,7 +18,11 @@ namespace Park.Service
         /// <param name="licensePlate">识别到的车牌号</param>
         /// <param name="parkArea">停车区</param>
         /// <returns>是否允许进入</returns>
-        public async static Task<bool> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea)
+        public static Task<bool> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea)
+        {
+            return EnterAsync(db, licensePlate, parkArea, DateTime.Now);
+        }
+        internal async static Task<bool> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea, DateTime time)
         {
             //检查是否有空位
             bool hasEmpty = await db.ParkingSpaces.AnyAsync(p => p.ParkArea == parkArea);
@@ -32,8 +36,8 @@ namespace Park.Service
             ParkRecord parkRecord = new ParkRecord()
             {
                 Car = car,
-                EnterTime = DateTime.Now,
-                ParkArea=parkArea
+                EnterTime = time,
+                ParkArea = parkArea
             };
             db.ParkRecords.Add(parkRecord);
             await db.SaveChangesAsync();
@@ -46,10 +50,13 @@ namespace Park.Service
         /// <param name="licensePlate">识别到的车牌号</param>
         /// <param name="parkArea">停车区</param>
         /// <returns>离开结果</returns>
-        public async static Task<LeaveResult> LeaveAsync(ParkContext db, string licensePlate, ParkArea parkArea)
+        public static Task<LeaveResult> LeaveAsync(ParkContext db, string licensePlate, ParkArea parkArea)
+        {
+            return LeaveAsync(db, licensePlate, parkArea, DateTime.Now);
+        }
+        internal async static Task<LeaveResult> LeaveAsync(ParkContext db, string licensePlate, ParkArea parkArea, DateTime time)
         {
             LeaveResult leave = new LeaveResult() { CanLeave = true };
-            DateTime leaveTime = DateTime.Now;
             Car car = await GetCarAsync(db, licensePlate, false);
             if (car == null)
             {
@@ -68,7 +75,7 @@ namespace Park.Service
             }
             leave.ParkRecord = parkRecord;
             //补全进出记录
-            parkRecord.LeaveTime = leaveTime;
+            parkRecord.LeaveTime = time;
             db.Entry(parkRecord).State = EntityState.Modified;
             CarOwner owner = car.CarOwner;
 
@@ -96,7 +103,7 @@ namespace Park.Service
                 case null:
                 needPay:
                     //非会员或普通用户
-                    double price = GetPrice(priceStrategy, parkRecord.EnterTime, leaveTime);
+                    double price = GetPrice(priceStrategy, parkRecord.EnterTime, time);
                     double balance = owner == null ? 0 : await GetBalanceAsync(db, owner);
                     //计算价格
                     if (balance - price < 0)
@@ -108,7 +115,7 @@ namespace Park.Service
                     }
                     TransactionRecord transaction = new TransactionRecord()
                     {//新增扣费记录
-                        Time = leaveTime,
+                        Time = time,
                         Type = TransactionType.Park,
                         Balance = balance - price,
                         Value = -price,
