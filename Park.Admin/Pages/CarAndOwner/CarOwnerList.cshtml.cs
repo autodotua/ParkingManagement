@@ -34,6 +34,8 @@ namespace Park.Admin.Pages.CarAndOwner
             Cars = owner.Cars;
             TransactionRecords = owner.TransactionRecords;
             Balance = await TransactionService.GetBalanceAsync(db, owner);
+            RegistTime = owner.RegistTime;
+            LastLoginTime = owner.LastLoginTime;
             return this;
         }
     }
@@ -88,82 +90,82 @@ namespace Park.Admin.Pages.CarAndOwner
                 .Select(p => new ExtendCarOwner().Apply(p, ParkDB).Result);
         }
 
-        public async Task<IActionResult> OnPostCarOwnerList_DoPostBackAsync(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
-            string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
-        {
-            List<int> ids = new List<int>();
-            if (deletedRowIDs != null)
-            {
-                ids.AddRange(deletedRowIDs);
-            }
+        //public async Task<IActionResult> OnPostCarOwnerList_DoPostBackAsync(string[] Grid1_fields, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
+        //    string ttbSearchMessage, string rblEnableStatus, int ddlGridPageSize, string actionType, int[] deletedRowIDs)
+        //{
+        //    List<int> ids = new List<int>();
+        //    if (deletedRowIDs != null)
+        //    {
+        //        ids.AddRange(deletedRowIDs);
+        //    }
 
-            var ttbSearchMessageUI = UIHelper.TwinTriggerBox("ttbSearchMessage");
-            if (actionType == "trigger1")
-            {
-                ttbSearchMessageUI.Text(String.Empty);
-                ttbSearchMessageUI.ShowTrigger1(false);
+        //    var ttbSearchMessageUI = UIHelper.TwinTriggerBox("ttbSearchMessage");
+        //    if (actionType == "trigger1")
+        //    {
+        //        ttbSearchMessageUI.Text(String.Empty);
+        //        ttbSearchMessageUI.ShowTrigger1(false);
 
-                // 清空传入的搜索值
-                ttbSearchMessage = String.Empty;
-            }
-            else if (actionType == "trigger2")
-            {
-                ttbSearchMessageUI.ShowTrigger1(true);
-            }
-            else if (actionType == "delete")
-            {
-                // 在操作之前进行权限检查
-                if (!CheckPower("CoreUserDelete"))
-                {
-                    CheckPowerFailWithAlert();
-                    return UIHelper.Result();
-                }
+        //        // 清空传入的搜索值
+        //        ttbSearchMessage = String.Empty;
+        //    }
+        //    else if (actionType == "trigger2")
+        //    {
+        //        ttbSearchMessageUI.ShowTrigger1(true);
+        //    }
+        //    else if (actionType == "delete")
+        //    {
+        //        // 在操作之前进行权限检查
+        //        if (!CheckPower("CoreUserDelete"))
+        //        {
+        //            CheckPowerFailWithAlert();
+        //            return UIHelper.Result();
+        //        }
 
-                ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList().ForEach(u => ParkDB.CarOwners.Remove(u));
-                await ParkDB.SaveChangesAsync();
-            }
-            else if (actionType == "enable")
-            {
-                // 在操作之前进行权限检查
-                if (!CheckPower("CoreUserEdit"))
-                {
-                    CheckPowerFailWithAlert();
-                    return UIHelper.Result();
-                }
+        //        ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList().ForEach(u => ParkDB.CarOwners.Remove(u));
+        //        await ParkDB.SaveChangesAsync();
+        //    }
+        //    else if (actionType == "enable")
+        //    {
+        //        // 在操作之前进行权限检查
+        //        if (!CheckPower("CoreUserEdit"))
+        //        {
+        //            CheckPowerFailWithAlert();
+        //            return UIHelper.Result();
+        //        }
 
-                ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList().ForEach(u => u.Enabled = true);
-                await DB.SaveChangesAsync();
-            }
-            else if (actionType == "pswd")
-            {
-                if (!CheckPower("CoreUserEdit"))
-                {
-                    CheckPowerFailWithAlert();
-                    return UIHelper.Result();
-                }
+        //        ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList().ForEach(u => u.Enabled = true);
+        //        await DB.SaveChangesAsync();
+        //    }
+        //    else if (actionType == "pswd")
+        //    {
+        //        if (!CheckPower("CoreUserEdit"))
+        //        {
+        //            CheckPowerFailWithAlert();
+        //            return UIHelper.Result();
+        //        }
 
-                foreach (var owner in ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList())
-                {
-                    await CarOwnerService.SetPasswordAsync(ParkDB, owner, "123456");
-                }
-                ShowNotify("已重设密码为123456");
-                await DB.SaveChangesAsync();
-            }
-            else if (actionType == "disable")
-            {
-                // 在操作之前进行权限检查
-                if (!CheckPower("CoreUserEdit"))
-                {
-                    CheckPowerFailWithAlert();
-                    return UIHelper.Result();
-                }
+        //        foreach (var owner in ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList())
+        //        {
+        //            await CarOwnerService.SetPasswordAsync(ParkDB, owner, "123456");
+        //        }
+        //        ShowNotify("已重设密码为123456");
+        //        await DB.SaveChangesAsync();
+        //    }
+        //    else if (actionType == "disable")
+        //    {
+        //        // 在操作之前进行权限检查
+        //        if (!CheckPower("CoreUserEdit"))
+        //        {
+        //            CheckPowerFailWithAlert();
+        //            return UIHelper.Result();
+        //        }
 
-                DB.Users.Where(u => ids.Contains(u.ID)).ToList().ForEach(u => u.Enabled = false);
-                await DB.SaveChangesAsync();
-            }
+        //        DB.Users.Where(u => ids.Contains(u.ID)).ToList().ForEach(u => u.Enabled = false);
+        //        await DB.SaveChangesAsync();
+        //    }
 
-            return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
-        }
+        //    return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
+        //}
 
         protected async override Task OtherPostBackAsync(string actionType,List<int> ids)
         {
@@ -215,7 +217,14 @@ namespace Park.Admin.Pages.CarAndOwner
                 if (status == "modified")
                 {
                     var owner = ParkDB.CarOwners.Find(rowId);
-                    owner.Enabled = modifiedRow["values"]["Enabled"].Value<bool>();
+                    if (modifiedRow["values"]["Enabled"] != null)
+                    {
+                        owner.Enabled = modifiedRow["values"]["Enabled"].Value<bool>();
+                    }
+                    if (modifiedRow["values"]["IsFree"] != null)
+                    {
+                        owner.IsFree = modifiedRow["values"]["IsFree"].Value<bool>();
+                    }
                     ParkDB.Entry(owner).State = EntityState.Modified;
                 }
             }

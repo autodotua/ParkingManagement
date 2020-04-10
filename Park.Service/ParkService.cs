@@ -18,20 +18,24 @@ namespace Park.Service
         /// <param name="licensePlate">识别到的车牌号</param>
         /// <param name="parkArea">停车区</param>
         /// <returns>是否允许进入</returns>
-        public static Task<bool> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea)
+        public static Task<EnterResult> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea)
         {
             return EnterAsync(db, licensePlate, parkArea, DateTime.Now);
         }
-        internal async static Task<bool> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea, DateTime time)
+        internal async static Task<EnterResult> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea, DateTime time)
         {
             //检查是否有空位
             bool hasEmpty = await db.ParkingSpaces.AnyAsync(p => p.ParkArea == parkArea);
             if (!hasEmpty)
             {
-                return false;
+                return new EnterResult(false, "停车场已满");
             }
             //获取汽车
             Car car = await GetCarAsync(db, licensePlate, true);
+            if (car != null && !car.Enabled)//是否被禁止进入
+            {
+                return new EnterResult(false, "该车辆禁止进入");
+            }
             //新增进出记录
             ParkRecord parkRecord = new ParkRecord()
             {
@@ -41,7 +45,7 @@ namespace Park.Service
             };
             db.ParkRecords.Add(parkRecord);
             await db.SaveChangesAsync();
-            return true;
+            return new EnterResult(true); ;
         }
         /// <summary>
         /// 离开停车场

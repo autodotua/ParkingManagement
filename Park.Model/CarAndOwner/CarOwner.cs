@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Park.Models
@@ -26,6 +27,10 @@ namespace Park.Models
         [Display(Name = "是否启用")]
         [Required]
         public bool Enabled { get; set; } = true;
+        [Display(Name ="注册时间")]
+        public DateTime RegistTime { get; set; }
+        [Display(Name ="上次登录时间")]
+        public DateTime LastLoginTime { get; set; }
         public List<Car> Cars { get; set; }
 
         public List<TransactionRecord> TransactionRecords { get; set; }

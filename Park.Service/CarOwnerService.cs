@@ -8,7 +8,45 @@ using System.Threading.Tasks;
 namespace Park.Service
 {
     public static class CarOwnerService
-    {
+    {        /// <summary>
+             /// 注册
+             /// </summary>
+             /// <param name="db"></param>
+             /// <param name="username"></param>
+             /// <param name="password"></param>
+             /// <param name="registTime"></param>
+             /// <returns>如果用户名已存在，返回null，否则返回注册后的用户对象</returns>
+
+        public static Task<CarOwner> Regist(ParkContext db, string username, string password)
+        {
+            return Regist(db, username, password, DateTime.Now);
+        }
+        /// <summary>
+        /// 注册
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="registTime">内部测试使用的时间</param>
+        /// <returns>如果用户名已存在，返回null，否则返回注册后的用户对象</returns>
+        public async static Task<CarOwner> Regist(ParkContext db, string username, string password, DateTime registTime)
+        {
+            if (await db.CarOwners.AnyAsync(p => p.Username == username))
+            {
+                return null;
+            }
+            CarOwner carOwner = new CarOwner()
+            {
+                RegistTime = registTime,
+                LastLoginTime=registTime,
+                Username = username,
+                Password = CreateMD5(password),
+                Enabled = true,
+            };
+            db.Add(carOwner);
+            await db.SaveChangesAsync();
+            return carOwner;
+        }
         public async static Task SetPasswordAsync(ParkContext db, CarOwner carOwner, string password)
         {
             carOwner.Password = CreateMD5(carOwner.Username + password);

@@ -26,32 +26,32 @@ namespace Park.API.Controllers
 
         [HttpPost]
         [Route("enter")]
-        public async Task<ResponseData<bool>> PostEnterAsync([FromBody] ParkingGateRequest request)
-        { 
-            string licensePlate = request.licensePlate; 
+        public async Task<ResponseData<EnterResult>> PostEnterAsync([FromBody] ParkingGateRequest request)
+        {
+            string licensePlate = request.licensePlate;
             string token = request.token;
             try
             {
                 var pa = (await db.ParkAreas.ToListAsync()).FirstOrDefault(p => p.GateTokens.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(token));
                 if (pa == null)
                 {
-                    return new ResponseData<bool>() { Succeed = false, Message = "找不到对应的停车区" };
+                    return new ResponseData<EnterResult>() { Succeed = false, Message = "找不到对应的停车区" };
                 }
-                return new ResponseData<bool>()
+                return new ResponseData<EnterResult>()
                 {
                     Data = await ParkService.EnterAsync(db, licensePlate, pa)
                 };
             }
             catch (Exception ex)
             {
-                return new ResponseData<bool>() { Succeed = false, Message = ex.Message };
+                return new ResponseData<EnterResult>() { Succeed = false, Message = ex.Message };
             }
         }
-           [HttpPost]
+        [HttpPost]
         [Route("leave")]
         public async Task<ResponseData<LeaveResult>> PostLeaveAsync([FromBody] ParkingGateRequest request)
-        { 
-            string licensePlate = request.licensePlate; 
+        {
+            string licensePlate = request.licensePlate;
             string token = request.token;
             try
             {
@@ -71,12 +71,12 @@ namespace Park.API.Controllers
             }
         }
 
-    
+
         [HttpPost]
         [Route("ps")]
         public async Task<ResponseData<bool>> PostParkingSpaceStatusAsync([FromBody] SensorRequest request)
         {
-            string token= request.token;
+            string token = request.token;
             bool hasCar = request.hasCar;
             try
             {
@@ -100,7 +100,7 @@ namespace Park.API.Controllers
         }
 
     }
-    
+
     public class ResponseData<T>
     {
         public bool Succeed { get; set; } = true;
@@ -124,7 +124,7 @@ namespace Park.API.Controllers
     {
         public string token { get; set; }
         public bool hasCar { get; set; }
-    }    
+    }
     public class ParkingGateRequest
     {
         public string token { get; set; }

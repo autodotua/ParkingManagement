@@ -23,8 +23,11 @@
                 <Columns>
                     <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
                     <f:RenderField For="CarOwners.First().Username" SortField="Username" Width="100"></f:RenderField>
+                    <f:RenderField For="CarOwners.First().RegistTime" SortField="RegistTime" FieldFormat="yyyy-MM-dd" Width="100"></f:RenderField>
+                    <f:RenderField For="CarOwners.First().LastLoginTime" SortField="LastLoginTime" FieldFormat="yyyy-MM-dd"  Width="100"></f:RenderField>
                     <f:RenderField For="CarOwners.First().Balance" SortField="Balance" Width="100"></f:RenderField>
-                    <f:RenderCheckField For="CarOwners.First().Enabled" SortField="Enabled" RenderAsStaticField="false" Width="80" />
+                    <f:RenderCheckField For="CarOwners.First().IsFree"  RenderAsStaticField="false" Width="80" />
+                    <f:RenderCheckField For="CarOwners.First().Enabled"  RenderAsStaticField="false" Width="80" />
                     <f:RenderField For="CarOwners.First().Cars.Count" HeaderText="车辆" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderCars"></f:RenderField>
                     <f:RenderField For="CarOwners.First().TransactionRecords.Count" HeaderText="交易记录" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderTransactions"></f:RenderField>
                     <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="240" RendererFunction="renderBtns"></f:RenderField>

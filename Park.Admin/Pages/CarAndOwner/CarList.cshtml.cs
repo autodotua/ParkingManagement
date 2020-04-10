@@ -56,5 +56,28 @@ namespace Park.Admin.Pages.CarAndOwner
 
             return (await q.Include(p => p.ParkRecords).Include(p => p.CarOwner).ToListAsync());
         }
+
+        public async Task<IActionResult> OnPostSaveDataAsync(string[] Grid1_fields, JArray Grid1_modifiedData, int Grid1_pageIndex, string Grid1_sortField, string Grid1_sortDirection,
+    string ttbSearchMessage, int ddlGridPageSize, string actionType)
+        {
+
+            foreach (JObject modifiedRow in Grid1_modifiedData)
+            {
+                string status = modifiedRow.Value<string>("status");
+                int rowId = Convert.ToInt32(modifiedRow.Value<string>("id"));
+
+                if (status == "modified")
+                {
+                    var car = ParkDB.Cars.Find(rowId);
+                    car.Enabled = modifiedRow["values"]["Enabled"].Value<bool>();
+                    ParkDB.Entry(car).State = EntityState.Modified;
+                }
+            }
+            await ParkDB.SaveChangesAsync();
+            ShowNotify("数据保存成功！");
+
+            return await LoadGrid(Grid1_fields, Grid1_pageIndex, Grid1_sortField, Grid1_sortDirection, ttbSearchMessage, ddlGridPageSize, actionType);
+        }
+
     }
 }
