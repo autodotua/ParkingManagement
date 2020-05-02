@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Park.Models;
 using Park.Service;
 
@@ -78,15 +80,35 @@ namespace Park.API.Controllers
             }
         }
         [HttpPost]
+        [Route("home")]
+        public async Task<ResponseData<OverviewResponse>> OverviewAsync([FromBody] UserToken request)
+        {
+            if (!request.IsValid())
+            {
+                return new ResponseData<OverviewResponse>() { Succeed = false, Message = "用户验证失败" };
+            }
+            OverviewResponse response = new OverviewResponse();
+            foreach (var car in await db.Cars.Where(p=>p.CarOwnerID==request.UserID).ToListAsync())
+            {
+                int recordCount =await db.ParkRecords.CountAsync(p => p.CarID == car.ID);
+                response.Cars.Add(new { car.LicensePlate, Records = recordCount });
+            }
+            TransactionRecord transaction = await db.TransactionRecords
+                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwnerID == request.UserID) ;
+            response.Balance = transaction.Balance;
+            response.ExpireTime = transaction.ExpireTime.ToShortDateString();
+
+            return new ResponseData<OverviewResponse>() { Data = response };
+        }
+        [HttpPost]
         [Route("Car")]
         public async Task<ResponseData<bool>> CarAsync([FromBody] CarRequest request)
         {
-            var a = HttpContext.Request.Cookies.ToArray();
-            if (!HttpContext.Session.GetInt32("user").HasValue)
+            if (!request.IsValid())
             {
                 return new ResponseData<bool>() { Succeed = false, Message = "用户验证失败" };
             }
-            int carOwnerID = HttpContext.Session.GetInt32("user").Value;
+            int carOwnerID = request.UserID;
 
             switch (request.Type)
             {
@@ -107,32 +129,79 @@ namespace Park.API.Controllers
         }
 
     }
+
+    public class OverviewResponse
+    {
+        public List<dynamic> Cars { get; set; } = new List<dynamic>();//包括车牌和停车次数
+        public double Balance { get; set; }
+        public string ExpireTime { get; set; }
+    }
     public class LoginRequest
     {
         public string Password { get; set; }
         public string Username { get; set; }
     }
-    public class CarRequest : RequestWithTokenBase
+    public class CarRequest : UserToken
     {
         public string Type { get; set; }//add/edit/delete
         public Car Car { get; set; }
     }
-    public class LoginResult
+    public class LoginResult : UserToken
     {
-        public LoginResult(CarOwner carOwner)
+        public LoginResult(CarOwner carOwner) : base(carOwner.ID, true)
         {
             CarOwner = carOwner;
             carOwner.Password = null;
-            Token = Guid.NewGuid().ToString("N");
         }
 
         public CarOwner CarOwner { get; set; }
-        public string Token { get; set; }
     }
 
-    public abstract class RequestWithTokenBase
+    public class UserToken
     {
-        public string Username { get; set; }
+        public int UserID { get; set; }
         public string Token { get; set; }
+        private const string Key = "ParkKey";
+
+        public UserToken()
+        { }
+        public UserToken(int userID, bool createToken)
+        {
+            UserID = userID;
+            if (createToken)
+            {
+                Token = GetToken();
+            }
+        }
+
+        public bool IsValid()
+        {
+            var aes = new FzLib.Cryptography.Aes();
+            aes.SetStringKey(Key + UserID);
+            aes.SetStringIV("");
+            try
+            {
+                string[] items = aes.Decrypt(Token).Split("-");
+                if (items[0] != UserID.ToString())
+                {
+                    return false;
+                }
+                //预留过期检测
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        public string GetToken()
+        {
+            var aes = new FzLib.Cryptography.Aes();
+            aes.SetStringKey(Key + UserID);
+            aes.SetStringIV("");
+            return aes.Encrypt(string.Join("-", UserID.ToString(), DateTime.Now.ToString("yyyyMMdd")));
+        }
     }
 }

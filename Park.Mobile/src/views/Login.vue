@@ -28,28 +28,29 @@
 <script lang="ts">
 import Vue from "vue";
 import Cookies from "js-cookie"
-const transport = Vue.axios.create({
-  //withCredentials: true,
-})
+import {withToken} from "../common"
 export default Vue.extend({
   data: function() {
     return { username: "user17392", password: "1234" };
   },
   methods: {
     login() {
-        transport
+        Vue.axios
         .post("http://localhost:8520/User/Login", {
           UserName: this.username,
           Password: this.password
         })
         .then(response => {
+          Cookies.set("userID",response.data.data.userID)
+          Cookies.set("token",response.data.data.token)
+          window.location.href="/";
           console.log(response.data);
         }).catch(r=>{
           console.log(r.Message);
         })
     },
     register(){
-       transport
+       Vue.axios
         .post("http://localhost:8520/User/Login", {
           UserName: this.username,
           Password: this.password
@@ -61,20 +62,18 @@ export default Vue.extend({
         })
     },
     test(){
-        transport
-        .post("http://localhost:8520/User/Car", {
+        Vue.axios
+        .post("http://localhost:8520/User/Car", withToken({
           Car: {LicensePlate:"浙B12345"},
           Type: "add"
-        })
+        }))
         .then(response => {
           console.log(response.data);
         }).catch(r=>{
           console.log(r.Message);
         })
     },
-    withToken(obj: object){
-      console.log(obj);
-    }
+    
   }
 });
 </script>
