@@ -77,9 +77,9 @@ namespace Park.Service
 
             for (int i = 0; i < 20; i++)//车主
             {
-                var owner =await CarOwnerService.Regist(context, 
+                var owner =(await CarOwnerService.Regist(context, 
                     "user" + r.Next(0, short.MaxValue), "1234",
-                    DateTime.Now.AddDays(-r.NextDouble() * 5));//模拟用户在5天内注册的
+                    DateTime.Now.AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
 
                 for (int j = 0; j < 3; j++)//充值
                 {

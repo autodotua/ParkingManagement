@@ -17,7 +17,7 @@ namespace Park.Service
              /// <param name="registTime"></param>
              /// <returns>如果用户名已存在，返回null，否则返回注册后的用户对象</returns>
 
-        public static Task<CarOwner> Regist(ParkContext db, string username, string password)
+        public static Task<LoginOrRegisterResult> Register(ParkContext db, string username, string password)
         {
             return Regist(db, username, password, DateTime.Now);
         }
@@ -29,11 +29,11 @@ namespace Park.Service
         /// <param name="password"></param>
         /// <param name="registTime">内部测试使用的时间</param>
         /// <returns>如果用户名已存在，返回null，否则返回注册后的用户对象</returns>
-        public async static Task<CarOwner> Regist(ParkContext db, string username, string password, DateTime registTime)
+        public async static Task<LoginOrRegisterResult> Regist(ParkContext db, string username, string password, DateTime registTime)
         {
             if (await db.CarOwners.AnyAsync(p => p.Username == username))
             {
-                return null;
+                return new LoginOrRegisterResult() { Type = LoginOrRegisterResultType.Existed };
             }
             CarOwner carOwner = new CarOwner()
             {
@@ -45,7 +45,27 @@ namespace Park.Service
             };
             db.Add(carOwner);
             await db.SaveChangesAsync();
-            return carOwner;
+            return new LoginOrRegisterResult() { CarOwner = carOwner };
+        }
+        public async static Task<LoginOrRegisterResult> Login(ParkContext db, string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                return new LoginOrRegisterResult() { Type = LoginOrRegisterResultType.Empty };
+                //return new ResponseData<object>() { Succeed = false, Message = "用户名或密码为空" };
+            }
+            CarOwner carOwner = await db.CarOwners
+                .FirstOrDefaultAsync(p => p.Username == username&&p.Password==CreateMD5(password));
+
+            if (carOwner==null)
+            {
+                return new LoginOrRegisterResult() { Type = LoginOrRegisterResultType.Wrong };
+                //return new ResponseData<object>() { Succeed = false, Message = "用户名或密码错误" };
+            }
+            carOwner.LastLoginTime = DateTime.Now;
+            db.Entry(carOwner).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+            return new LoginOrRegisterResult() { CarOwner = carOwner };
         }
         public async static Task SetPasswordAsync(ParkContext db, CarOwner carOwner, string password)
         {
@@ -70,5 +90,20 @@ namespace Park.Service
                 return sb.ToString();
             }
         }
+
+
+    }
+    public class LoginOrRegisterResult
+    {
+        public LoginOrRegisterResultType Type { get; set; } = LoginOrRegisterResultType.Succeed;
+        public CarOwner CarOwner { get; set; }
+    }
+    public enum LoginOrRegisterResultType
+    {
+        Succeed,//成功
+        Empty,//用户名或密码为空
+        Wrong,//用户名或密码不正确
+        Existed,//用户已存在
+
     }
 }
