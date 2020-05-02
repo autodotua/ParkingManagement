@@ -33,7 +33,7 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>我的车辆</span>
-        <el-button style="float: right; padding: 3px 0" type="text">管理</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="jump('/Car')">管理</el-button>
       </div>
       <el-table :data="cars" style="width: 100%">
         <el-table-column prop="licensePlate" label="车牌" width="120"></el-table-column>
@@ -42,8 +42,7 @@
     </el-card>
   </div>
 </template>
-
-<script>
+<script lang="ts">
 import Vue from "vue";
 import Cookies from "js-cookie";
 import { withToken } from "../common";
@@ -57,10 +56,10 @@ export default Vue.extend({
     };
   },
   computed:{
-    displayBalance(){
+    displayBalance(): string{
       return this.balance+"元";
     },
-    displayExpireTime(){
+    displayExpireTime(): string{
       if(this.expireTime.startsWith("0001"))
       {
         return "无";
@@ -68,6 +67,9 @@ export default Vue.extend({
       return this.expireTime;
     }
   },
+  methods:{jump(url: string){
+    window.location.href=url;
+  }},
   components: {},
   mounted: function() {
     this.$nextTick(function() {

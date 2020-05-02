@@ -88,13 +88,13 @@ namespace Park.API.Controllers
                 return new ResponseData<OverviewResponse>() { Succeed = false, Message = "用户验证失败" };
             }
             OverviewResponse response = new OverviewResponse();
-            foreach (var car in await db.Cars.Where(p=>p.CarOwnerID==request.UserID).ToListAsync())
+            foreach (var car in await db.Cars.Where(p => p.CarOwnerID == request.UserID).ToListAsync())
             {
-                int recordCount =await db.ParkRecords.CountAsync(p => p.CarID == car.ID);
-                response.Cars.Add(new { car.LicensePlate, Records = recordCount });
+                int recordCount = await db.ParkRecords.CountAsync(p => p.CarID == car.ID);
+                response.Cars.Add(new { car.LicensePlate, Records = recordCount,car.ID });
             }
             TransactionRecord transaction = await db.TransactionRecords
-                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwnerID == request.UserID) ;
+                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwnerID == request.UserID);
             response.Balance = transaction.Balance;
             response.ExpireTime = transaction.ExpireTime.ToShortDateString();
 
@@ -102,27 +102,42 @@ namespace Park.API.Controllers
         }
         [HttpPost]
         [Route("Car")]
-        public async Task<ResponseData<bool>> CarAsync([FromBody] CarRequest request)
+        public async Task<ResponseData<object>> CarAsync([FromBody] CarRequest request)
         {
             if (!request.IsValid())
             {
-                return new ResponseData<bool>() { Succeed = false, Message = "用户验证失败" };
+                return new ResponseData<object>() { Succeed = false, Message = "用户验证失败" };
             }
             int carOwnerID = request.UserID;
-
+            Car car = null;
             switch (request.Type)
             {
                 case "add":
-                    var car = request.Car;
-                    car.CarOwnerID = carOwnerID;
-                    car.Enabled = true;
+                    car = new Car()
+                    {
+                        CarOwnerID = carOwnerID,
+                        Enabled = true,
+                        LicensePlate = request.LicensePlate
+                    };
+               
                     db.Cars.Add(car);
                     await db.SaveChangesAsync();
-                    return new ResponseData<bool>() { Data = true };
+                    return new ResponseData<object>() { Data = true };
+                case "detail":
+                  car= await db.Cars.Include(p => p.ParkRecords).ThenInclude(p=>p.ParkArea)
+                        .Include(p => p.ParkRecords).ThenInclude(p => p.TransactionRecord)
+                        .FirstOrDefaultAsync(p => p.ID == request.CarID && p.CarOwnerID == request.UserID);
+                 
+                    return new ResponseData<object>() { Data = car };
                 case "delete":
-                    db.Cars.Remove(request.Car);
-                    await db.SaveChangesAsync();
-                    return new ResponseData<bool>() { Data = true };
+                    car= await db.Cars.FirstOrDefaultAsync(p => p.ID == request.CarID
+                    && p.CarOwnerID==request.UserID);
+                    if (car != null)
+                    {
+                        db.Cars.Remove(car);
+                        await db.SaveChangesAsync();
+                    }
+                    return new ResponseData<object>() { Data = true };
                 default:
                     throw new NotImplementedException();
             }
@@ -143,8 +158,9 @@ namespace Park.API.Controllers
     }
     public class CarRequest : UserToken
     {
-        public string Type { get; set; }//add/edit/delete
-        public Car Car { get; set; }
+        public string Type { get; set; }//add/edit/delete/detail
+        public int CarID { get; set; }
+        public string LicensePlate { get; set; }
     }
     public class LoginResult : UserToken
     {

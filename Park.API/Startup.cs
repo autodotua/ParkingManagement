@@ -33,7 +33,11 @@ namespace Park.API
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            services.AddControllers(); services.AddCors(option => option.AddPolicy("cors", policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
+            services.AddControllers().AddNewtonsoftJson(options =>//支持循环嵌套（如Car-ParkRecord-Car）
+options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+); ;
+
+            services.AddCors(option => option.AddPolicy("cors", policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 
         }
 
@@ -58,8 +62,8 @@ namespace Park.API
                 endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
-            
-        });
+
+            });
         }
     }
 }

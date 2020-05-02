@@ -21,8 +21,6 @@ namespace Park.Models
         public int? CarOwnerID { get; set; }
         [Display(Name = "允许进场")]
         public bool Enabled { get; set; } = true;
-        [JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
         public List<ParkRecord> ParkRecords { get; set; }
     }
 

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header class="header" v-show="showHeader">
+      <!-- <el-header class="header" v-show="showHeader">
         <el-menu class="el-menu-demo" mode="horizontal">
           <el-menu-item>
             <router-link to="/">主页</router-link>
@@ -10,7 +10,7 @@
             <router-link to="/about">我</router-link>
           </el-menu-item>
         </el-menu>
-      </el-header>
+      </el-header> -->
       <el-main>
         <router-view></router-view>
       </el-main>
