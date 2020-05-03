@@ -3,6 +3,7 @@
     <div slot="header" class="clearfix">
       <span>我的车辆</span>
     </div>
+    <el-button style="float:right" type="primary" @click="drawerAdd=true">新增</el-button>
     <el-table :data="cars" style="width: 100%">
       <el-table-column prop="licensePlate" label="车牌" width="120"></el-table-column>
       <el-table-column prop="records" label="停车次数" width="80"></el-table-column>
@@ -15,12 +16,20 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-drawer title="停车记录" :visible.sync="drawer" :with-header="true" size="360px">
+    <el-drawer title="停车记录" :visible.sync="drawerDetail" :with-header="true" size="360px">
       <el-table :data="parkRecords" style="width: 100%">
         <el-table-column prop="enterTime" label="进场" width="136"></el-table-column>
         <el-table-column prop="leaveTime" label="离场" width="136s"></el-table-column>
         <el-table-column prop="parkArea.name" label="停车场" width="80"></el-table-column>
       </el-table>
+    </el-drawer>
+    <el-drawer title="新增车辆" :visible.sync="drawerAdd" :with-header="true" size="160px">
+      <el-form label-position="top" style="margin-left:12px">
+        <el-form-item label="车牌">
+          <el-input v-model="licensePlate" placeholder="浙B12345" style="width:120px"></el-input>
+        </el-form-item>
+        <el-button type="primary" @click="confirmAdd">确定</el-button>
+      </el-form>
     </el-drawer>
   </div>
 </template>
@@ -32,11 +41,13 @@ export default Vue.extend({
   name: "Home",
   data() {
     return {
-      drawer: false,
+      drawerDetail: false,
+      drawerAdd: false,
       cars: [],
       balance: 0,
       expireTime: "",
-      parkRecords: []
+      parkRecords: [],
+      licensePlate: ""
     };
   },
   methods: {
@@ -44,7 +55,7 @@ export default Vue.extend({
       return time;
     },
     viewDetail(row: any) {
-      this.drawer = true;
+      this.drawerDetail = true;
       Vue.axios
         .post(
           getUrl("User", "Car"),
@@ -61,7 +72,8 @@ export default Vue.extend({
         })
         .catch(showError);
     },
-    deleteCar(row: any) {   Vue.axios
+    deleteCar(row: any) {
+      Vue.axios
         .post(
           getUrl("User", "Car"),
           withToken({ Type: "delete", CarID: row.id })
@@ -70,6 +82,27 @@ export default Vue.extend({
           location.reload();
         })
         .catch(showError);
+    },
+    confirmAdd(row: any) {
+      if (!this.isLicensePlate(this.licensePlate)) {
+        showError("您输入的车牌不正确");
+        return;
+      }
+      Vue.axios
+        .post(
+          getUrl("User", "Car"),
+          withToken({ Type: "add", LicensePlate: this.licensePlate })
+        )
+        .then(response => {
+          location.reload();
+        })
+        .catch(showError);
+    },
+
+    isLicensePlate(str: string) {
+      return /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/.test(
+        str
+      );
     }
   },
   computed: {
@@ -105,7 +138,7 @@ export default Vue.extend({
   word-wrap: break-word;
 }
 
-.cell .el-button{
+.cell .el-button {
   margin-right: 6px;
 }
 </style>

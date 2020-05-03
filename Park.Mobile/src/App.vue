@@ -44,7 +44,7 @@ export default Vue.extend({
 });
 </script>
 <style scoped>
-#app {
+/* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -53,5 +53,5 @@ export default Vue.extend({
 }
 header a {
   text-decoration: none;
-}
+} */
 </style>
