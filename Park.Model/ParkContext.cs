@@ -20,11 +20,12 @@ namespace Park.Models
         public DbSet<CarOwner> CarOwners { get; set; }
         public DbSet<ParkArea> ParkAreas { get; set; }
         public DbSet<ParkingSpace> ParkingSpaces { get; set; }
-        public DbSet<Aisle> Aisles { get; set; }
+        public DbSet<Config> Aisles { get; set; }
         public DbSet<Wall> Walls { get; set; }
         public DbSet<ParkRecord> ParkRecords { get; set; }
         public DbSet<TransactionRecord> TransactionRecords { get; set; }
         public DbSet<PriceStrategy> PriceStrategys { get; set; }
+        public DbSet<Config> Configs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

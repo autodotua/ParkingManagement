@@ -17,6 +17,7 @@ namespace Park.Service
 
             List<ParkArea> parkAreas = new List<ParkArea>();
             Random r = new Random();
+            await Config.SetAsync(context, "MonthlyPrice", "120");
             PriceStrategy priceStrategy = new PriceStrategy()
             {
                 StrategyJson = @"{
@@ -36,7 +37,7 @@ namespace Park.Service
     }
   ]
 }",
-                MonthlyPrice = 120
+                //MonthlyPrice = 120
             };
             context.PriceStrategys.Add(priceStrategy);
 
@@ -77,13 +78,13 @@ namespace Park.Service
 
             for (int i = 0; i < 20; i++)//车主
             {
-                var owner =(await CarOwnerService.Regist(context, 
+                var owner = (await CarOwnerService.Regist(context,
                     "user" + r.Next(0, short.MaxValue), "1234",
                     DateTime.Now.AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
-
+                await context.SaveChangesAsync();
                 for (int j = 0; j < 3; j++)//充值
                 {
-                    await TransactionService.RechargeMoneyAsync(context, owner, r.Next(2, 20));
+                    await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20));
                 }
                 for (int j = 0; j < r.Next(2, 5); j++)//车辆
                 {
@@ -105,8 +106,8 @@ namespace Park.Service
                             leaveTime = DateTime.Now.AddDays(-r.NextDouble() * 5);
                         } while (leaveTime > enterTime);
                         //模拟用户在5天内进入过停车场，然后出了停车场
-                        await ParkService.EnterAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)],enterTime);
-                        await ParkService.LeaveAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)],leaveTime);
+                        await ParkService.EnterAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)], enterTime);
+                        await ParkService.LeaveAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)], leaveTime);
                     }
                 }
             }

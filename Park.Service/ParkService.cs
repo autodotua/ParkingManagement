@@ -96,7 +96,7 @@ namespace Park.Service
                     //免费用户
                     break;
                 case CarOwner _:
-                    if (await IsMonthlyCardValidAsync(db, owner))
+                    if (await IsMonthlyCardValidAsync(db, owner.ID))
                     {
                         break;
                     }
@@ -108,7 +108,7 @@ namespace Park.Service
                 needPay:
                     //非会员或普通用户
                     double price = GetPrice(priceStrategy, parkRecord.EnterTime, time);
-                    double balance = owner == null ? 0 : await GetBalanceAsync(db, owner);
+                    double balance = owner == null ? 0 : await GetBalanceAsync(db, owner.ID);
                     //计算价格
                     if (balance - price < 0)
                     {

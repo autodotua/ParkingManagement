@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Car from '../views/Car.vue'
+import Recharge from '../views/Recharge.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ Vue.use(VueRouter)
     path: '/car',
     name: 'Car',
     component: Car
+  },
+  {
+    path: '/recharge',
+    name: 'Recharge',
+    component: Recharge
   },
   {
     path: '/about',

@@ -33,7 +33,7 @@ namespace Park.Admin.Pages.CarAndOwner
             IsFree = owner.IsFree;
             Cars = owner.Cars;
             TransactionRecords = owner.TransactionRecords;
-            Balance = await TransactionService.GetBalanceAsync(db, owner);
+            Balance = await TransactionService.GetBalanceAsync(db, owner.ID);
             RegistTime = owner.RegistTime;
             LastLoginTime = owner.LastLoginTime;
             return this;

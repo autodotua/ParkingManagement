@@ -9,7 +9,7 @@
         <el-col :span="12">余额：</el-col>
         <el-col :span="8">{{displayBalance}}</el-col>
         <el-col :span="4">
-          <el-button size="mini">充值</el-button>
+          <el-button size="mini" @click="jump('/Recharge')">充值</el-button>
         </el-col>
       </el-row>
       <br />

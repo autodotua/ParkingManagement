@@ -43,7 +43,7 @@ namespace Park.Designer.Model
             }
         }
         public override List<ParkingSpace> ParkingSpaces { get; set; } = new List<ParkingSpace>();
-        public override List<Aisle> Aisles { get; set; } = new List<Aisle>();
+        public override List<Config> Aisles { get; set; } = new List<Config>();
         public override List<Wall> Walls { get; set; } = new List<Wall>();
         public override string ToString()
         {

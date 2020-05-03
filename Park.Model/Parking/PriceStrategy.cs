@@ -8,7 +8,7 @@ namespace Park.Models
         public int ID { get; set; }
         [Required]
         public string StrategyJson { get; set; }
-        public double MonthlyPrice { get; set; }
+        //public double MonthlyPrice { get; set; }
     }
 
 

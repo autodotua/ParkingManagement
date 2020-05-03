@@ -11,6 +11,12 @@
           </el-menu-item>
         </el-menu>
       </el-header> -->
+
+      <el-header class="header" v:show="showHeader">
+       <el-button  type="text" style="float:right"> {{username}}</el-button>
+        <h3 style="float:left">停车场</h3>
+        <slot name="header"></slot>
+      </el-header>
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -26,6 +32,11 @@ export default Vue.extend({
     return {
       showHeader: true
     };
+  },
+  computed:{
+    username(){
+    return  Cookies.get("username")
+    }
   },
   mounted: function() {
     this.$nextTick(function() {
@@ -43,6 +54,12 @@ export default Vue.extend({
   }
 });
 </script>
+<style >
+.header-title{
+  float:left;
+  margin-top:0px
+}
+</style>
 <style scoped>
 /* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -54,4 +71,17 @@ export default Vue.extend({
 header a {
   text-decoration: none;
 } */
+
+.header{
+  margin-left: -12px;
+  margin-right: -12px;
+  margin-top: -12px;
+  background: #EBEEF5;
+  color: #606266;
+}
+
+.header button{
+  color: #606266;
+  margin-top: 12px;
+}
 </style>

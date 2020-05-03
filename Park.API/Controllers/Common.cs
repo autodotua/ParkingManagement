@@ -11,6 +11,14 @@ namespace Park.API.Controllers
 
     public class ResponseData<T>
     {
+        public ResponseData(T data)
+        {
+            Data = data;
+        }
+          public ResponseData()
+        {
+        }
+
         public bool Succeed { get; set; } = true;
         public string Message { get; set; }
         public T Data { get; set; }

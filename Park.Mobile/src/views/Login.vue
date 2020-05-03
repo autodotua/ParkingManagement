@@ -19,7 +19,6 @@
       <br />
       <br />      
       <el-button id="login" v-on:click="register" style="width:100%">注册</el-button>
-      <el-button id="test" v-on:click="test" style="width:100%">测试</el-button>
 
       <!-- <el-link href="register" >注册</el-link> -->
     </div>
@@ -28,8 +27,6 @@
 <script lang="ts">
 import Vue from "vue";
 import Cookies from "js-cookie"
-import {withToken} from "../common"
-import {Notification} from 'element-ui'
 export default Vue.extend({
   data: function() {
     return { username: "user17392", password: "1234" };
@@ -44,6 +41,7 @@ export default Vue.extend({
         .then(response => {
           Cookies.set("userID",response.data.data.userID)
           Cookies.set("token",response.data.data.token)
+          Cookies.set("username",response.data.data.carOwner.username)
           window.location.href="/";
           console.log(response.data);
         }).catch(r=>{
@@ -61,20 +59,7 @@ export default Vue.extend({
         }).catch(r=>{
           console.log(r.Message);
         })
-    },
-    test(){
-        Vue.axios
-        .post("http://localhost:8520/User/Car", withToken({
-          Car: {LicensePlate:"浙B12345"},
-          Type: "add"
-        }))
-        .then(response => {
-          console.log(response.data);
-        }).catch(r=>{
-          console.log(r.Message);
-        })
-    },
-    
+    }
   }
 });
 </script>

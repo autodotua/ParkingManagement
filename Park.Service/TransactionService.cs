@@ -19,15 +19,16 @@ namespace Park.Service
         /// <param name="parkArea"></param>
         /// <param name="month"></param>
         /// <returns>返回交易记录，如果余额不足，则返回null</returns>
-        public async static Task<TransactionRecord> RechargeTimeAsync(ParkContext db, CarOwner owner,ParkArea parkArea, int month)
+        public async static Task<TransactionRecord> RechargeTimeAsync(ParkContext db, int ownerID, int month)
         {
+           int price =int.Parse(await Config.GetAsync(db, "MonthlyPrice", "120"));
             Debug.Assert(month > 0);
-            double balance = await GetBalanceAsync(db, owner);
-            if(balance<parkArea.PriceStrategy.MonthlyPrice*month)
+            double balance = await GetBalanceAsync(db, ownerID);
+            if(balance<price*month)
             {
                 return null;
             }
-            DateTime? time = await GetExpireTimeAsync(db, owner);
+            DateTime? time = await GetExpireTimeAsync(db, ownerID);
             DateTime target;
             if(time.HasValue&&time.Value>DateTime.Now)
             {
@@ -39,25 +40,25 @@ namespace Park.Service
             }
             TransactionRecord transactionRecord = new TransactionRecord()
             {
-                Balance = balance- parkArea.PriceStrategy.MonthlyPrice * month,
-                CarOwner = owner,
+                Balance = balance- price * month,
+                CarOwnerID = ownerID,
                 Time = DateTime.Now,
                 Type = TransactionType.RechargeTime,
-                Value = -parkArea.PriceStrategy.MonthlyPrice * month,
+                Value = -price * month,
                 ExpireTime=target
             };
             db.TransactionRecords.Add(transactionRecord);
             await db.SaveChangesAsync();
             return transactionRecord;
         }
-        public async static Task<TransactionRecord> RechargeMoneyAsync(ParkContext db,CarOwner owner,double amount)
+        public async static Task<TransactionRecord> RechargeMoneyAsync(ParkContext db,int ownerID,double amount)
         {
             Debug.Assert(amount > 0);
-            double balance = await GetBalanceAsync(db, owner);
+            double balance = await GetBalanceAsync(db, ownerID);
             TransactionRecord transactionRecord = new TransactionRecord()
             {
                 Balance=balance+amount,
-                CarOwner=owner,
+                CarOwnerID=ownerID,
                 Time=DateTime.Now,
                 Type=TransactionType.RechargeMoney,
                 Value=amount
@@ -67,23 +68,23 @@ namespace Park.Service
             return transactionRecord;
         }
 
-        public async static Task<double> GetBalanceAsync(ParkContext db, CarOwner owner)
+        public async static Task<double> GetBalanceAsync(ParkContext db, int ownerID)
         {
             double? balance = (await db.TransactionRecords
-                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwner == owner))?.Balance;
+                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwnerID == ownerID))?.Balance;
             return balance ?? 0;
         }
-        public async static Task<bool> IsMonthlyCardValidAsync(ParkContext db, CarOwner owner)
+        public async static Task<bool> IsMonthlyCardValidAsync(ParkContext db, int ownerID)
         {
-            DateTime? expireTime = await GetExpireTimeAsync(db, owner);
+            DateTime? expireTime = await GetExpireTimeAsync(db, ownerID);
             return expireTime.HasValue? expireTime >= DateTime.Now:false ;
         }
 
-        private async static  Task<DateTime?> GetExpireTimeAsync(ParkContext db, CarOwner owner)
+        private async static  Task<DateTime?> GetExpireTimeAsync(ParkContext db, int ownerID)
         {
             var record = await db.TransactionRecords
                 .Where(p => p.Type == TransactionType.RechargeTime)//充时记录
-                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwner == owner);
+                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwnerID== ownerID);
             if (record == null)
             {//没有充时长记录
                 return null;

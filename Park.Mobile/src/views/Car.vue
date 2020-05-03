@@ -1,8 +1,7 @@
 <template>
+
   <div>
-    <div slot="header" class="clearfix">
-      <span>我的车辆</span>
-    </div>
+      <h2 class="header-title" >我的车辆</h2>
     <el-button style="float:right" type="primary" @click="drawerAdd=true">新增</el-button>
     <el-table :data="cars" style="width: 100%">
       <el-table-column prop="licensePlate" label="车牌" width="120"></el-table-column>
@@ -58,7 +57,7 @@ export default Vue.extend({
       this.drawerDetail = true;
       Vue.axios
         .post(
-          getUrl("User", "Car"),
+          getUrl("Car", "Modify"),
           withToken({ Type: "detail", CarID: row.id })
         )
         .then(response => {
@@ -75,7 +74,7 @@ export default Vue.extend({
     deleteCar(row: any) {
       Vue.axios
         .post(
-          getUrl("User", "Car"),
+          getUrl("Car", "Modify"),
           withToken({ Type: "delete", CarID: row.id })
         )
         .then(response => {
@@ -90,7 +89,7 @@ export default Vue.extend({
       }
       Vue.axios
         .post(
-          getUrl("User", "Car"),
+          getUrl("Car", "Modify"),
           withToken({ Type: "add", LicensePlate: this.licensePlate })
         )
         .then(response => {
@@ -120,11 +119,9 @@ export default Vue.extend({
   mounted: function() {
     this.$nextTick(function() {
       Vue.axios
-        .post("http://localhost:8520/User/Home", withToken({}))
+        .post(getUrl("Car","Index"), withToken({}))
         .then(response => {
-          this.cars = response.data.data.cars;
-          this.balance = response.data.data.balance;
-          this.expireTime = response.data.data.expireTime;
+          this.cars = response.data.data;
         })
         .catch(showError);
     });
