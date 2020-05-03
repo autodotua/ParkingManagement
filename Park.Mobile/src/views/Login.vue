@@ -29,6 +29,7 @@
 import Vue from "vue";
 import Cookies from "js-cookie"
 import {withToken} from "../common"
+import {Notification} from 'element-ui'
 export default Vue.extend({
   data: function() {
     return { username: "user17392", password: "1234" };

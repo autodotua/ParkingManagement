@@ -6,30 +6,22 @@
         <el-button style="float: right; padding: 3px 0" type="text">交易记录</el-button>
       </div>
       <el-row>
-        <el-col :span="12">
-          余额：
-        </el-col>
-        <el-col :span="8">
-          {{displayBalance}}
-        </el-col>
+        <el-col :span="12">余额：</el-col>
+        <el-col :span="8">{{displayBalance}}</el-col>
         <el-col :span="4">
           <el-button size="mini">充值</el-button>
         </el-col>
       </el-row>
-      <br>
+      <br />
       <el-row>
-        <el-col :span="12">
-          月租到期时间：
-        </el-col>
-        <el-col :span="8">
-          {{displayExpireTime}}
-        </el-col>
+        <el-col :span="12">月租到期时间：</el-col>
+        <el-col :span="8">{{displayExpireTime}}</el-col>
         <el-col :span="4">
           <el-button size="mini">续期</el-button>
         </el-col>
       </el-row>
     </el-card>
-    <br/>
+    <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>我的车辆</span>
@@ -44,47 +36,44 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import Cookies from "js-cookie";
-import { withToken } from "../common";
+import { withToken, getUrl, showError } from "../common";
 export default Vue.extend({
   name: "Home",
   data() {
     return {
       cars: [],
-      balance:0,
-      expireTime:""
+      balance: 0,
+      expireTime: ""
     };
   },
-  computed:{
-    displayBalance(): string{
-      return this.balance+"元";
+  computed: {
+    displayBalance(): string {
+      return this.balance + "元";
     },
-    displayExpireTime(): string{
-      if(this.expireTime.startsWith("0001"))
-      {
+    displayExpireTime(): string {
+      if (this.expireTime.startsWith("0001")) {
         return "无";
       }
       return this.expireTime;
     }
   },
-  methods:{jump(url: string){
-    window.location.href=url;
-  }},
+  methods: {
+    jump(url: string) {
+      window.location.href = url;
+    }
+  },
   components: {},
   mounted: function() {
     this.$nextTick(function() {
-      const userID = Cookies.get("userID") || "";
+      console.log("post");
       Vue.axios
-        .post("http://localhost:8520/User/Home", withToken({}))
+        .post(getUrl("User", "Home"), withToken({}))
         .then(response => {
           this.cars = response.data.data.cars;
           this.balance = response.data.data.balance;
-          this.expireTime= response.data.data.expireTime;
-          console.log(response.data);
+          this.expireTime = response.data.data.expireTime;
         })
-        .catch(r => {
-          console.log(r.Message);
-        });
+        .catch(showError);
     });
   }
 });
