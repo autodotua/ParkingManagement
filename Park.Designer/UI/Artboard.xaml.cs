@@ -159,7 +159,7 @@ namespace Park.Designer.UI
                 Y1 = obj.Y1,
                 X2 = obj.X2,
                 Y2 = obj.Y2,
-                Stroke =obj is Config? AisleBrush:WallBrush,
+                Stroke =obj is Aisle ? AisleBrush:WallBrush,
                 StrokeThickness = LineWidth,
                 RenderTransformOrigin = new Point(0.5, 0.5)
             };
@@ -331,9 +331,9 @@ namespace Park.Designer.UI
                     break;
                 case DrawingMode.Line2:
                     Line line = currentShape as Line;
-                    if (Template is Config)
+                    if (Template is Aisle)
                     {
-                        obj = new Config()
+                        obj = new Aisle()
                         {
                             X1 = line.X1,
                             Y1 = line.Y1,

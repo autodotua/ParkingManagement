@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Park.Model\Park.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="FzStandardLib">
+      <HintPath>..\Libs\FzStandardLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

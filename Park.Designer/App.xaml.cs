@@ -22,13 +22,9 @@ namespace Park.Designer
             Current = this;
             Test();
 #if (!DEBUG)
-            UnhandledException.RegistAll();
+            //UnhandledException.RegistAll();
 
-            FzLib.Program.Runtime.SingleInstance singleInstance = new FzLib.Program.Runtime.SingleInstance(Assembly.GetExecutingAssembly().FullName);
-            if (await singleInstance.CheckAndOpenWindow(this, this))
-            {
-                return;
-            }
+       
 #endif
 
             InitializeTheme();

@@ -17,7 +17,7 @@ namespace Park.Test
             {
                 db = new Context();
                 db.Database.EnsureDeleted();
-                ParkDatabaseInitializer.InitializeAsync(db, true, true);
+                ParkDatabaseInitializer.Initialize(db, true, true);
                 db.Remove(await db.CarOwners.FirstAsync());
                 //Console.WriteLine(await db.ParkRecords.CountAsync());
                 //await TestTempCarOwnerEnterAndLeaveAsync();
@@ -40,7 +40,7 @@ namespace Park.Test
         private static async Task TestGeneralCarOwnerEnterAndLeaveAsync()
         {
             Car car = await db.Cars.FirstAsync();
-            await TransactionService.RechargeMoneyAsync(db, car.CarOwner, 100);//模拟充值100元
+            await TransactionService.RechargeMoneyAsync(db, car.CarOwnerID.Value, 100);//模拟充值100元
             await ParkService.EnterAsync(db, car.LicensePlate, await db.ParkAreas.FirstAsync());
             await Task.Delay(2000);
             await ParkService.LeaveAsync(db, car.LicensePlate, await db.ParkAreas.FirstAsync()); 

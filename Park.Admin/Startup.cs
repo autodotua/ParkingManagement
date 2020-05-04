@@ -57,10 +57,14 @@ namespace Park.Admin
 
 
             // 设置数据库连接字符串（目前仅在 SQL Server 下测试通过）
+            //services.AddDbContext<ParkAdminContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("ParkAdminSQLServer"))); 
             services.AddDbContext<ParkAdminContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ParkAdminSQLServer"))); 
+                options.UseSqlServer(Configuration.GetConnectionString("ParkAdminSQLServer"), b => b.UseRowNumberForPaging())); 
+            //services.AddDbContext<ParkContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("ParkSQLServer"))); 
             services.AddDbContext<ParkContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ParkSQLServer")));
+                options.UseSqlServer(Configuration.GetConnectionString("ParkSQLServer"), b => b.UseRowNumberForPaging()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,7 +86,7 @@ namespace Park.Admin
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseDeveloperExceptionPage();
             // FineUI 中间件（确保 UseFineUI 位于 UseEndpoints 的前面）
             app.UseFineUI();
 

@@ -113,7 +113,7 @@ namespace Park.Designer.UI
             IParkObject obj = (sender as Button).Tag switch
             {
                 "1" => new ParkingSpace() { Height = 2.5, Width = 4.5 },
-                "2" => new Config(),
+                "2" => new Aisle(),
                 "3" => new Wall(),
                 _ => throw new NotImplementedException(),
             };
@@ -187,7 +187,7 @@ namespace Park.Designer.UI
                     ps.ID = ParkArea.ParkingSpaces.Any() ? ParkArea.ParkingSpaces.Max(p => p.ID) + 1 : 0;
                     ParkArea.ParkingSpaces.Add(ps);
                     break;
-                case Config a:
+                case Aisle a:
                     a.ID = ParkArea.Aisles.Any() ? ParkArea.Aisles.Max(p => p.ID) + 1 : 0;
                     ParkArea.Aisles.Add(a);
                     break;
@@ -280,7 +280,7 @@ namespace Park.Designer.UI
                 case ParkingSpace ps:
                     ParkArea.ParkingSpaces.Remove(ps);
                     break;
-                case Config a:
+                case Aisle a:
                     ParkArea.Aisles.Remove(a);
                     break;
                 case Wall w:
