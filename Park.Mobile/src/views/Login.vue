@@ -34,7 +34,7 @@
 import Vue from "vue";
 import Cookies from "js-cookie";
 import { Notification } from "element-ui";
-import { showError, getUrl } from "../common";
+import { showError, getUrl,jump } from "../common";
 import { AxiosResponse } from "axios";
 export default Vue.extend({
   data: function() {
@@ -46,7 +46,8 @@ export default Vue.extend({
         Cookies.set("userID", response.data.data.userID);
         Cookies.set("token", response.data.data.token);
         Cookies.set("username", response.data.data.carOwner.username);
-        window.location.href = "/";
+        
+         jump("");
       } else {
         Notification.error(
           (register ? "注册失败：" : "登陆失败：") + response.data.message

@@ -31,3 +31,7 @@ export function showError(r: any) {
     Notification.error({ title: "错误", message: r });
     console.log(r);
 }
+
+export function  jump(url: string) {
+    window.location.href =process.env.BASE_URL+"#/"+ url;
+  }

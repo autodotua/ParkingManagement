@@ -6,14 +6,14 @@
         <el-button
           style="float: right; padding: 3px 0"
           type="text"
-          @click="jump('/TransactionRecord')"
+          @click="jump('TransactionRecord')"
         >交易记录</el-button>
       </div>
       <el-row>
         <el-col :span="12">余额：</el-col>
         <el-col :span="8">{{displayBalance}}</el-col>
         <el-col :span="4">
-          <el-button size="mini" @click="jump('/Recharge')">充值</el-button>
+          <el-button size="mini" @click="jump('Recharge')">充值</el-button>
         </el-col>
       </el-row>
       <br />
@@ -29,7 +29,7 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>我的车辆</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="jump('/Car')">管理</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="jump('Car')">管理</el-button>
       </div>
       <el-table :data="cars" style="width: 100%">
         <el-table-column prop="licensePlate" label="车牌" width="120"></el-table-column>
@@ -53,7 +53,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { withToken, getUrl, showError } from "../common";
+import { withToken, getUrl, showError,jump } from "../common";
 export default Vue.extend({
   name: "Home",
   data() {
@@ -78,11 +78,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    jump:jump,
     getImageUrl(id: number): string {
       return getUrl("Home", "ParkImage") + "/" + id;
-    },
-    jump(url: string) {
-      window.location.href = url;
     }
   },
   components: {},

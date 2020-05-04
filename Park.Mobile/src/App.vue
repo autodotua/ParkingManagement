@@ -26,6 +26,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Cookies from "js-cookie";
+import { jump } from "./common";
 export default Vue.extend({
   name: "App",
   data: function() {
@@ -45,7 +46,7 @@ export default Vue.extend({
         this.showHeader = false;
       } else {
         if (Cookies.get("userID") == undefined) {
-          window.location.href = "/login";
+         jump("login");
         }
       }
     });
