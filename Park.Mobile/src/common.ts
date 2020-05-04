@@ -11,10 +11,14 @@ export function withToken(obj: object): object {
     return request;
 }
 
-export function formatDateTime(time: Date): string {
+export function formatDateTime(time: Date | string): string {
+    if (typeof time =="string") {
+        time = new Date(time);
+    }
+    time=time as Date;
     return time.getFullYear().toString().padStart(4, '0') + "-"
-        + time.getMonth().toString().padStart(2, '0') + "-"
-        + time.getDay().toString().padStart(2, '0') + " "
+        + (time.getMonth()+1).toString().padStart(2, '0') + "-"
+        + time.getDate().toString().padStart(2, '0') + " "
         + time.getHours().toString().padStart(2, '0') + ":"
         + time.getMinutes().toString().padStart(2, '0');
 }

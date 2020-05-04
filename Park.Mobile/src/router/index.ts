@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Car from '../views/Car.vue'
 import Recharge from '../views/Recharge.vue'
+import TransactionRecord from '../views/TransactionRecord.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ Vue.use(VueRouter)
     path: '/recharge',
     name: 'Recharge',
     component: Recharge
+  },
+  {
+    path: '/transactionRecord',
+    name: 'TransactionRecord',
+    component: TransactionRecord
   },
   {
     path: '/about',

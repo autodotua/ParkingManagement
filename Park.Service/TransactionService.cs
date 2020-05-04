@@ -51,7 +51,11 @@ namespace Park.Service
             await db.SaveChangesAsync();
             return transactionRecord;
         }
-        public async static Task<TransactionRecord> RechargeMoneyAsync(ParkContext db,int ownerID,double amount)
+        public  static Task<TransactionRecord> RechargeMoneyAsync(ParkContext db, int ownerID, double amount)
+        {
+            return RechargeMoneyAsync(db, ownerID, amount, DateTime.Now);
+        }
+        internal async static Task<TransactionRecord> RechargeMoneyAsync(ParkContext db,int ownerID,double amount,DateTime time)
         {
             Debug.Assert(amount > 0);
             double balance = await GetBalanceAsync(db, ownerID);
@@ -59,7 +63,7 @@ namespace Park.Service
             {
                 Balance=balance+amount,
                 CarOwnerID=ownerID,
-                Time=DateTime.Now,
+                Time= time,
                 Type=TransactionType.RechargeMoney,
                 Value=amount
             };

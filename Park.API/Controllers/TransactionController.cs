@@ -34,6 +34,20 @@ namespace Park.API.Controllers
 
         }
         [HttpPost]
+        [Route("Records")]
+        public async Task<ResponseData<List<TransactionRecord>>> RecordsAsync([FromBody] RechargeRequest request)
+        {
+            if (!request.IsValid())
+            {
+                return new ResponseData<List<TransactionRecord>>() { Succeed = false, Message = "用户验证失败" };
+            }
+            DateTime now = DateTime.Now;
+            var records =await db.TransactionRecords
+                .Where(p => p.CarOwnerID == request.UserID)
+                .OrderByDescending(p=>p.Time).Take(120).ToListAsync();//仅提取最后120条数据
+            return new ResponseData<List<TransactionRecord>>(records);
+        }
+        [HttpPost]
         [Route("Recharge")]
         public async Task<ResponseData<TransactionRecord>> RechargeAsync([FromBody] RechargeRequest request)
         {

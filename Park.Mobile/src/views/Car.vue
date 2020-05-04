@@ -50,9 +50,6 @@ export default Vue.extend({
     };
   },
   methods: {
-    formatDateTime(time: string) {
-      return time;
-    },
     viewDetail(row: any) {
       this.drawerDetail = true;
       Vue.axios
@@ -62,10 +59,8 @@ export default Vue.extend({
         )
         .then(response => {
           for (const record of response.data.data.parkRecords) {
-            let date = new Date(record.enterTime);
-            record.enterTime = formatDateTime(date);
-            date = new Date(record.leaveTime);
-            record.leaveTime = formatDateTime(date);
+            record.enterTime = formatDateTime(record.enterTime as  string);
+            record.leaveTime = formatDateTime(record.leaveTime as  string);
           }
           this.parkRecords = response.data.data.parkRecords;
         })

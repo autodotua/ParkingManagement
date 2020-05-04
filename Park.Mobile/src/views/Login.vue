@@ -14,11 +14,17 @@
       <br />
       <br />
 
-      <el-button id="login" v-on:click="login" style="width:100%" type="primary">登录</el-button>
+      <el-button
+        id="login"
+        v-on:click="login"
+        :disabled="buttonsDisabled"
+        style="width:100%"
+        type="primary"
+      >登录</el-button>
 
       <br />
-      <br />      
-      <el-button id="login" v-on:click="register" style="width:100%">注册</el-button>
+      <br />
+      <el-button id="login" v-on:click="register" :disabled="buttonsDisabled" style="width:100%">注册</el-button>
 
       <!-- <el-link href="register" >注册</el-link> -->
     </div>
@@ -26,39 +32,48 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
+import { Notification } from "element-ui";
+import { showError } from "../common";
+import { AxiosResponse } from "axios";
 export default Vue.extend({
   data: function() {
-    return { username: "user17392", password: "1234" };
+    return { username: "user17392", password: "1234", buttonsDisabled: false };
   },
   methods: {
-    login() {
-        Vue.axios
-        .post("http://localhost:8520/User/Login", {
-          UserName: this.username,
-          Password: this.password
-        })
-        .then(response => {
-          Cookies.set("userID",response.data.data.userID)
-          Cookies.set("token",response.data.data.token)
-          Cookies.set("username",response.data.data.carOwner.username)
-          window.location.href="/";
-          console.log(response.data);
-        }).catch(r=>{
-          console.log(r.Message);
-        })
+    afterLogin(response: AxiosResponse<any>, register = false) {
+      if (response.data.succeed) {
+        Cookies.set("userID", response.data.data.userID);
+        Cookies.set("token", response.data.data.token);
+        Cookies.set("username", response.data.data.carOwner.username);
+        window.location.href = "/";
+      } else {
+        Notification.error(
+          (register ? "注册失败：" : "登陆失败：") + response.data.message
+        );
+      }
     },
-    register(){
-       Vue.axios
+    login() {
+      Vue.axios
         .post("http://localhost:8520/User/Login", {
           UserName: this.username,
           Password: this.password
         })
         .then(response => {
-          console.log(response.data.Message);
-        }).catch(r=>{
-          console.log(r.Message);
+          this.afterLogin(response, false);
         })
+        .catch(showError);
+    },
+    register() {
+      Vue.axios
+        .post("http://localhost:8520/User/Login", {
+          UserName: this.username,
+          Password: this.password
+        })
+        .then(response => {
+          this.afterLogin(response, true);
+        })
+        .catch(showError);
     }
   }
 });

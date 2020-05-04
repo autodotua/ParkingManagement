@@ -48,6 +48,7 @@ namespace Park.Service
             {
                 parkArea.GateTokens = GenerateToken() + ";" + GenerateToken();
                 parkArea.ParkingSpaces.ForEach(p => p.SensorToken = GenerateToken());
+                parkArea.PriceStrategy = priceStrategy;
             }
             //}
             //ParkArea parkArea = new ParkArea()
@@ -80,12 +81,16 @@ namespace Park.Service
             {
                 var owner = (await CarOwnerService.Regist(context,
                     "user" + r.Next(0, short.MaxValue), "1234",
-                    DateTime.Now.AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
+                    DateTime.Now.AddDays(-10).AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
                 await context.SaveChangesAsync();
-                for (int j = 0; j < 3; j++)//充值
-                {
-                    await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20));
-                }
+            
+                    await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20),
+                        DateTime.Now.AddDays(-7).AddDays(-r.NextDouble()));       
+                await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20),
+                        DateTime.Now.AddDays(-6).AddDays(-r.NextDouble() ));   
+                await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20),
+                        DateTime.Now.AddDays(-5).AddDays(-r.NextDouble() ));
+            
                 for (int j = 0; j < r.Next(2, 5); j++)//车辆
                 {
                     var car = new Car()

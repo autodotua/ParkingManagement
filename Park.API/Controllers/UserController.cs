@@ -34,11 +34,12 @@ namespace Park.API.Controllers
                 case LoginOrRegisterResultType.Empty:
                     return new ResponseData<LoginResult>()
                     {
+                        Succeed = false,
                         Message = "用户名或密码为空",
                     };
                 case LoginOrRegisterResultType.Wrong:
                     return new ResponseData<LoginResult>()
-                    {
+                    {Succeed=false,
                         Message = "用户名或密码错误",
                     };
                 default:
@@ -64,6 +65,7 @@ namespace Park.API.Controllers
                 case LoginOrRegisterResultType.Existed:
                     return new ResponseData<LoginResult>()
                     {
+                        Succeed = false,
                         Message = "用户名已存在",
                     };
                 default:

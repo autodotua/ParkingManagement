@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>我的资金</span>
-        <el-button style="float: right; padding: 3px 0" type="text">交易记录</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="jump('/TransactionRecord')">交易记录</el-button>
       </div>
       <el-row>
         <el-col :span="12">余额：</el-col>

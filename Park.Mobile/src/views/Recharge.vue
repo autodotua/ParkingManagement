@@ -43,7 +43,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { withToken, getUrl, showError, formatDateTime } from "../common";
-import {Notification} from "element-ui"
+import { Notification } from "element-ui";
 export default Vue.extend({
   name: "Home",
   data() {
