@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -72,36 +71,10 @@ namespace Park.API.Controllers
                     throw new NotImplementedException();
             }
         }
-        [HttpPost]
-        [Route("home")]
-        public async Task<ResponseData<OverviewResponse>> OverviewAsync([FromBody] UserToken request)
-        {
-            if (!request.IsValid())
-            {
-                return new ResponseData<OverviewResponse>() { Succeed = false, Message = "用户验证失败" };
-            }
-            OverviewResponse response = new OverviewResponse();
-            foreach (var car in await db.Cars.Where(p => p.CarOwnerID == request.UserID).ToListAsync())
-            {
-                int recordCount = await db.ParkRecords.CountAsync(p => p.CarID == car.ID);
-                response.Cars.Add(new { car.LicensePlate, Records = recordCount, car.ID });
-            }
-            TransactionRecord transaction = await db.TransactionRecords
-                .LastOrDefaultRecordAsync(p => p.Time, p => p.CarOwnerID == request.UserID);
-            response.Balance = transaction.Balance;
-            response.ExpireTime = transaction.ExpireTime.ToShortDateString();
-
-            return new ResponseData<OverviewResponse>() { Data = response };
-        }
-
+ 
     }
 
-    public class OverviewResponse
-    {
-        public List<dynamic> Cars { get; set; } = new List<dynamic>();//包括车牌和停车次数
-        public double Balance { get; set; }
-        public string ExpireTime { get; set; }
-    }
+    
     public class LoginRequest
     {
         public string Password { get; set; }

@@ -34,11 +34,11 @@
 import Vue from "vue";
 import Cookies from "js-cookie";
 import { Notification } from "element-ui";
-import { showError } from "../common";
+import { showError, getUrl } from "../common";
 import { AxiosResponse } from "axios";
 export default Vue.extend({
   data: function() {
-    return { username: "user17392", password: "1234", buttonsDisabled: false };
+    return { username: "user905", password: "1234", buttonsDisabled: false };
   },
   methods: {
     afterLogin(response: AxiosResponse<any>, register = false) {
@@ -55,7 +55,7 @@ export default Vue.extend({
     },
     login() {
       Vue.axios
-        .post("http://localhost:8520/User/Login", {
+        .post(getUrl("User","Login"), {
           UserName: this.username,
           Password: this.password
         })
@@ -66,7 +66,7 @@ export default Vue.extend({
     },
     register() {
       Vue.axios
-        .post("http://localhost:8520/User/Login", {
+        .post(getUrl("User","Register"), {
           UserName: this.username,
           Password: this.password
         })
