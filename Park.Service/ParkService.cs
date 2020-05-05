@@ -60,80 +60,87 @@ namespace Park.Service
         }
         internal async static Task<LeaveResult> LeaveAsync(ParkContext db, string licensePlate, ParkArea parkArea, DateTime time)
         {
-            LeaveResult leave = new LeaveResult() { CanLeave = true };
-            Car car = await GetCarAsync(db, licensePlate, false);
-            if (car == null)
+            ParkRecord parkRecord=null;
+            try
             {
-                //找不到车，就直接放行，省得麻烦
-                return leave;
-            }
+                LeaveResult leave = new LeaveResult() { CanLeave = true };
+                Car car = await GetCarAsync(db, licensePlate, false);
+                if (car == null)
+                {
+                    //找不到车，就直接放行，省得麻烦
+                    return leave;
+                }
 
-            var a = await db.ParkRecords.ToListAsync();
-            ParkRecord parkRecord = await db.ParkRecords
-               .OrderByDescending(p => p.EnterTime)
-               .FirstOrDefaultAsync(p => p.Car == car);
-            if (parkRecord == null)
-            {
-                //找不到记录，就直接放行，省得麻烦
-                return leave;
-            }
-            leave.ParkRecord = parkRecord;
-            //补全进出记录
-            parkRecord.LeaveTime = time;
-            db.Entry(parkRecord).State = EntityState.Modified;
-            CarOwner owner = car.CarOwner;
+                var a = await db.ParkRecords.ToListAsync();
+                 parkRecord = await db.ParkRecords
+                   .OrderByDescending(p => p.EnterTime)
+                   .FirstOrDefaultAsync(p => p.Car == car);
+                if (parkRecord == null)
+                {
+                    //找不到记录，就直接放行，省得麻烦
+                    return leave;
+                }
+                leave.ParkRecord = parkRecord;
+                //补全进出记录
+                parkRecord.LeaveTime = time;
+                db.Entry(parkRecord).State = EntityState.Modified;
+                CarOwner owner = car.CarOwner;
 
-            var priceStrategy = parkArea.PriceStrategy;
-            if (priceStrategy == null)
-            {
-                //免费停车场
-                return leave;
-            }
+                var priceStrategy = parkArea.PriceStrategy;
+                if (priceStrategy == null)
+                {
+                    //免费停车场
+                    return leave;
+                }
 
-            switch (owner)
-            {
-                case CarOwner _ when owner.IsFree:
-                    //免费用户
-                    break;
-                case CarOwner _:
-                    if (await IsMonthlyCardValidAsync(db, owner.ID))
-                    {
+                switch (owner)
+                {
+                    case CarOwner _ when owner.IsFree:
+                        //免费用户
                         break;
-                    }
-                    else
-                    {
-                        goto needPay;
-                    }
-                case null:
-                needPay:
-                    //非会员或普通用户
-                    double price = GetPrice(priceStrategy, parkRecord.EnterTime, time);
-                    double balance = owner == null ? 0 : await GetBalanceAsync(db, owner.ID);
-                    //计算价格
-                    if (balance - price < 0)
-                    {
-                        //拒绝驶离，要求付费
-                        leave.CanLeave = false;
-                        leave.NeedToPay = balance - price;
-                        return leave;
-                    }
-                    TransactionRecord transaction = new TransactionRecord()
-                    {//新增扣费记录
-                        Time = time,
-                        Type = TransactionType.Park,
-                        Balance = balance - price,
-                        Value = -price,
-                        CarOwner = owner,
-                    };
-                    db.TransactionRecords.Add(transaction);
-                    parkRecord.TransactionRecord = transaction;//停车记录绑定交易记录
-                    break;
+                    case CarOwner _:
+                        if (await IsMonthlyCardValidAsync(db, owner.ID))
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            goto needPay;
+                        }
+                    case null:
+                    needPay:
+                        //非会员或普通用户
+                        double price = GetPrice(priceStrategy, parkRecord.EnterTime, time);
+                        double balance = owner == null ? 0 : await GetBalanceAsync(db, owner.ID);
+                        //计算价格
+                        if (balance - price < 0)
+                        {
+                            //拒绝驶离，要求付费
+                            leave.CanLeave = false;
+                            leave.NeedToPay = balance - price;
+                            return leave;
+                        }
+                        TransactionRecord transaction = new TransactionRecord()
+                        {//新增扣费记录
+                            Time = time,
+                            Type = TransactionType.Park,
+                            Balance = balance - price,
+                            Value = -price,
+                            CarOwner = owner,
+                        };
+                        db.TransactionRecords.Add(transaction);
+                        parkRecord.TransactionRecord = transaction;//停车记录绑定交易记录
+                        break;
+
+                }
+                return leave;
+            }
+            finally
+            {
+                await db.SaveChangesAsync();
 
             }
 
-
-            await db.SaveChangesAsync();
-            return leave;
         }
 
 

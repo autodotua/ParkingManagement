@@ -54,17 +54,14 @@ namespace Park.Admin
                 // 自定义模型绑定（Newtonsoft.Json）
                 options.ModelBinderProviders.Insert(0, new JsonModelBinderProvider());
             }).AddNewtonsoftJson();
-
+            services.AddControllers().AddNewtonsoftJson(options =>//支持循环嵌套（如Car-ParkRecord-Car）
+options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             // 设置数据库连接字符串（目前仅在 SQL Server 下测试通过）
-            //services.AddDbContext<ParkAdminContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("ParkAdminSQLServer"))); 
             services.AddDbContext<ParkAdminContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ParkAdminSQLServer"), b => b.UseRowNumberForPaging())); 
-            //services.AddDbContext<ParkContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("ParkSQLServer"))); 
+                options.UseSqlServer(Configuration.GetConnectionString("ParkAdminSQLServer"))); 
             services.AddDbContext<ParkContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ParkSQLServer"), b => b.UseRowNumberForPaging()));
+                options.UseSqlServer(Configuration.GetConnectionString("ParkSQLServer")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

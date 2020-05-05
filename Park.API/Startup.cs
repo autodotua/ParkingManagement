@@ -34,8 +34,7 @@ namespace Park.API
                 options.Cookie.IsEssential = true;
             });
             services.AddControllers().AddNewtonsoftJson(options =>//支持循环嵌套（如Car-ParkRecord-Car）
-options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-); ;
+options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); 
 
             services.AddCors(option => option.AddPolicy("cors", policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 

@@ -14,7 +14,7 @@
 
       <el-header class="header" v:show="showHeader">
         <el-button type="text" style="float:right" @click="clickUsername">{{username}}</el-button>
-        <h3 style="float:left">停车场</h3>
+        <h3 style="float:left" @click="jump('')">停车场</h3>
         <slot name="header"></slot>
       </el-header>
       <el-main>
@@ -52,6 +52,7 @@ export default Vue.extend({
     });
   },
   methods: {
+    jump:jump,
     clickUsername() {
       this.$confirm("是否退出账户？", "提示", {
         confirmButtonText: "确定",
@@ -73,6 +74,9 @@ export default Vue.extend({
   margin-top: 0px;
 }.el-message-box{
   width:auto!important;
+}
+body{
+  overflow-x: hidden;
 }
 </style>
 <style scoped>

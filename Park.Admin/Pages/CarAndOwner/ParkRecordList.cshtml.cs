@@ -20,9 +20,9 @@ namespace Park.Admin.Pages.CarAndOwner
 
         public override DbSet<ParkRecord> DbSets => ParkDB.ParkRecords;
 
-        public async Task OnGetAsync(int? carOwnerID)
+        public async Task OnGetAsync(int? carID)
         {
-            this.carID = carOwnerID;
+            this.carID = carID;
             PagingInfo = new PagingInfoViewModel
             {
                 SortField = "LeaveTime",

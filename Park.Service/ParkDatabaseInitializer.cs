@@ -76,7 +76,6 @@ namespace Park.Service
             //var a = context.ParkAreas.First().ParkingSpaces;
 
             //parkAreas = await context.ParkAreas.ToListAsync();
-
             for (int i = 0; i < 20; i++)//车主
             {
                 var owner = (await CarOwnerService.Regist(context,
@@ -84,14 +83,15 @@ namespace Park.Service
                     DateTime.Now.AddDays(-10).AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
                 await context.SaveChangesAsync();
             
-                    await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20),
+                    await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(20, 200),
                         DateTime.Now.AddDays(-7).AddDays(-r.NextDouble()));       
-                await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20),
+                await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(10, 50),
                         DateTime.Now.AddDays(-6).AddDays(-r.NextDouble() ));   
-                await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(2, 20),
+                await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(30, 200),
                         DateTime.Now.AddDays(-5).AddDays(-r.NextDouble() ));
-            
-                for (int j = 0; j < r.Next(2, 5); j++)//车辆
+
+                int carCount = r.Next(2, 5);
+                for (int j = 0; j <carCount; j++)//车辆
                 {
                     var car = new Car()
                     {
@@ -100,19 +100,18 @@ namespace Park.Service
                     };
                     context.Cars.Add(car);
                     context.SaveChanges();
-                    //var a = context.Cars.FirstOrDefault().CarOwner == context.CarOwners.FirstOrDefault(); ;
 
-                    for (int k = 0; k < 3; k++)//进出场信息
+                    int parkCount = r.Next(2, 10);
+                    for (int k = 0; k < parkCount; k++)//进出场信息
                     {
-                        DateTime enterTime = DateTime.Now.AddDays(-r.NextDouble() * 5);
-                        DateTime leaveTime;
-                        do
-                        {
-                            leaveTime = DateTime.Now.AddDays(-r.NextDouble() * 5);
-                        } while (leaveTime > enterTime);
+                        DateTime enterTime = DateTime.Now.AddDays(-parkCount + k-1-r.NextDouble() );
+                        DateTime leaveTime= enterTime.AddDays(r.NextDouble() ); 
+                        var parkArea = parkAreas[r.Next(0, 2)];
                         //模拟用户在5天内进入过停车场，然后出了停车场
-                        await ParkService.EnterAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)], enterTime);
-                        await ParkService.LeaveAsync(context, car.LicensePlate, parkAreas[r.Next(0, 2)], leaveTime);
+                        await ParkService.EnterAsync(context, car.LicensePlate, parkArea, enterTime);
+                      var result=  await ParkService.LeaveAsync(context, car.LicensePlate, parkArea, leaveTime);
+                        //这里非常奇怪，部分停车记录的停车时间会变成1-01-01 8:05，明明ParkRecord里的时间都是正确的
+                        //已解决
                     }
                 }
             }

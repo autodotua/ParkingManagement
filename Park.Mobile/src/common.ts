@@ -11,16 +11,20 @@ export function withToken(obj: object): object {
     return request;
 }
 
-export function formatDateTime(time: Date | string): string {
-    if (typeof time =="string") {
+export function formatDateTime(time: Date | string, includeTime = true): string {
+    if (typeof time == "string") {
         time = new Date(time);
     }
-    time=time as Date;
-    return time.getFullYear().toString().padStart(4, '0') + "-"
-        + (time.getMonth()+1).toString().padStart(2, '0') + "-"
-        + time.getDate().toString().padStart(2, '0') + " "
-        + time.getHours().toString().padStart(2, '0') + ":"
-        + time.getMinutes().toString().padStart(2, '0');
+    time = time as Date;
+    let str = time.getFullYear().toString().padStart(4, '0') + "-"
+        + (time.getMonth() + 1).toString().padStart(2, '0') + "-"
+        + time.getDate().toString().padStart(2, '0');
+    if (includeTime) {
+        str += " "
+            + time.getHours().toString().padStart(2, '0') + ":"
+            + time.getMinutes().toString().padStart(2, '0');
+    }
+    return str;
 }
 
 export function getUrl(controller: string, action: string) {
@@ -32,6 +36,6 @@ export function showError(r: any) {
     console.log(r);
 }
 
-export function  jump(url: string) {
-    window.location.href =process.env.BASE_URL+"#/"+ url;
-  }
+export function jump(url: string) {
+    window.location.href = process.env.BASE_URL + "#/" + url;
+}

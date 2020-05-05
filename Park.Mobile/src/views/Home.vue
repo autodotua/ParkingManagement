@@ -18,8 +18,8 @@
       </el-row>
       <br />
       <el-row>
-        <el-col :span="12">月租到期时间：</el-col>
-        <el-col :span="8">{{displayExpireTime}}</el-col>
+        <el-col :span="8">月租到期：</el-col>
+        <el-col :span="12">{{displayExpireTime}}</el-col>
         <el-col :span="4">
           <el-button size="mini">续期</el-button>
         </el-col>
@@ -53,7 +53,8 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { withToken, getUrl, showError,jump } from "../common";
+import Cookies from "js-cookie";
+import { withToken, getUrl, showError, jump, formatDateTime } from "../common";
 export default Vue.extend({
   name: "Home",
   data() {
@@ -69,16 +70,14 @@ export default Vue.extend({
       return this.balance + "元";
     },
     displayExpireTime(): string {
-      console.log(this.expireTime);
-      
       if (this.expireTime.startsWith("0001")) {
         return "无";
       }
-      return this.expireTime;
+      return formatDateTime(this.expireTime, false);
     }
   },
   methods: {
-    jump:jump,
+    jump: jump,
     getImageUrl(id: number): string {
       return getUrl("Home", "ParkImage") + "/" + id;
     }
@@ -86,6 +85,9 @@ export default Vue.extend({
   components: {},
   mounted: function() {
     this.$nextTick(function() {
+      if (Cookies.get("userID") == undefined) {
+        return;
+      }
       Vue.axios
         .post(getUrl("Home", "Index"), withToken({}))
         .then(response => {

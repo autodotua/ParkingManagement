@@ -17,8 +17,8 @@
     </el-table>
     <el-drawer title="停车记录" :visible.sync="drawerDetail" :with-header="true" size="360px">
       <el-table :data="parkRecords" style="width: 100%">
-        <el-table-column prop="enterTime" label="进场" width="136"></el-table-column>
-        <el-table-column prop="leaveTime" label="离场" width="136s"></el-table-column>
+        <el-table-column prop="enterTime" label="进场" width="150"></el-table-column>
+        <el-table-column prop="leaveTime" label="离场" width="150"></el-table-column>
         <el-table-column prop="parkArea.name" label="停车场" width="80"></el-table-column>
       </el-table>
     </el-drawer>
