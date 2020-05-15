@@ -1,7 +1,7 @@
 ﻿@page
 @model Park.Admin.Pages.People.ParkAreaListModel
 @{
-    ViewData["Title"] = "车辆管理";
+    ViewData["Title"] = "停车区管理";
     var PagingInfo = Model.PagingInfo;
 }
 
@@ -14,7 +14,7 @@
     </style>
     <input type="hidden" id="urls" data-postback="@Url.Handler("DoPostBack")" />
 
-    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="Region"  ShowHeader="false" Title="用户管理" IsViewPort="true">
+    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" Layout="Region" ShowHeader="false" Title="用户管理" IsViewPort="true">
         <Items>
             <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true" DataIDField="ID" DataTextField="Name"
                     AllowPaging="true" IsDatabasePaging="true" AllowCellEditing="true"
@@ -25,7 +25,7 @@
                     <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
                     <f:RenderField For="ParkAreas.First().Name" Width="100"></f:RenderField>
                     <f:RenderField For="ParkAreas.First().ParkingSpaces.Count" HeaderText="停车位" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderParkRecords"></f:RenderField>
-                    <f:RenderField For="ParkAreas.First().GateTokens" HeaderText="道闸杆Token（以分号分隔）" EnableColumnHide="false" EnableHeaderMenu="false" >
+                    <f:RenderField For="ParkAreas.First().GateTokens" HeaderText="道闸杆Token（以分号分隔）" EnableColumnHide="false" EnableHeaderMenu="false">
                         <Editor>
                             <f:TextBox ID="tbxDeviceTokens" Required="true"></f:TextBox>
                         </Editor>
@@ -57,15 +57,20 @@
                                               OnTrigger1Click="@Url.Handler("DoPostBack")" OnTrigger1ClickParameter1="@(new Parameter("actionType","trigger1",ParameterMode.String))" OnTrigger1ClickFields="Panel1">
                             </f:TwinTriggerBox>
                             <f:ToolbarFill></f:ToolbarFill>
+                            <f:Button ID="btnImport" Text="导入停车场设计器数据">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onImportButtonClick"></f:Listener>
+                                </Listeners>
+                            </f:Button>
                             <f:Button ID="btnSubmit" Text="保存数据" OnClick="@Url.Handler("SaveData")" OnClickFields="Grid1"></f:Button>
 
                         </Items>
                     </f:Toolbar>
                 </Toolbars>
             </f:Grid>
-                <f:Panel ID="Panel2" BodyPadding="5" ShowBorder="false" Layout="HBox"
-                                  RegionPosition="Bottom" RegionPercent="60%"
-                                  ShowHeader="false">
+            <f:Panel ID="Panel2" BodyPadding="5" ShowBorder="false" Layout="HBox"
+                     RegionPosition="Bottom" RegionPercent="60%"
+                     ShowHeader="false">
                 <Items>
                     <f:Image ID="imgMap"></f:Image>
                 </Items>
@@ -74,10 +79,10 @@
         </Items>
     </f:Panel>
 
-    @*<f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
-                  EnableMaximize="true" EnableIFrame="true" Width="900" Height="600"
-                  OnClose="@Url.Handler("DoPostBack")" OnCloseFields="Panel1">
-        </f:Window>*@
+    <f:Window ID="win" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+              EnableMaximize="true" EnableIFrame="true" Width="600" Height="600"
+              OnClose="@Url.Handler("DoPostBack")" OnCloseFields="Panel1">
+    </f:Window>
 }
 @section script{
 
@@ -108,8 +113,12 @@
         function renderBtns(value, params) {
             return renderButtons([{class:"delete",text:"删除"}])
         }
+        function onImportButtonClick() {
+              var url = '@Url.Content("~/Parking/ImportPark")';
 
-
+        // 显示窗体
+            F.ui.win.show(url,"导入");
+        }
 
     function onEnableUsersClick(event) {
         var grid1 = F.ui.Grid1;

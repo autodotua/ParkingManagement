@@ -1,7 +1,7 @@
 ﻿@page
 @model Park.Admin.Pages.CarAndOwner.ParkingSpaceListModel
 @{
-    ViewData["Title"] = "车主管理";
+    ViewData["Title"] = "听策划为管理";
     var PagingInfo = Model.PagingInfo;
 }
 @using System.Diagnostics
@@ -59,11 +59,11 @@
                                     <f:Listener Event="click" Handler="onDeleteSelectedClick"></f:Listener>
                                 </Listeners>
                             </f:Button>
-                            <f:Button ID="btnNew" Icon="Add" Text="新增用户">
+                            @*<f:Button ID="btnNew" Icon="Add" Text="新增用户">
                                 <Listeners>
                                     <f:Listener Event="click" Handler="onNewClick"></f:Listener>
                                 </Listeners>
-                            </f:Button>
+                            </f:Button>*@
                             <f:Button ID="btnSubmit" Text="保存数据" OnClick="@Url.Handler("SaveData")" OnClickFields="Grid1"></f:Button>
 
                         </Items>
