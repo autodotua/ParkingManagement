@@ -13,9 +13,16 @@ using Park.Service;
 
 namespace Park.API.Controllers
 {
+    /// <summary>
+    /// 为Park.Mobile提供交易相关信息
+    /// </summary>
     public class TransactionController : ParkControllerBase
     {
-
+        /// <summary>
+        /// 获取主页信息
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Index")]
         public async Task<ResponseData<TransactionRecord>> IndexAsync([FromBody] UserToken request)
@@ -33,6 +40,11 @@ namespace Park.API.Controllers
             return new ResponseData<TransactionRecord>(record);
 
         }
+        /// <summary>
+        /// 获取停车记录信息
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Records")]
         public async Task<ResponseData<List<TransactionRecord>>> RecordsAsync([FromBody] RechargeRequest request)
@@ -47,6 +59,11 @@ namespace Park.API.Controllers
                 .OrderByDescending(p=>p.Time).Take(120).ToListAsync();//仅提取最后120条数据
             return new ResponseData<List<TransactionRecord>>(records);
         }
+        /// <summary>
+        /// 用户充值操作
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Recharge")]
         public async Task<ResponseData<TransactionRecord>> RechargeAsync([FromBody] RechargeRequest request)
@@ -84,12 +101,26 @@ namespace Park.API.Controllers
         }
 
     }
-
+    /// <summary>
+    /// 充值等操作请求体
+    /// </summary>
     public class RechargeRequest : UserToken
     {
+        /// <summary>
+        /// 金额
+        /// </summary>
         public double Amount { get; set; }
+        /// <summary>
+        /// 充值的方式（支付宝、微信，该属性无用）
+        /// </summary>
         public string Method { get; set; }
-        public string Type { get; set; }//money/time
+        /// <summary>
+        /// 充值类型（money代表重置，time代表月租续期或开通）
+        /// </summary>
+        public string Type { get; set; }
+        /// <summary>
+        /// 充月租时代表充几个月
+        /// </summary>
         public int Months { get; set; }
     }
 

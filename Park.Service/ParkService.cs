@@ -70,8 +70,7 @@ namespace Park.Service
                     //找不到车，就直接放行，省得麻烦
                     return leave;
                 }
-
-                var a = await db.ParkRecords.ToListAsync();
+                //获取停车记录
                  parkRecord = await db.ParkRecords
                    .OrderByDescending(p => p.EnterTime)
                    .FirstOrDefaultAsync(p => p.Car == car);
@@ -85,7 +84,7 @@ namespace Park.Service
                 parkRecord.LeaveTime = time;
                 db.Entry(parkRecord).State = EntityState.Modified;
                 CarOwner owner = car.CarOwner;
-
+                //获取价格策略
                 var priceStrategy = parkArea.PriceStrategy;
                 if (priceStrategy == null)
                 {
@@ -101,6 +100,7 @@ namespace Park.Service
                     case CarOwner _:
                         if (await IsMonthlyCardValidAsync(db, owner.ID))
                         {
+                            //月租用户，放行
                             break;
                         }
                         else
@@ -108,6 +108,7 @@ namespace Park.Service
                             goto needPay;
                         }
                     case null:
+                        //没有注册
                     needPay:
                         //非会员或普通用户
                         double price = GetPrice(priceStrategy, parkRecord.EnterTime, time);
@@ -120,8 +121,9 @@ namespace Park.Service
                             leave.NeedToPay = balance - price;
                             return leave;
                         }
+                        //新增扣费记录
                         TransactionRecord transaction = new TransactionRecord()
-                        {//新增扣费记录
+                        {
                             Time = time,
                             Type = TransactionType.Park,
                             Balance = balance - price,
@@ -143,29 +145,38 @@ namespace Park.Service
 
         }
 
-
+        /// <summary>
+        /// 获取应付的价格
+        /// </summary>
+        /// <param name="priceStrategy"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
         private static double GetPrice(PriceStrategy priceStrategy, DateTime startTime, DateTime endTime)
         {
             JObject strategy = JObject.Parse(priceStrategy.StrategyJson);
             switch (strategy["type"].Value<string>())
             {
-                case "stepHourBase":
+                case "stepHourBase"://按每小时阶梯定价，目前仅支持这一种
                     var priceArray = strategy["prices"] as IEnumerable<JToken>;
                     Dictionary<double, double> prices = new Dictionary<double, double>();
                     foreach (var item in priceArray)
                     {
-                        double upper = item["upper"].Value<double>();
+                        //循环每一个价格阶层
+                        double upper = item["upper"].Value<double>();//最长的市场
                         upper = upper == -1 ? double.PositiveInfinity : upper;
-                        double price = item["price"].Value<double>();
+                        double price = item["price"].Value<double>();//这个阶层的价格
                         prices.Add(upper, price);
                     }
-                    int hour = (int)Math.Ceiling((endTime - startTime).TotalHours);
-                    double sum = 0;
-                    double lastUpper = 0;
+                    //此时对价格策略的解析已经完成
+
+                    int hour = (int)Math.Ceiling((endTime - startTime).TotalHours);//停车时长，不足一小时按一小时算
+                    double sum = 0;//总价
+                    double lastUpper = 0;//上一级阶梯的时长
                     foreach (var upper in prices.Keys.OrderBy(p => p))
                     {
-                        if (upper >= hour)
-                        {//已经到达最大阶梯
+                        if (upper >= hour)//已经到达最大阶梯
+                        {
                             sum += (hour - lastUpper) * prices[upper];
                             break;
                         }
@@ -181,9 +192,16 @@ namespace Park.Service
             }
         }
 
-
+        /// <summary>
+        /// 获取车辆信息
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="licensePlate"></param>
+        /// <param name="autoCreate">若不存在，是否自动创建</param>
+        /// <returns></returns>
         private async static Task<Car> GetCarAsync(ParkContext db, string licensePlate, bool autoCreate)
         {
+            //根据车牌查询
             Car car = await db.Cars.FirstOrDefaultAsync(p => p.LicensePlate == licensePlate);
             if (!autoCreate)
             {

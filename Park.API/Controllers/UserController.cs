@@ -11,9 +11,16 @@ using Park.Service;
 
 
 namespace Park.API.Controllers
-{
+{/// <summary>
+/// 为Park.Mobile提供用户相关API
+/// </summary>
     public class UserController : ParkControllerBase
     {
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Login")]
         public async Task<ResponseData<LoginResult>> LoginAsync([FromBody] LoginRequest request)
@@ -38,13 +45,19 @@ namespace Park.API.Controllers
                     };
                 case LoginOrRegisterResultType.Wrong:
                     return new ResponseData<LoginResult>()
-                    {Succeed=false,
+                    {
+                        Succeed = false,
                         Message = "用户名或密码错误",
                     };
                 default:
                     throw new NotImplementedException();
             }
         }
+        /// <summary>
+        /// 注册
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Register")]
         public async Task<ResponseData<LoginResult>> RegisterAsync([FromBody] LoginRequest request)
@@ -71,13 +84,21 @@ namespace Park.API.Controllers
                     throw new NotImplementedException();
             }
         }
- 
+
     }
 
-    
+    /// <summary>
+    /// 登录请求
+    /// </summary>
     public class LoginRequest
     {
+        /// <summary>
+        /// 密码
+        /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// 用户名
+        /// </summary>
         public string Username { get; set; }
     }
 
@@ -91,52 +112,5 @@ namespace Park.API.Controllers
 
         public CarOwner CarOwner { get; set; }
     }
-
-    public class UserToken
-    {
-        public int UserID { get; set; }
-        public string Token { get; set; }
-        private const string Key = "ParkKey";
-
-        public UserToken()
-        { }
-        public UserToken(int userID, bool createToken)
-        {
-            UserID = userID;
-            if (createToken)
-            {
-                Token = GetToken();
-            }
-        }
-
-        public bool IsValid()
-        {
-            var aes = new FzLib.Cryptography.Aes();
-            aes.SetStringKey(Key + UserID);
-            aes.SetStringIV("");
-            try
-            {
-                string[] items = aes.Decrypt(Token).Split("-");
-                if (items[0] != UserID.ToString())
-                {
-                    return false;
-                }
-                //预留过期检测
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
-        }
-
-        public string GetToken()
-        {
-            var aes = new FzLib.Cryptography.Aes();
-            aes.SetStringKey(Key + UserID);
-            aes.SetStringIV("");
-            return aes.Encrypt(string.Join("-", UserID.ToString(), DateTime.Now.ToString("yyyyMMdd")));
-        }
-    }
+ 
 }

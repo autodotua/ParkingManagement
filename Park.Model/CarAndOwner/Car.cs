@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Park.Models
 {
+
     public class Car:IDbModel
     {
         [Key]

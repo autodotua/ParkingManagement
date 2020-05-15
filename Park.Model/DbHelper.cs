@@ -11,6 +11,14 @@ namespace Park.Models
 {
     public static class DbHelper
     {
+        /// <summary>
+        /// 获取最后一条记录
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="db"></param>
+        /// <param name="key"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static Task<T> LastOrDefaultRecordAsync<T>(this IQueryable<T> db, Expression<Func<T, DateTime>> key, Expression<Func<T, bool>> predicate = null) where T : class
         {
             var ordered = db.OrderByDescending(key);

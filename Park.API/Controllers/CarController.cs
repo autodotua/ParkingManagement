@@ -9,11 +9,19 @@ using Park.Models;
 
 namespace Park.API.Controllers
 {
+    /// <summary>
+    /// 为Park.Mobile提供汽车相关API
+    /// </summary>
     public class CarController : ParkControllerBase
     {
         public CarController()
         {
         }
+        /// <summary>
+        /// 调整车辆相关信息。
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Modify")]
         public async Task<ResponseData<object>> ModifyAsync([FromBody] CarRequest request)
@@ -56,6 +64,11 @@ namespace Park.API.Controllers
                     throw new NotImplementedException();
             }
         }
+        /// <summary>
+        /// 获取车辆信息
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Index")]
         public async Task<ResponseData<List<dynamic>>> IndexAsync([FromBody] UserToken request)
@@ -74,10 +87,22 @@ namespace Park.API.Controllers
         }
 
     }
+    /// <summary>
+    /// 汽车请求
+    /// </summary>
     public class CarRequest : UserToken
     {
+        /// <summary>
+        /// 请求类型，分为add（新增汽车）、edit（编辑汽车）、delete（删除汽车）
+        /// </summary>
         public string Type { get; set; }//add/edit/delete/detail
+        /// <summary>
+        /// 汽车ID
+        /// </summary>
         public int CarID { get; set; }
+        /// <summary>
+        /// 车牌号
+        /// </summary>
         public string LicensePlate { get; set; }
     }
 }

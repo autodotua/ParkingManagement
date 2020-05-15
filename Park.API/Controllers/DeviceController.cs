@@ -9,6 +9,9 @@ using Park.Service;
 
 namespace Park.API.Controllers
 {
+    /// <summary>
+    /// 为停车场设备提供API
+    /// </summary>
     [ApiController]
     [EnableCors("cors")]
     [Route("[controller]")]
@@ -19,13 +22,17 @@ namespace Park.API.Controllers
         {
             db = new Context();
         }
-
+        /// <summary>
+        /// 由进场摄像头发起的车辆进场请求
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("enter")]
         public async Task<ResponseData<EnterResult>> PostEnterAsync([FromBody] ParkingGateRequest request)
         {
-            string licensePlate = request.licensePlate;
-            string token = request.token;
+            string licensePlate = request.LicensePlate;
+            string token = request.Token;
             try
             {
                 var pa = (await db.ParkAreas.ToListAsync()).FirstOrDefault(p => p.GateTokens.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(token));
@@ -43,12 +50,17 @@ namespace Park.API.Controllers
                 return new ResponseData<EnterResult>() { Succeed = false, Message = ex.Message };
             }
         }
+        /// <summary>
+        /// 由离场摄像头发起的离场请求
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("leave")]
         public async Task<ResponseData<LeaveResult>> PostLeaveAsync([FromBody] ParkingGateRequest request)
         {
-            string licensePlate = request.licensePlate;
-            string token = request.token;
+            string licensePlate = request.LicensePlate;
+            string token = request.Token;
             try
             {
                 var pa = (await db.ParkAreas.ToListAsync()).FirstOrDefault(p => p.GateTokens.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(token));
@@ -66,14 +78,18 @@ namespace Park.API.Controllers
                 return new ResponseData<LeaveResult>() { Succeed = false, Message = ex.Message };
             }
         }
-
+        /// <summary>
+        /// 由车位上放传感器发起的更新车位占用信息的请求
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
 
         [HttpPost]
         [Route("ps")]
         public async Task<ResponseData<bool>> PostParkingSpaceStatusAsync([FromBody] SensorRequest request)
         {
-            string token = request.token;
-            bool hasCar = request.hasCar;
+            string token = request.Token;
+            bool hasCar = request.HasCar;
             try
             {
                 var ps = await db.ParkingSpaces.FirstOrDefaultAsync(p => p.SensorToken == token);
@@ -96,14 +112,23 @@ namespace Park.API.Controllers
         }
 
     }
+    /// <summary>
+    /// 传感器请求体
+    /// </summary>
     public class SensorRequest
     {
-        public string token { get; set; }
-        public bool hasCar { get; set; }
+        public string Token { get; set; }
+        public bool HasCar { get; set; }
     }
+    /// <summary>
+    /// 门卫请求体
+    /// </summary>
     public class ParkingGateRequest
     {
-        public string token { get; set; }
-        public string licensePlate { get; set; }
+        public string Token { get; set; }
+        /// <summary>
+        /// 摄像头识别到的车牌号
+        /// </summary>
+        public string LicensePlate { get; set; }
     }
 }
