@@ -30,21 +30,30 @@ namespace Park.Admin.Pages.Overview
             {
                 ViewBag.Cars.Add(car);
             }
+
+            ViewBag.APIUrl = await Park.Models.Config.GetAsync(ParkDB, "apiUrl", "127.0.0.1:8080");
             return Page();
         }
         public async Task<IActionResult> OnPostParkAreaDropDownList_SelectedChangedAsync(string ddlParkArea, string ddlParkArea_text)
         {
             int id = int.Parse(ddlParkArea);
-           var pa= await ParkDB.ParkAreas.Include(p => p.ParkingSpaces).FirstOrDefaultAsync() ;
+            var pa = await ParkDB.ParkAreas.Include(p => p.ParkingSpaces).FirstOrDefaultAsync();
             UIHelper.DropDownList("ddlParkingSpace").LoadData(await LoadParkingSpacesAsync(id));
-            UIHelper.DropDownList("ddlParkAreaTokens").DataSource(pa.GateTokens.Split(new string[] { ";" },StringSplitOptions.RemoveEmptyEntries));
+            UIHelper.DropDownList("ddlParkAreaTokens").DataSource(pa.GateTokens.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries));
+            return UIHelper.Result();
+        }
+        public async Task<IActionResult> OnPostSetAPIUrlAsync(string txtAPIUrl)
+        {
+            await Park.Models.Config.SetAsync(ParkDB, "apiUrl", txtAPIUrl);
+            ShowNotify("设置成功，1秒后将刷新页面");
+
             return UIHelper.Result();
         }
         public async Task<ListItem[]> LoadParkingSpacesAsync(int? id = null)
         {
             IQueryable<ParkArea> q = ParkDB.ParkAreas.Include(p => p.ParkingSpaces);
-     
-                q = q.Where(p => p.ID == id.Value);
+
+            q = q.Where(p => p.ID == id.Value);
             var parkingSpaces = (await q.FirstOrDefaultAsync()).ParkingSpaces;
             return parkingSpaces.Select(p => new ListItem
             {

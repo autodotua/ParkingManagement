@@ -24,34 +24,30 @@
     <br />
     <f:Form ID="SimpleForm1" ShowHeader="false" BodyPadding="5 5 0 5">
         <Items>
-            <f:Panel ShowHeader="false" CssClass="" ShowBorder="false" Layout="Column" BodyPadding="8">
+            <f:Panel ShowHeader="true" Title="基本设置" CssClass="" ShowBorder="false" Layout="Column" BodyPadding="8">
                 <Items>
                     <f:DropDownList ID="ddlParkArea" DataTextField="Name" Label="停车区"
                                     OnSelectedIndexChanged="@Url.Handler("ParkAreaDropDownList_SelectedChanged")"
                                     OnSelectedIndexChangedFields="ddlParkArea" Width="360"
                                     DataValueField="ID" DataSource="@ViewBag.ParkAreas">
                     </f:DropDownList>
-                    <f:DropDownList ID="ddlParkAreaTokens" Label="道闸杆token" Width="360">
-                    </f:DropDownList>
-                    <f:Button ID="Button4" CssClass="btn-in-form" Text="按钮一">
-                        <Listeners>
-                        </Listeners>
+                    <f:TextBox Label="API服务的IP地址和端口" LabelWidth="200" CssStyle="margin-left:24px" ID="txtAPIUrl" Text="@ViewBag.APIUrl" Width="500"></f:TextBox>
+                    <f:Button CssClass="btn-in-form" Text="设置" OnClick="@Url.Handler("SetAPIUrl")" OnClickFields="txtAPIUrl">
                     </f:Button>
                 </Items>
-            </f:Panel>
-            <f:Panel ShowHeader="true" Title="车位传感器模拟" CssClass="" BodyPadding="8" ShowBorder="false" Layout="Column">
+            </f:Panel><f:Panel ShowHeader="true" Title="车位传感器模拟" CssClass="" BodyPadding="8" ShowBorder="false" Layout="Column">
                 <Items>
                     <f:DropDownList ID="ddlParkingSpace" DataTextField="Text" Label="停车位"
                                     Width="360" DataValueField="Token">
                     </f:DropDownList>
-                    <f:Button CssClass="btn-in-form" Text="设置为空闲">
-                        <Listeners>
-                            <f:Listener Event="click" Handler="setParkingSpaceEmpty"></f:Listener>
-                        </Listeners>
-                    </f:Button>
+
                     <f:Button ID="Button4" CssClass="btn-in-form" Text="设置为有车">
                         <Listeners>
                             <f:Listener Event="click" Handler="setParkingSpaceHacCar"></f:Listener>
+                        </Listeners>
+                    </f:Button>  <f:Button CssClass="btn-in-form" Text="设置为空闲">
+                        <Listeners>
+                            <f:Listener Event="click" Handler="setParkingSpaceEmpty"></f:Listener>
                         </Listeners>
                     </f:Button>
                 </Items>
@@ -59,6 +55,8 @@
 
             <f:Panel ShowHeader="true" Title="道闸杆模拟" CssClass="" BodyPadding="8" ShowBorder="false" Layout="Column">
                 <Items>
+                    <f:DropDownList ID="ddlParkAreaTokens" Label="道闸杆token" Width="360">
+                    </f:DropDownList>
                     <f:DropDownList ID="ddlCars" DataTextField="Text" Label="车辆"
                                     DataSource="@ViewBag.Cars" Width="360"
                                     DataValueField="ID">
@@ -100,9 +98,14 @@
             post("leave", { licensePlate:F.ui.ddlCars.getValue(),token:F.ui.ddlParkAreaTokens.getText()})
         }
 
-        function post(action,data) {
+        function post(action, data) {
+            F.notify({
+                message: "正在发送请求",
+                title: "请稍等",
+                showLoading:true
+            });
             $.post({
-                url: "http://localhost:8520/Device/"+action,
+                url: "http://@(ViewBag.APIUrl)/Device/"+action,
                 data: JSON.stringify(data),
                 dataType: "JSON",
                 contentType: "application/json",
@@ -120,6 +123,12 @@
 
                     });
         })
+
+        F.beforeAjaxSuccess(function (data) {
+            if (data.indexOf("设置成功") > -1) {
+                setTimeout(() => location.reload(), 1000);
+            }
+        });
     </script>
 }
 
