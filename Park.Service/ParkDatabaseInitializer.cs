@@ -87,12 +87,12 @@ namespace Park.Service
             for (int i = 0; i < 20; i++)//车主
             {
                 //注册一名车主
-                var owner = (await CarOwnerService.Regist(context,
-                    "user" + r.Next(0, short.MaxValue), "1234",
+                var owner = (await CarOwnerService.RegisterAsync(context,
+                    "user"+(i+1).ToString(), "1234",
                     DateTime.Now.AddDays(-10).AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
                 await context.SaveChangesAsync();
 
-                //模拟为车主充值5次
+                //模拟为车主充值3次
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(20, 200),
                     DateTime.Now.AddDays(-7).AddDays(-r.NextDouble()));
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(10, 50),

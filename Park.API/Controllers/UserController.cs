@@ -25,8 +25,7 @@ namespace Park.API.Controllers
         [Route("Login")]
         public async Task<ResponseData<LoginResult>> LoginAsync([FromBody] LoginRequest request)
         {
-            var a = await db.CarOwners.FirstAsync();
-            var result = await CarOwnerService.Login(db, request.Username, request.Password);
+            var result = await CarOwnerService.LoginAsync(db, request.Username, request.Password);
             switch (result.Type)
             {
                 case LoginOrRegisterResultType.Succeed:
@@ -62,8 +61,7 @@ namespace Park.API.Controllers
         [Route("Register")]
         public async Task<ResponseData<LoginResult>> RegisterAsync([FromBody] LoginRequest request)
         {
-            var a = await db.CarOwners.FirstAsync();
-            var result = await CarOwnerService.Register(db, request.Username, request.Password);
+            var result = await CarOwnerService.RegisterAsync(db, request.Username, request.Password);
             switch (result.Type)
             {
                 case LoginOrRegisterResultType.Succeed:
@@ -83,6 +81,30 @@ namespace Park.API.Controllers
                 default:
                     throw new NotImplementedException();
             }
+        }   /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Password")]
+        public async Task<ResponseData<object>> ChangePasswordAsync([FromBody] ChangePasswordRequest request)
+        {
+            if (!request.IsValid())
+            {
+                return new ResponseData<object>() { Succeed = false, Message = "用户验证失败" };
+            }
+            CarOwner carOwner =await db.CarOwners.FindAsync(request.UserID);
+            if(carOwner==null)
+            {
+                return new ResponseData<object>(null, false, "找不到用户");
+            } 
+            if(carOwner.Password!=CarOwnerService.CreateMD5(carOwner.Username+request.OldPassword))
+            {
+                return new ResponseData<object>(null, false, "旧密码错误");
+            }
+            await CarOwnerService.SetPasswordAsync(db, carOwner, request.NewPassword);
+                return new ResponseData<object>();
         }
 
     }
@@ -100,6 +122,17 @@ namespace Park.API.Controllers
         /// 用户名
         /// </summary>
         public string Username { get; set; }
+    }  
+    public class ChangePasswordRequest:UserToken
+    {
+        /// <summary>
+        /// 旧密码
+        /// </summary>
+        public string OldPassword { get; set; }
+        /// <summary>
+        /// 新密码
+        /// </summary>
+        public string NewPassword { get; set; }
     }
 
     public class LoginResult : UserToken

@@ -20,9 +20,9 @@ namespace Park.Service
         /// <param name="password">密码</param>
         /// <returns>如果用户名已存在，返回null，否则返回注册后的用户对象</returns>
 
-        public static Task<LoginOrRegisterResult> Register(ParkContext db, string username, string password)
+        public static Task<LoginOrRegisterResult> RegisterAsync(ParkContext db, string username, string password)
         {
-            return Regist(db, username, password, DateTime.Now);
+            return RegisterAsync(db, username, password, DateTime.Now);
         }
         /// <summary>
         /// 注册
@@ -32,7 +32,7 @@ namespace Park.Service
         /// <param name="password"></param>
         /// <param name="registTime">内部测试使用的时间</param>
         /// <returns>如果用户名已存在，返回null，否则返回注册后的用户对象</returns>
-        public async static Task<LoginOrRegisterResult> Regist(ParkContext db, string username, string password, DateTime registTime)
+        public async static Task<LoginOrRegisterResult> RegisterAsync(ParkContext db, string username, string password, DateTime registTime)
         {
             if (await db.CarOwners.AnyAsync(p => p.Username == username))
             {
@@ -43,7 +43,7 @@ namespace Park.Service
                 RegistTime = registTime,
                 LastLoginTime = registTime,
                 Username = username,
-                Password = CreateMD5(password),
+                Password = CreateMD5(username+ password),
                 Enabled = true,
             };
             db.Add(carOwner);
@@ -57,7 +57,7 @@ namespace Park.Service
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public async static Task<LoginOrRegisterResult> Login(ParkContext db, string username, string password)
+        public async static Task<LoginOrRegisterResult> LoginAsync(ParkContext db, string username, string password)
         {
             //判断参数是否为空
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
@@ -66,7 +66,8 @@ namespace Park.Service
             }
             //寻找用户名与密码都匹配的用户
             CarOwner carOwner = await db.CarOwners
-                .FirstOrDefaultAsync(p => p.Username == username && p.Password == CreateMD5(password));
+                .FirstOrDefaultAsync(p => p.Username == username && p.Password == CreateMD5(username+password));
+
 
             if (carOwner == null)
             {

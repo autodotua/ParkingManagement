@@ -10,8 +10,8 @@
         >交易记录</el-button>
       </div>
       <el-row>
-        <el-col :span="12">余额：</el-col>
-        <el-col :span="8">{{displayBalance}}</el-col>
+        <el-col :span="8">余额：</el-col>
+        <el-col :span="12">{{displayBalance}}</el-col>
         <el-col :span="4">
           <el-button size="mini" @click="jump('Recharge')">充值</el-button>
         </el-col>
@@ -21,7 +21,7 @@
         <el-col :span="8">月租到期：</el-col>
         <el-col :span="12">{{displayExpireTime}}</el-col>
         <el-col :span="4">
-          <el-button size="mini">续期</el-button>
+          <el-button size="mini" @click="jump('Recharge')">续期</el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -48,6 +48,14 @@
           <img :src="getImageUrl(park.id)" style="width:100%" />
         </a>
       </div>
+    </el-card>
+    <br />
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>账户</span>
+        <!-- <el-button style="float: right; padding: 3px 0" type="text" @click="jump('/Car')">管理</el-button> -->
+      </div>
+    <el-button @click=" jump('Password')">修改密码</el-button>
     </el-card>
   </div>
 </template>

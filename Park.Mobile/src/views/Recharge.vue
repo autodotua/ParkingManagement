@@ -11,7 +11,7 @@
       <el-form ref="form" label-width="80px">
         <el-form-item label="当前余额">{{displayBalance}}</el-form-item>
         <el-form-item label="充值金额">
-          <el-input v-model="amount"></el-input>
+          <el-input v-model="amount" type="number"></el-input>
         </el-form-item>
         <el-form-item label="充值途径">
           <el-radio-group v-model="method">
@@ -57,6 +57,17 @@ export default Vue.extend({
   },
   methods: {
     recharge() {
+      if (typeof this.amount == "string") {
+        this.amount = Number.parseInt(this.amount);
+      }
+      if (
+        typeof this.amount == "string" ||
+        this.amount <= 0 ||
+        this.amount > 1000
+      ) {
+        showError("输入有误，请检查输入内容");
+        return;
+      }
       Vue.axios
         .post(
           getUrl("Transaction", "Recharge"),

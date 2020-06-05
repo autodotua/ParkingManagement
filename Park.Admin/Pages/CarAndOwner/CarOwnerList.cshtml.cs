@@ -173,9 +173,9 @@ namespace Park.Admin.Pages.CarAndOwner
             {
                 foreach (var owner in ParkDB.CarOwners.Where(u => ids.Contains(u.ID)).ToList())
                 {
-                    await CarOwnerService.SetPasswordAsync(ParkDB, owner, "123456");
+                    await CarOwnerService.SetPasswordAsync(ParkDB, owner, "1234");
                 }
-                ShowNotify("已重设密码为123456");
+                ShowNotify("已重设密码为1234");
                 await DB.SaveChangesAsync();
             }
         }

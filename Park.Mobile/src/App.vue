@@ -54,7 +54,7 @@ export default Vue.extend({
   methods: {
     jump:jump,
     clickUsername() {
-      this.$confirm("是否退出账户？", "提示", {
+      this.$confirm("是否注销账户？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

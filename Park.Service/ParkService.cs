@@ -25,7 +25,8 @@ namespace Park.Service
         internal async static Task<EnterResult> EnterAsync(ParkContext db, string licensePlate, ParkArea parkArea, DateTime time)
         {
             //检查是否有空位
-            bool hasEmpty = await db.ParkingSpaces.AnyAsync(p => p.ParkArea == parkArea);
+            bool hasEmpty = await db.ParkingSpaces.AnyAsync(p => p.ParkArea == parkArea && !p.HasCar);
+            //select from parkingspace join parkarea on parkingspace.parkareaid=parkarea.id and not parkingspace.hascar 
             if (!hasEmpty)
             {
                 return new EnterResult(false, "停车场已满");
