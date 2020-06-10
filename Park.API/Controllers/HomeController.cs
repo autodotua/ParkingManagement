@@ -36,12 +36,10 @@ namespace Park.API.Controllers
             }
            var image= ParkingSpaceService.GetMap(db, park);
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                image.Save(ms, ImageFormat.Png);
-                ActionResult result = Ok();
-                return File(ms.ToArray(), "image/png");
-            }
+            using MemoryStream ms = new MemoryStream();
+            image.Save(ms, ImageFormat.Png);
+            ActionResult result = Ok();
+            return File(ms.ToArray(), "image/png");
         }
         /// <summary>
         /// 获取主页所有需要的信息

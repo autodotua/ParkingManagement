@@ -84,7 +84,7 @@ namespace Park.Service
             //var a = context.ParkAreas.First().ParkingSpaces;
 
             //parkAreas = await context.ParkAreas.ToListAsync();
-            for (int i = 0; i < 20; i++)//车主
+            for (int i = 0; i < 100; i++)//车主
             {
                 //注册一名车主
                 var owner = (await CarOwnerService.RegisterAsync(context,
@@ -112,12 +112,17 @@ namespace Park.Service
                     context.Cars.Add(car);
                     context.SaveChanges();
 
-                    int parkCount = r.Next(2, 10);
+                    DateTime time = owner.RegistTime.AddDays(r.NextDouble());
                     //为每辆车模拟生成几次停车记录
-                    for (int k = 0; k < parkCount; k++)//进出场信息
+                   while(true)//进出场信息
                     {
-                        DateTime enterTime = DateTime.Now.AddDays(-parkCount + k - 1 - r.NextDouble());
+                        DateTime enterTime = time.AddDays(r.NextDouble());
                         DateTime leaveTime = enterTime.AddDays(r.NextDouble());
+                        if(leaveTime > DateTime.Now)
+                        {
+                            break;
+                        }
+                        time = leaveTime;
                         var parkArea = parkAreas[r.Next(0, 2)];
                         //模拟用户在5天内进入过停车场，然后出了停车场
                         await ParkService.EnterAsync(context, car.LicensePlate, parkArea, enterTime);
