@@ -108,12 +108,23 @@ namespace Park.Admin.Models
                 {
                     Name = "统计图表",
                     SortIndex = 40,
-                   NavigateUrl = "~/Overview/Charts",
+                   NavigateUrl = "~/Overview/Charts",               
+                    ViewPower = context.Powers.Where(p => p.Name == "ParkPower").FirstOrDefault<Power>()
+
+                },
+                 new Menu{
+                    Name = "停车场设置",
+                    SortIndex = 50,
+                   NavigateUrl = "~/Overview/ParkSettings",      
+                     ViewPower = context.Powers.Where(p => p.Name == "ParkPower").FirstOrDefault<Power>()
+
                 },
                  new Menu{
                     Name = "数据库管理",
-                    SortIndex = 50,
-                   NavigateUrl = "~/Overview/DatabaseManage",
+                    SortIndex = 60,
+                   NavigateUrl = "~/Overview/DatabaseManage",     
+                     ViewPower = context.Powers.Where(p => p.Name == "ParkPower").FirstOrDefault<Power>()
+
                 },
                 new Menu
                 {

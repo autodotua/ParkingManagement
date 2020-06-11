@@ -27,23 +27,21 @@ namespace Park.Admin
         // https://docs.microsoft.com/zh-cn/aspnet/core/data/ef-rp/intro
         private static void CreateDbIfNotExists(IHost host)
         {
-            using (var scope = host.Services.CreateScope())
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+
+            try
             {
-                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<ParkAdminContext>();
+                var parkContext = services.GetRequiredService<ParkContext>();
+                ParkAdminDatabaseInitializer.Initialize(context);
+                ParkDatabaseInitializer.Initialize(parkContext);
 
-                try
-                {
-                    var context = services.GetRequiredService<ParkAdminContext>();
-                    var parkContext = services.GetRequiredService<ParkContext>();
-                    ParkAdminDatabaseInitializer.Initialize(context);
-                    ParkDatabaseInitializer.Initialize(parkContext);
-
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "创建数据库时发生错误！");
-                }
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "创建数据库时发生错误！");
             }
         }
 

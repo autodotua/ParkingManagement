@@ -15,20 +15,24 @@ namespace Park.Service
     /// </summary>
     public static class ParkDatabaseInitializer
     {
+        public static Func<DateTime> Now = () => DateTime.Today.AddHours(20);//模拟的当前时间
         /// <summary>
         /// 生成测试数据
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async static Task GenerateTestDatasAsync(ParkContext context)
+        public async static Task GenerateTestDatasAsync(ParkContext context, int userCount)
         {
 
-            List<ParkArea> parkAreas = new List<ParkArea>();
             Random r = new Random();
-            await Config.SetAsync(context, "MonthlyPrice", "120");//设置月租120元/月
-            PriceStrategy priceStrategy = new PriceStrategy()
+            List<ParkArea> parkAreas = new List<ParkArea>();
+            if (string.IsNullOrEmpty(await Config.GetAsync(context, "HasData", "")))
             {
-                StrategyJson = @"{
+                await Config.SetAsync(context, "HasData", "True");//设置月租120元/月
+                await Config.SetAsync(context, "MonthlyPrice", "120");//设置月租120元/月
+                PriceStrategy priceStrategy = new PriceStrategy()
+                {
+                    StrategyJson = @"{
   ""type"": ""stepHourBase"", 
   ""prices"": [
     { 
@@ -45,60 +49,68 @@ namespace Park.Service
     }
   ]
 }",
-                //MonthlyPrice = 120
-            };
-            context.PriceStrategys.Add(priceStrategy);
+                    //MonthlyPrice = 120
+                };
+                context.PriceStrategys.Add(priceStrategy);
 
-            //导入停车区信息
-            parkAreas = await ParkingSpaceService.ImportFromJsonAsync(context, parkAreaJson);
-            foreach (var parkArea in parkAreas)
-            {
-                parkArea.GateTokens = GenerateToken() + ";" + GenerateToken();
-                parkArea.ParkingSpaces.ForEach(p => p.SensorToken = GenerateToken());
-                parkArea.PriceStrategy = priceStrategy;
-                //设置停车区的大门Token、生成每个停车位的Token、设置价格策略
+                //导入停车区信息
+                parkAreas = await ParkingSpaceService.ImportFromJsonAsync(context, parkAreaJson);
+                foreach (var parkArea in parkAreas)
+                {
+                    parkArea.GateTokens = GenerateToken() + ";" + GenerateToken();
+                    parkArea.ParkingSpaces.ForEach(p => p.SensorToken = GenerateToken());
+                    parkArea.PriceStrategy = priceStrategy;
+                    //设置停车区的大门Token、生成每个停车位的Token、设置价格策略
+                }
+                //}
+                //ParkArea parkArea = new ParkArea()
+                //{
+                //    Name = "停车场" + (i + 1),
+                //    PriceStrategy = priceStrategy,
+                //    Length = 100,
+                //    Width = 50
+                //};
+                //    context.ParkAreas.Add(parkArea);
+                //    for (int j = 0; j < r.Next(50, 100); j++)
+                //    {
+                //        context.ParkingSpaces.Add(new ParkingSpace()
+                //        {
+                //            ParkArea = parkArea,
+                //            X = r.Next(0, 50),
+                //            Y = r.Next(0, 50),
+                //            Width = 5,
+                //            Height = 2.5,
+                //            RotateAngle = r.Next(0, 90)
+                //        });
+                //    }
+                //}
+                //context.SaveChanges();
+                //var a = context.ParkAreas.First().ParkingSpaces;
+
+                //parkAreas = await context.ParkAreas.ToListAsync();
+
             }
-            //}
-            //ParkArea parkArea = new ParkArea()
-            //{
-            //    Name = "停车场" + (i + 1),
-            //    PriceStrategy = priceStrategy,
-            //    Length = 100,
-            //    Width = 50
-            //};
-            //    context.ParkAreas.Add(parkArea);
-            //    for (int j = 0; j < r.Next(50, 100); j++)
-            //    {
-            //        context.ParkingSpaces.Add(new ParkingSpace()
-            //        {
-            //            ParkArea = parkArea,
-            //            X = r.Next(0, 50),
-            //            Y = r.Next(0, 50),
-            //            Width = 5,
-            //            Height = 2.5,
-            //            RotateAngle = r.Next(0, 90)
-            //        });
-            //    }
-            //}
-            //context.SaveChanges();
-            //var a = context.ParkAreas.First().ParkingSpaces;
-
-            //parkAreas = await context.ParkAreas.ToListAsync();
-            for (int i = 0; i < 100; i++)//车主
+            else
+            {
+                parkAreas = await context.ParkAreas.Include(p => p.ParkingSpaces).ToListAsync();
+            }
+            int i = context.CarOwners.Any() ? context.CarOwners.Max(p => p.ID) + 1 : 0;
+            int max = i + userCount;
+            for (; i < max; i++)//车主
             {
                 //注册一名车主
                 var owner = (await CarOwnerService.RegisterAsync(context,
-                    "user"+(i+1).ToString(), "1234",
-                    DateTime.Now.AddDays(-10).AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
+                    "user" + (i + 1).ToString(), "1234",
+                    Now().AddDays(-10).AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
                 await context.SaveChangesAsync();
 
                 //模拟为车主充值3次
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(20, 200),
-                    DateTime.Now.AddDays(-7).AddDays(-r.NextDouble()));
+                    Now().AddDays(-7).AddDays(-r.NextDouble()));
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(10, 50),
-                        DateTime.Now.AddDays(-6).AddDays(-r.NextDouble()));
+                        Now().AddDays(-6).AddDays(-r.NextDouble()));
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(30, 200),
-                        DateTime.Now.AddDays(-5).AddDays(-r.NextDouble()));
+                        Now().AddDays(-5).AddDays(-r.NextDouble()));
 
                 int carCount = r.Next(2, 5);
                 for (int j = 0; j < carCount; j++)//车辆
@@ -114,19 +126,41 @@ namespace Park.Service
 
                     DateTime time = owner.RegistTime.AddDays(r.NextDouble());
                     //为每辆车模拟生成几次停车记录
-                   while(true)//进出场信息
+                    while (true)//进出场信息
                     {
                         DateTime enterTime = time.AddDays(r.NextDouble());
+                        if(enterTime.Hour>23 || enterTime.Hour<7)//模拟夜间没有车辆进入
+                        {
+                            enterTime = enterTime.AddHours(8);
+                        }
                         DateTime leaveTime = enterTime.AddDays(r.NextDouble());
-                        if(leaveTime > DateTime.Now)
+                        if (leaveTime.Hour > 23 || leaveTime.Hour < 7)
+                        {
+                            leaveTime = leaveTime.AddHours(8);
+                        }
+                        if (leaveTime > Now())
                         {
                             break;
                         }
                         time = leaveTime;
-                        var parkArea = parkAreas[r.Next(0, 2)];
+                        var parkArea = parkAreas[r.Next(0, 3)];
                         //模拟用户在5天内进入过停车场，然后出了停车场
-                        await ParkService.EnterAsync(context, car.LicensePlate, parkArea, enterTime);
-                        var result = await ParkService.LeaveAsync(context, car.LicensePlate, parkArea, leaveTime);
+                        if ((await ParkService.EnterAsync(context, car.LicensePlate, parkArea, enterTime)).CanEnter)
+                        {
+                            ParkingSpace ps = parkArea.ParkingSpaces.First(p => !p.HasCar);
+                            ps.HasCar = true;//切换停车位状态
+                            if (leaveTime > Now().AddHours(-0.5))//设置时间差，这样可以让最后有一部分车留下来
+                            {
+                                break;
+                            }
+
+                            var result = await ParkService.LeaveAsync(context, car.LicensePlate, parkArea, leaveTime);
+                            if (result.CanLeave)
+                            {
+                                ps.HasCar = false;//切换停车位状态
+                            }
+                        }
+
                         //这里非常奇怪，部分停车记录的停车时间会变成1-01-01 8:05，明明ParkRecord里的时间都是正确的
                         //已解决，时间问题
                     }

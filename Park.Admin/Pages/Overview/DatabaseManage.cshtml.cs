@@ -37,9 +37,9 @@ namespace Park.Admin.Pages.Overview
             ShowNotify("操作成功，请重新登录");
             return UIHelper.Result();
         }
-        public async Task<IActionResult> OnPostGenerateTestDataAsync()
+        public async Task<IActionResult> OnPostGenerateTestDataAsync(int count)
         {
-            await ParkDatabaseInitializer.GenerateTestDatasAsync(ParkDB);
+            await ParkDatabaseInitializer.GenerateTestDatasAsync(ParkDB,count);
             ShowNotify("操作成功");
             return UIHelper.Result();
         }

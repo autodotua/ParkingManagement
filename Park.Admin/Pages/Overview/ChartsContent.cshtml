@@ -15,7 +15,6 @@
     <style>
         body {
             height: 100%;
-            margin: 0;
             overflow: hidden;
             padding: 12px;
             color: white;
@@ -28,17 +27,26 @@
             float: left;
             overflow-y: auto
         }
-        .left::-webkit-scrollbar {
-            width: 0 !important
-        }
+
+            .left::-webkit-scrollbar {
+                width: 0 !important
+            }
+
+            .left .dayCharts {
+                position: absolute;
+                bottom: 36px;
+                left: 12px;
+                width: 240px;
+            }
 
         .right {
             height: 100%;
             width: 240px;
             float: right;
             margin-top: 24px;
-            overflow-y:auto
+            overflow-y: auto
         }
+
             .right::-webkit-scrollbar {
                 width: 0 !important
             }
@@ -50,15 +58,26 @@
         .center {
             height: 100%;
             margin-left: 240px;
-            margin-right: 240px
+            margin-right: 240px;
+            text-align: center
         }
+
+            .center .title {
+                height: 36px;
+                font-size: 3rem;
+                font-weight:bold
+            }
+
+            .center .chart {
+                height: calc(50% - 36px);
+            }
 
         #full {
             position: absolute;
             top: 12px;
             right: 12px;
             background-color: black;
-            color:white;
+            color: white;
             opacity: 0.5;
             border: none;
         }
@@ -73,7 +92,7 @@
             border: solid;
             text-align: center;
             border-radius: 4px;
-            margin-bottom:12px
+            margin-bottom: 12px
         }
 
             .status a {
@@ -87,13 +106,12 @@
                 height: 30px;
                 color: black
             }
-        .dayCharts{
-            position:absolute;
-            bottom:12px;
-            left:12px;
-            width:240px;
-        }
+
       
+
+        .pie {
+            height: 120px;
+        }
     </style>
 </head>
 <body>
@@ -101,7 +119,7 @@
         <div class="status">
             <a>@ViewBag.Status.Total</a>
             <div>车位总数</div>
-        </div>   
+        </div>
         <div class="status">
             <a>@ViewBag.Status.Used</a>
             <div>已用车位</div>
@@ -126,13 +144,15 @@
             {
                 <h3>@park.Name</h3>
                 <img src="data:image;base64,@System.Convert.ToBase64String(park.Map)" />
+                <div id="pie-@park.ID" class="pie"></div>
             }
         }
 
     </div>
     <div class="center">
-        <div id="chartEnterHours" style="height: 50%"></div>
-        <div id="chartLeaveHours" style="height: 50%"></div>
+        <div class="title">@ViewBag.Name</div>
+        <div id="chartEnterHours" class="chart"></div>
+        <div id="chartLeaveHours" class="chart"></div>
     </div>
     <button id="full" onclick="switchFullScreen(document.documentElement)">全屏</button>
 
@@ -154,7 +174,8 @@
                     textStyle: {
                         color: '#ffffff',
                     },
-                    left: 'center'
+                    left: 'center',
+                    y: 'bottom',
             },
             tooltip: {},
             xAxis: {
@@ -201,50 +222,95 @@
             }]
                 });
         }
+         function initPie(id,title,data) {
+            let chart = echarts.init(document.getElementById(id));
+            charts.push(chart);
+            chart.setOption({
+            title: {
+                    text: title,
+                    textStyle: {
+                        color: '#ffffff',
+                    },
+                    left: 'center'
+            },
+            tooltip: {},
+                color: ["#f9bd5f","#2a7f16"],
+                series: [{
+                    label: {
+                        normal: {
+                            fontSize: 18
+                        }
+                    },
+                    radius: ['0%', '55%'],
+                    type: 'pie',
+                    center: ['50%', '50%'],
+                    data: data,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 2, 2, 0.3)'
+                        }
+                    }
+                }]
+                });
+        }
 
         initChart("chartLeaveHours", '当日停车场出场车辆', [@Html.Raw(string.Join(",", ViewBag.HoursLeave))],"bar")
         initChart("chartEnterHours", '当日停车场入场车辆', [@Html.Raw(string.Join(",", ViewBag.HoursEnter))], "bar")
         initChart("chartEnterDays", '近日停车场入场车辆', [@Html.Raw(string.Join(",", ViewBag.DaysEnter))], "line")
         initChart("chartLeaveDays", '近日停车场出场车辆', [@Html.Raw(string.Join(",", ViewBag.DaysEnter))], "line")
-        function switchFullScreen(element) {
-            if (isFullscreen()) {
-                cancelFullScreen(element);
-            }
-            else {
-                launchFullScreen(element);
-            }
-        }
 
-        function launchFullScreen(element) {
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-            }
-        }
-        function cancelFullScreen() {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            }
-        }
-        function isFullscreen() {
-            return document.fullscreenElement ||
-                document.msFullscreenElement ||
-                document.mozFullScreenElement ||
-                document.webkitFullscreenElement || false;
-        }
+                @foreach (var park in ViewBag.Parks)
+                {
+                    int hasCar = (park as Park.Models.ParkArea).ParkingSpaces.Count(p => p.HasCar);
+                    int empty = (park as Park.Models.ParkArea).ParkingSpaces.Count(p => !p.HasCar);
+                    <text>
+                       initPie("pie-@park.ID","", [{ value: @hasCar ,name: "有车"}, {value: @empty, name: "空闲" }]);
+                    </text>
+                }
 
-        setInterval(() => location.reload(), 1000*60*2)
+
+
+             function switchFullScreen(element) {
+                 if (isFullscreen()) {
+                     cancelFullScreen(element);
+                 }
+                 else {
+                     launchFullScreen(element);
+                 }
+             }
+
+             function launchFullScreen(element) {
+                 if (element.requestFullscreen) {
+                     element.requestFullscreen();
+                 } else if (element.msRequestFullscreen) {
+                     element.msRequestFullscreen();
+                 } else if (element.mozRequestFullScreen) {
+                     element.mozRequestFullScreen();
+                 } else if (element.webkitRequestFullscreen) {
+                     element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                 }
+             }
+             function cancelFullScreen() {
+                 if (document.exitFullscreen) {
+                     document.exitFullscreen();
+                 } else if (document.msExitFullscreen) {
+                     document.msExitFullscreen();
+                 } else if (document.mozCancelFullScreen) {
+                     document.mozCancelFullScreen();
+                 } else if (document.webkitExitFullscreen) {
+                     document.webkitExitFullscreen();
+                 }
+             }
+             function isFullscreen() {
+                 return document.fullscreenElement ||
+                     document.msFullscreenElement ||
+                     document.mozFullScreenElement ||
+                     document.webkitFullscreenElement || false;
+             }
+
+             setInterval(() => location.reload(), 1000*60*2)
         //function requestFullScreen(element) {
         //    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
         //    if (requestMethod) {

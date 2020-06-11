@@ -32,6 +32,7 @@ namespace Park.Admin.Pages.Overview
             ViewBag.HoursLeave = recentHoursEnterParkCount.Select(p => $"['{p.Key}',{p.Value}]");
 
             ViewBag.Status = await StatisticsService.GetParkStatusAsync(ParkDB);
+            ViewBag.Name = await Park.Models.Config.GetAsync(ParkDB, "Name", "停车场");
 
             List<ParkArea> parkAreas = await ParkDB.ParkAreas.Include(p => p.ParkingSpaces)
                 .Include(p => p.Aisles)
