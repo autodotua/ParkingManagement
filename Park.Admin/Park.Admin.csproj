@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <Reference Include="FineUICore">
-      <HintPath>bin\FineUICore.dll</HintPath>
+      <HintPath>..\Libs\FineUICore.dll</HintPath>
     </Reference>
   </ItemGroup>
 
