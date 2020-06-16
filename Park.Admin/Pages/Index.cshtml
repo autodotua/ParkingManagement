@@ -9,9 +9,15 @@
 
 
 @section body{
+    <script>
+    F.cookie('Theme', "image_black_sky", {
+            expires: 100  // 单位：天
+    });
+    </script>
+
     <style>
-        .logo{
-            margin-left:8px;
+        .logo {
+            margin-left: 8px;
         }
     </style>
     <div id="header" class="f-widget-header f-mainheader" style="display:none;">
@@ -25,18 +31,18 @@
                 </td>
                 <td style="text-align: right;">
                     @*<f:Button CssClass="icontopaction systemhelp" ID="Button1" Text="下载源代码" IconAlign="Top" IconFont="_Download" EnableDefaultState="false" EnableDefaultCorner="false">
-                        <Listeners>
-                            <f:Listener Event="click" Handler="onDownloadClick"></f:Listener>
-                        </Listeners>
-                    </f:Button>
-                    <f:Button ID="btnSystemHelp" Text="系统帮助" CssClass="icontopaction systemhelp" MenuID="helpMenu" IconAlign="Top" IconFont="_Question" EnableDefaultState="false" EnableDefaultCorner="false" ShowMenuIcon="false" Menu="@Model.SystemHelpMenu">
-                    </f:Button>*@
-                    <f:Button CssClass="icontopaction systemhelp" ID="btnThemeSelect" Text="主题仓库" IconAlign="Top" IconFont="_Skin" EnableDefaultState="false" EnableDefaultCorner="false" TabIndex="-1">
+                            <Listeners>
+                                <f:Listener Event="click" Handler="onDownloadClick"></f:Listener>
+                            </Listeners>
+                        </f:Button>
+                        <f:Button ID="btnSystemHelp" Text="系统帮助" CssClass="icontopaction systemhelp" MenuID="helpMenu" IconAlign="Top" IconFont="_Question" EnableDefaultState="false" EnableDefaultCorner="false" ShowMenuIcon="false" Menu="@Model.SystemHelpMenu">
+                        </f:Button>*@
+                    @*<f:Button CssClass="icontopaction systemhelp" ID="btnThemeSelect" Text="主题仓库" IconAlign="Top" IconFont="_Skin" EnableDefaultState="false" EnableDefaultCorner="false" TabIndex="-1">
                         <Listeners>
                             <f:Listener Event="click" Handler="onThemeSelectClick" />
                         </Listeners>
-                    </f:Button>
-                    <f:Button ID="btnUserName" CssClass="userpicaction" Text="@Model.UserName" IconUrl="@Url.Content("~/res/images/head.png")" IconAlign="Left"
+                    </f:Button>*@
+                    <f:Button ID="btnUserName" CssClass="userpicaction" Text="@Model.UserName" IconUrl="@Url.Content("~/res/images/park/head.png")" IconAlign="Left"
                               ShowMenuIcon="true" EnableDefaultState="false" EnableDefaultCorner="false">
                         <Menu>
                             <f:MenuButton ID="btnSignOut" Text="安全退出" IconFont="_SignOut" ConfirmText="确定退出系统？" OnClick="@Url.Handler("btnSignOut_Click")">
@@ -61,19 +67,19 @@
     <f:RegionPanel ID="RegionPanel1" ShowBorder="false" CssClass="mainpanel" IsViewPort="true">
         <Regions>
             <f:Region ID="topRegion" ShowBorder="false" ShowHeader="false" RegionPosition="Top" CssClass="topregion bgpanel" ContentEl="#header"></f:Region>
-            <f:Region ID="leftRegion" ShowBorder="false" ShowHeader="true" 
-                      RegionPosition="Left" CssClass="leftregion bgpanel" 
+            <f:Region ID="leftRegion" ShowBorder="false" ShowHeader="true"
+                      RegionPosition="Left" CssClass="leftregion bgpanel"
                       RegionSplitIcon="false" RegionSplitWidth="3" RegionSplit="true"
-                      Width="200" Title="系统菜单" EnableCollapse="true"   Layout="Fit">
+                      Width="200" Title="系统菜单" EnableCollapse="true" Layout="Fit">
                 <Items>
-                    <f:Tree  ShowBorder="false" ShowHeader="false" ID="treeMenu" EnableSingleClickExpand="true" Nodes="@Model.MenuTreeNodes"></f:Tree>
+                    <f:Tree ShowBorder="false" ShowHeader="false" ID="treeMenu" EnableSingleClickExpand="true" Nodes="@Model.MenuTreeNodes"></f:Tree>
                 </Items>
             </f:Region>
             <f:Region ID="mainRegion" CssClass="centerregion" ShowBorder="false" ShowHeader="false" Layout="Fit" RegionPosition="Center">
                 <Items>
                     <f:TabStrip ID="mainTabStrip" EnableTabCloseMenu="true" ShowBorder="false" ShowInkBar="true">
                         <Tabs>
-                            <f:Tab ID="Tab1" Title="图表" Layout="Fit" Icon="House" EnableIFrame="true" IFrameUrl="~/Overview/Charts"></f:Tab>
+                            <f:Tab ID="Tab1" Title="图表" Layout="Fit" IconUrl="~/res/images/park/icon_home.png" EnableIFrame="true" IFrameUrl="~/Overview/Charts"></f:Tab>
                         </Tabs>
                         <Tools>
                             <f:Tool IconFont="_Refresh" CssClass="tabtool" ToolTip="刷新" ID="toolRefresh">

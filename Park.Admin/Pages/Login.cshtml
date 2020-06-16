@@ -12,7 +12,7 @@
 
     <style>
                 body {
-            background-image: url(res/images/park.jpg);
+            background-image: url(res/images/park/park.jpg);
             background-size: cover; /* <------ */
             background-repeat: no-repeat;
             background-position: center center;
@@ -20,7 +20,7 @@
         .login-image {
             background-color: #efefef;
             border-right: solid 1px #ddd;
-            margin-bottom: 0 !important;
+            margin: 0 !important;
         }
 
             .login-image img {
@@ -36,10 +36,10 @@
 @*<img src="~/res/images/park.jpg"  style="width:100%;height:100%"/>*@
     <f:Window ID="Window1" IsModal="true" Hidden="false" EnableClose="false" 
               EnableMaximize="false" WindowPosition="GoldenSection"
-              Icon="Key" Title="停车场管理系统" Layout="HBox" 
+              IconUrl="~/res/images/park/login_top.png" Title="停车场管理系统" Layout="HBox" 
               BoxConfigAlign="Stretch" BoxConfigPosition="Start" Width="500">
         <Items>
-            <f:Image ID="imageLogin" ImageUrl="~/res/images/login/login_2.png" CssClass="login-image">
+            <f:Image ID="imageLogin" ImageUrl="~/res/images/park/login_left.png" CssClass="login-image">
             </f:Image>
             <f:SimpleForm ID="SimpleForm1" LabelAlign="Top" BoxFlex="1" BodyPadding="30 20" ShowBorder="false" ShowHeader="false">
                 <Items>
@@ -55,7 +55,8 @@
                 <Items>
                     <f:ToolbarText Text=""></f:ToolbarText>
                     <f:ToolbarFill></f:ToolbarFill>
-                    <f:Button ID="btnSubmit" Icon="LockOpen" Type="Submit" ValidateForms="SimpleForm1" OnClickFields="SimpleForm1" OnClick="@Url.Handler("btnSubmit_Click")" Text="登陆"></f:Button>
+                    <f:Button ID="btnSubmit" IconUrl="~/res/images/park/login_bottom.png"
+                              Type="Submit" ValidateForms="SimpleForm1" OnClickFields="SimpleForm1" OnClick="@Url.Handler("btnSubmit_Click")" Text="登陆"></f:Button>
                 </Items>
             </f:Toolbar>
         </Toolbars>

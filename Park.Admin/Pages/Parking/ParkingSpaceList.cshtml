@@ -49,12 +49,12 @@
                     <f:Toolbar ID="Toolbar1" Position="Top">
                         <Items>
 
-                            <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="搜索" Trigger1Icon="Clear" Trigger2Icon="Search"
+                            @*<f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="搜索" Trigger1Icon="Clear" Trigger2Icon="Search"
                                               ShowTrigger1="false" OnTrigger2Click="@Url.Handler("DoPostBack")" OnTrigger2ClickParameter1="@(new Parameter("actionType","trigger2",ParameterMode.String))" OnTrigger2ClickFields="Panel1"
                                               OnTrigger1Click="@Url.Handler("DoPostBack")" OnTrigger1ClickParameter1="@(new Parameter("actionType","trigger1",ParameterMode.String))" OnTrigger1ClickFields="Panel1">
-                            </f:TwinTriggerBox>
+                            </f:TwinTriggerBox>*@
                             <f:ToolbarFill></f:ToolbarFill>
-                            <f:Button ID="btnDeletedSelected" Icon="Delete" Text="删除选中记录" AttributeDataTag="@Url.Handler("DoPostBack")" data-url="@Url.Handler("DoPostBack")">
+                            <f:Button ID="btnDeletedSelected" Icon="Delete"   IconUrl="~/res/images/park/icon_delete.png" Text="删除选中记录" AttributeDataTag="@Url.Handler("DoPostBack")" data-url="@Url.Handler("DoPostBack")">
                                 <Listeners>
                                     <f:Listener Event="click" Handler="onDeleteSelectedClick"></f:Listener>
                                 </Listeners>
@@ -64,7 +64,7 @@
                                     <f:Listener Event="click" Handler="onNewClick"></f:Listener>
                                 </Listeners>
                             </f:Button>*@
-                            <f:Button ID="btnSubmit" Text="保存数据" OnClick="@Url.Handler("SaveData")" OnClickFields="Grid1"></f:Button>
+                            <f:Button ID="btnSubmit" Text="保存数据"   IconUrl="~/res/images/park/icon_save.png" OnClick="@Url.Handler("SaveData")" OnClickFields="Grid1"></f:Button>
 
                         </Items>
                     </f:Toolbar>

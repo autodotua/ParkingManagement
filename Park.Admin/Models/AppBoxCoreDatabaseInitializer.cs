@@ -42,6 +42,7 @@ namespace Park.Admin.Models
                 {
                     Name = "车与车主",
                     SortIndex = 10,
+                    ImageUrl = "~/res/images/park/icon_car.png",
                     Children = new List<Menu> {
                         new Menu
                         {
@@ -77,6 +78,7 @@ namespace Park.Admin.Models
                 {
                     Name = "停车场",
                     SortIndex = 20,
+                    ImageUrl = "~/res/images/park/icon_park.png",
                     Children = new List<Menu> {
                         new Menu
                         {
@@ -101,6 +103,7 @@ namespace Park.Admin.Models
                     Name = "业务模拟",
                     SortIndex = 30,
                    NavigateUrl = "~/Overview/Simulate",
+                   ImageUrl = "~/res/images/park/icon_bag.png",
                     ViewPower = context.Powers.Where(p => p.Name == "ParkPower").FirstOrDefault<Power>()
 
                 },
@@ -108,21 +111,24 @@ namespace Park.Admin.Models
                 {
                     Name = "统计图表",
                     SortIndex = 40,
-                   NavigateUrl = "~/Overview/Charts",               
+                   NavigateUrl = "~/Overview/Charts",
+                   ImageUrl = "~/res/images/park/icon_charts.png",
                     ViewPower = context.Powers.Where(p => p.Name == "ParkPower").FirstOrDefault<Power>()
 
                 },
                  new Menu{
                     Name = "停车场设置",
                     SortIndex = 50,
-                   NavigateUrl = "~/Overview/ParkSettings",      
+                   NavigateUrl = "~/Overview/ParkSettings",
+                   ImageUrl = "~/res/images/park/icon_settings_2.png",
                      ViewPower = context.Powers.Where(p => p.Name == "ParkPower").FirstOrDefault<Power>()
 
                 },
                  new Menu{
                     Name = "数据库管理",
                     SortIndex = 60,
-                   NavigateUrl = "~/Overview/DatabaseManage",     
+                   NavigateUrl = "~/Overview/DatabaseManage",
+                            ImageUrl = "~/res/images/park/icon_settings_2.png",
                      ViewPower = context.Powers.Where(p => p.Name == "ParkPower").FirstOrDefault<Power>()
 
                 },
@@ -131,7 +137,7 @@ namespace Park.Admin.Models
                     Name = "系统管理",
                     SortIndex = 100,
                     Remark = "顶级菜单",
-                    ImageUrl = "~/res/icon/cog.png",
+                    ImageUrl = "~/res/images/park/icon_settings.png",
                     Children = new List<Menu> {
                         new Menu
                         {
@@ -139,7 +145,7 @@ namespace Park.Admin.Models
                             SortIndex = 101,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/UserList",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CoreUserView").FirstOrDefault<Power>()
                         },
                         //new Menu
@@ -184,7 +190,7 @@ namespace Park.Admin.Models
                             SortIndex = 106,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/Role",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CoreRoleView").FirstOrDefault<Power>()
                         },
                         new Menu
@@ -193,7 +199,7 @@ namespace Park.Admin.Models
                             SortIndex = 107,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/RoleUser",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CoreRoleUserView").FirstOrDefault<Power>()
                         },
                         new Menu
@@ -202,7 +208,7 @@ namespace Park.Admin.Models
                             SortIndex = 108,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/Power",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CorePowerView").FirstOrDefault<Power>()
                         },
                         new Menu
@@ -211,7 +217,7 @@ namespace Park.Admin.Models
                             SortIndex = 109,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/RolePower",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CoreRolePowerView").FirstOrDefault<Power>()
                         },
                         new Menu
@@ -220,7 +226,7 @@ namespace Park.Admin.Models
                             SortIndex = 110,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/Menu",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CoreMenuView").FirstOrDefault<Power>()
                         },
                         new Menu
@@ -229,7 +235,7 @@ namespace Park.Admin.Models
                             SortIndex = 111,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/Online",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CoreOnlineView").FirstOrDefault<Power>()
                         },
                         new Menu
@@ -238,7 +244,7 @@ namespace Park.Admin.Models
                             SortIndex = 112,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/Config",
-                            ImageUrl = "~/res/icon/tag_blue.png",
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                             ViewPower = context.Powers.Where(p => p.Name == "CoreConfigView").FirstOrDefault<Power>()
                         },
                         new Menu
@@ -247,7 +253,7 @@ namespace Park.Admin.Models
                             SortIndex = 113,
                             Remark = "二级菜单",
                             NavigateUrl = "~/Admin/ChangePassword",
-                            ImageUrl = "~/res/icon/tag_blue.png"
+                            //ImageUrl = "~/res/images/park/icon_settings.png",
                         }
                     }
                 },
@@ -662,7 +668,7 @@ namespace Park.Admin.Models
                 new Config
                 {
                     ConfigKey = "Theme",
-                    ConfigValue = "Cupertino",
+                    ConfigValue = "image_blue_sky",
                     Remark = "网站主题"
                 },
                 new Config
