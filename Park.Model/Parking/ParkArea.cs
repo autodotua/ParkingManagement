@@ -22,6 +22,8 @@ namespace Park.Models
         public virtual List<ParkingSpace> ParkingSpaces { get; set; }
         public virtual List<Aisle> Aisles { get; set; }
         public virtual List<Wall> Walls { get; set; }
+        [NotMapped]
+        public byte[] Map { get; set; }
 
         public virtual int Length { get; set; }
         public virtual int Width { get; set; }

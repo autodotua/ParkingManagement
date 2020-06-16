@@ -114,7 +114,7 @@ namespace Park.Service
         public async static Task<bool> IsMonthlyCardValidAsync(ParkContext db, int ownerID)
         {
             DateTime? expireTime = await GetExpireTimeAsync(db, ownerID);
-            return expireTime.HasValue? expireTime >= DateTime.Now:false ;
+            return expireTime.HasValue && expireTime >= DateTime.Now ;
         }
         /// <summary>
         /// 获取月租到期时间

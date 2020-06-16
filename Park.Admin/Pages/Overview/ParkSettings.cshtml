@@ -1,7 +1,7 @@
 ﻿@page
-@model Park.Admin.Pages.Overview.DatabaseManageModel
+@model Park.Admin.Pages.Overview.ParkSettingsModel
 @{
-    ViewData["Title"] = "数据库管理";
+    ViewData["Title"] = "停车场设置";
 }
 @section head{
     <style>
@@ -19,41 +19,23 @@
     </style>
 }
 @section body {
-    <f:Form ID="SimpleForm1" IsFluid="true" IsViewPort="true" ShowHeader="false" BodyPadding="5 5 0 5">
+    <f:Form ID="form" IsFluid="true" IsViewPort="true" ShowHeader="false" BodyPadding="5 5 0 5">
       <Rows>
+        
           <f:FormRow>
               <Items>
-                  <f:Label Text="重置数据库"></f:Label>
-                  <f:Button Text="执行">
-                      <Listeners>
-                          <f:Listener Event="click" Handler="resetDatabase"></f:Listener>
-                      </Listeners>
-                  </f:Button>
-              </Items>
-          </f:FormRow>    <f:FormRow>
-              <Items>
-                  <f:Label Text="重置管理员数据库"></f:Label>
-                  <f:Button Text="执行">
-                      <Listeners>
-                          <f:Listener Event="click" Handler="resetAdminDatabase"></f:Listener>
-                      </Listeners>
-                  </f:Button>
+                  <f:TextBox  ID="txtName" Label="停车场名" Required="true" Text="@ViewBag.Name"/>
               </Items>
           </f:FormRow>  
           <f:FormRow>
               <Items>
-                  <f:Label Text="测试数据用户数量"></f:Label>
-                  <f:NumberBox  ID="txtCount" MaxValue="200" MinValue="10"
-                               NoDecimal="true" NoNegative="true" Required="true" Text="50"/>
+                  <f:NumberBox  ID="txtMonthly" MaxValue="1000" MinValue="10" Label="月租金额"
+                               NoDecimal="true" NoNegative="true" Required="true" Text="@ViewBag.Monthly"/>
               </Items>
           </f:FormRow>  
           <f:FormRow>
               <Items>
-                  <f:Label Text="生成测试数据"></f:Label>
-                  <f:Button Text="执行">
-                      <Listeners>
-                          <f:Listener Event="click" Handler="generateTestData"></f:Listener>
-                      </Listeners>
+                  <f:Button Text="保存" OnClick="@Url.Handler("Save")" OnClickFields="form">
                   </f:Button>
               </Items>
           </f:FormRow>

@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Park.Models;
 using FineUICore;
 using Park.Service;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace Park.Admin.Pages.Overview
 {
@@ -17,12 +19,37 @@ namespace Park.Admin.Pages.Overview
     {
         public async Task<IActionResult> OnGetAsync()
         {
-            var recentParkCount = await StatisticsService.GetRecentParkCount(ParkDB, 5);
-            ViewBag.RecentParkCountX = recentParkCount.Select(p => p.Key.ToShortDateString());
-            ViewBag.RecentParkCountY = recentParkCount.Select(p => p.Value);
+            var recentParkCount = await StatisticsService.GetRecentDaysParkCount(ParkDB, 5, true);
+            ViewBag.DaysEnter = recentParkCount.Select(p => $"['{p.Key}',{p.Value}]");
 
+            var recentHoursEnterParkCount = await StatisticsService.GetRecentHoursParkCount(ParkDB, true);
+            ViewBag.HoursEnter = recentHoursEnterParkCount.Select(p => $"['{p.Key}',{p.Value}]");
+
+            recentParkCount = await StatisticsService.GetRecentDaysParkCount(ParkDB, 5, false);
+            ViewBag.DaysLeave = recentParkCount.Select(p => $"['{p.Key}',{p.Value}]");
+
+            recentHoursEnterParkCount = await StatisticsService.GetRecentHoursParkCount(ParkDB, false);
+            ViewBag.HoursLeave = recentHoursEnterParkCount.Select(p => $"['{p.Key}',{p.Value}]");
+
+            ViewBag.Status = await StatisticsService.GetParkStatusAsync(ParkDB);
+            ViewBag.Name = await Park.Models.Config.GetAsync(ParkDB, "Name", "停车场");
+
+            List<ParkArea> parkAreas = await ParkDB.ParkAreas.Include(p => p.ParkingSpaces)
+                .Include(p => p.Aisles)
+                .Include(p => p.Walls)
+                .ToListAsync();
+            foreach (var p in parkAreas)
+            {
+                var map = ParkingSpaceService.GetMap(ParkDB, p);
+                using MemoryStream ms = new MemoryStream();
+                map.Save(ms, ImageFormat.Png);
+                p.Map = ms.ToArray();
+            }
+            ViewBag.Parks = parkAreas;
             return Page();
         }
- 
+
+
+
     }
 }

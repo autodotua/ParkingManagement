@@ -1,0 +1,42 @@
+﻿@page
+@model Park.Admin.Pages.People.ImportParkModel
+@{
+    ViewData["Title"] = "导入";
+}
+
+
+@section body {
+    <style>
+        .action-btn {
+            margin-right: 12px;
+        }
+    </style>
+    <f:Panel ID="Panel1" BodyPadding="5" ShowBorder="false" 
+             Layout="Region"  ShowHeader="false"  IsViewPort="true">
+        <Items>
+           <f:TextArea ID="txt"></f:TextArea>
+            </Items>
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1" Position="Top">
+                <Items>
+                    <f:Label Text="请将设计器中导出的内容复制至此"></f:Label>
+                    <f:ToolbarFill></f:ToolbarFill>
+                    <f:Button ID="btnSubmit" Text="保存" OnClick="@Url.Handler("Import")" OnClickFields="txt"></f:Button>
+
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+    </f:Panel>
+
+    @*<f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+                  EnableMaximize="true" EnableIFrame="true" Width="900" Height="600"
+                  OnClose="@Url.Handler("DoPostBack")" OnCloseFields="Panel1">
+        </f:Window>*@
+}
+@section script{
+
+
+    <script>
+
+    </script>
+}

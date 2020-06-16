@@ -13,7 +13,7 @@ namespace Park.Models
 
         [Display(Name = "车牌")]
         [StringLength(50)]
-        [Required]
+        [Required]//not null
         public string LicensePlate { get; set; }
 
         [Display(Name = "车主")]

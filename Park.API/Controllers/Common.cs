@@ -14,9 +14,11 @@ namespace Park.API.Controllers
     /// <typeparam name="T"></typeparam>
     public class ResponseData<T>
     {
-        public ResponseData(T data)
+        public ResponseData(T data,bool succeed=true,string message=null)
         {
             Data = data;
+            Succeed = succeed;
+            Message = message;
         }
         public ResponseData()
         {

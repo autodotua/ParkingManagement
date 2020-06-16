@@ -36,7 +36,7 @@
                             <f:Listener Event="click" Handler="onThemeSelectClick" />
                         </Listeners>
                     </f:Button>
-                    <f:Button ID="btnUserName" CssClass="userpicaction" Text="@Model.UserName" IconUrl="@Url.Content("~/res/images/my_face_80.jpg")" IconAlign="Left"
+                    <f:Button ID="btnUserName" CssClass="userpicaction" Text="@Model.UserName" IconUrl="@Url.Content("~/res/images/head.png")" IconAlign="Left"
                               ShowMenuIcon="true" EnableDefaultState="false" EnableDefaultCorner="false">
                         <Menu>
                             <f:MenuButton ID="btnSignOut" Text="安全退出" IconFont="_SignOut" ConfirmText="确定退出系统？" OnClick="@Url.Handler("btnSignOut_Click")">
@@ -51,7 +51,7 @@
     <table id="footer" class="bottomtable f-widget-header" style="display:none;">
         <tr>
             <td style="width: 260px;">
-                &nbsp;版本：@Model.ProductVersion
+                @*&nbsp;版本：@Model.ProductVersion*@
             </td>
             <td style="text-align: center;">地信171第6组</td>
             @*<td style="width: 260px; text-align: right;">在线人数：&nbsp;@Model.OnlineUserCount</td>*@

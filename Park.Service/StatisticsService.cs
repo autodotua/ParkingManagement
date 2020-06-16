@@ -19,13 +19,13 @@ namespace Park.Service
         /// <param name="db"></param>
         /// <param name="days"></param>
         /// <returns></returns>
-        public static async Task<IDictionary<DateTime, int>> GetRecentParkCount(ParkContext db, int days)
+        public static async Task<IDictionary<DateTime, int>> GetRecentDaysParkCount(ParkContext db, int days,bool enter)
         {
             //起始时间
             DateTime earliest = DateTime.Now.AddDays(-days);
             var records  =(await db.ParkRecords
-                    .Where(p => p.EnterTime > earliest).ToListAsync())
-                    .GroupBy(p => p.EnterTime.Date);
+                    .Where(p =>(enter? p.EnterTime:p.LeaveTime) > earliest).ToListAsync())
+                    .GroupBy(p => (enter ? p.EnterTime : p.LeaveTime).Date);
             SortedDictionary<DateTime, int> result = new SortedDictionary<DateTime, int>();
             foreach (var day in records)
             {
@@ -33,6 +33,51 @@ namespace Park.Service
             }
 
             return result;
+        }    
+        public static async Task<IDictionary<DateTime, int>> GetRecentHoursParkCount(ParkContext db,bool enter)
+        {
+            //起始时间
+            DateTime today = DateTime.Today;//.AddDays(-2);
+            var records = await db.ParkRecords
+                    .Where(p => (enter ? p.EnterTime : p.LeaveTime) > today).ToListAsync();
+            SortedDictionary<DateTime, int> result = new SortedDictionary<DateTime, int>();
+            foreach (var record in records)
+            {
+                DateTime time = new DateTime(today.Year,
+                                             today.Month,
+                                             today.Day,
+                                             (enter ? record.EnterTime : record.LeaveTime).Hour,
+                                             30 * ((enter ? record.EnterTime : record.LeaveTime).Minute / 30),
+                                             0);
+                if(result.ContainsKey(time))
+                {
+                    result[time]++;
+                }
+                else
+                {
+                    result.Add(time, 1);
+                }
+            }
+
+            return result;
+        }
+
+        public static async Task<ParkStatus> GetParkStatusAsync(ParkContext db)
+        {
+            ParkStatus status = new ParkStatus();
+            status.Total =await db.ParkingSpaces.CountAsync();
+            status.Used =await db.ParkingSpaces.CountAsync(p => p.HasCar);
+            status.Empty = status.Total - status.Used;
+            status.TodayMoney = -(await db.TransactionRecords
+                .Where(p => p.Time > DateTime.Today && p.Type == TransactionType.Park)
+                .SumAsync(p => p.Value));
+            return status;
+        }
+        public struct ParkStatus { 
+            public int Total { get; set; }
+            public int Empty { get; set; }
+            public int Used { get; set; }
+            public double TodayMoney { get; set; }
         }
     }
 }

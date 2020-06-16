@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Car from '../views/Car.vue'
 import Recharge from '../views/Recharge.vue'
 import TransactionRecord from '../views/TransactionRecord.vue'
+import Password from '../views/Password.vue'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,11 @@ Vue.use(VueRouter)
     path: '/car',
     name: 'Car',
     component: Car
+  },
+  {
+    path: '/password',
+    name: 'Password',
+    component: Password
   },
   {
     path: '/recharge',

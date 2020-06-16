@@ -38,7 +38,7 @@ import { showError, getUrl,jump } from "../common";
 import { AxiosResponse } from "axios";
 export default Vue.extend({
   data: function() {
-    return { username: "user905", password: "1234", buttonsDisabled: false };
+    return { username: "user7", password: "1234", buttonsDisabled: false };
   },
   methods: {
     afterLogin(response: AxiosResponse<any>, register = false) {
