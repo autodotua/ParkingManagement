@@ -64,9 +64,13 @@ namespace Park.Service
             {
                 return new LoginOrRegisterResult() { Type = LoginOrRegisterResultType.Empty };
             }
+            if(password.Length!=32)
+            {
+                password = CreateMD5(username + password);
+            }
             //寻找用户名与密码都匹配的用户
             CarOwner carOwner = await db.CarOwners
-                .FirstOrDefaultAsync(p => p.Username == username && p.Password == CreateMD5(username+password));
+                .FirstOrDefaultAsync(p => p.Username == username && p.Password == password);
 
 
             if (carOwner == null)

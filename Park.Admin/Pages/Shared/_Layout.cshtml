@@ -17,27 +17,30 @@
     @RenderSection("head", false)
 
 </head>
+
 <body>
     @Html.AntiForgeryToken()
 
     @{
         var pm = F.PageManager;
-        
+        //pm.CustomTheme(String.Empty);
+        //强制设置主题
+        pm.CustomTheme("image_black_sky");
         // 主题
-        var themeCookie = Context.Request.Cookies["Theme"];
-        if (!String.IsNullOrEmpty(themeCookie))
-        {
-            Theme theme;
-            if (Enum.TryParse<Theme>(themeCookie, true, out theme))
-            {
-				pm.CustomTheme(String.Empty);
-                pm.Theme(theme);
-            }
-            else
-            {
-                pm.CustomTheme(themeCookie);
-            }
-        }
+        //var themeCookie = Context.Request.Cookies["Theme"];
+        //if (!String.IsNullOrEmpty(themeCookie))
+        //{
+        //    Theme theme;
+        //    if (Enum.TryParse<Theme>(themeCookie, true, out theme))
+        //    {
+        //        pm.CustomTheme(String.Empty);
+        //        pm.Theme(theme);
+        //    }
+        //    else
+        //    {
+        //        pm.CustomTheme(themeCookie);
+        //    }
+        //}
     }
     @F.PageManager
 

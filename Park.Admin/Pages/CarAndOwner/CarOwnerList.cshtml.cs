@@ -57,6 +57,7 @@ namespace Park.Admin.Pages.CarAndOwner
             };
 
             PagingInfo = pagingInfo;
+            ViewBag.MobileUrl=await Park.Models.Config.GetAsync(ParkDB, "MobileUrl", "http://请填写手机端地址"); 
 
             CarOwners = (await GetDataAsync(pagingInfo, string.Empty)).Cast<ExtendCarOwner>();
         }

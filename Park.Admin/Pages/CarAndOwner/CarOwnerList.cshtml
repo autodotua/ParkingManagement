@@ -24,12 +24,13 @@
                     <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
                     <f:RenderField For="CarOwners.First().Username" SortField="Username" Width="100"></f:RenderField>
                     <f:RenderField For="CarOwners.First().RegistTime" SortField="RegistTime" FieldFormat="yyyy-MM-dd" Width="100"></f:RenderField>
-                    <f:RenderField For="CarOwners.First().LastLoginTime" SortField="LastLoginTime" FieldFormat="yyyy-MM-dd"  Width="100"></f:RenderField>
+                    <f:RenderField For="CarOwners.First().LastLoginTime" SortField="LastLoginTime" FieldFormat="yyyy-MM-dd" Width="100"></f:RenderField>
                     <f:RenderField For="CarOwners.First().Balance" SortField="Balance" Width="100"></f:RenderField>
-                    <f:RenderCheckField For="CarOwners.First().IsFree"  RenderAsStaticField="false" Width="80" />
-                    <f:RenderCheckField For="CarOwners.First().Enabled"  RenderAsStaticField="false" Width="80" />
+                    <f:RenderCheckField For="CarOwners.First().IsFree" RenderAsStaticField="false" Width="80" />
+                    <f:RenderCheckField For="CarOwners.First().Enabled" RenderAsStaticField="false" Width="80" />
                     <f:RenderField For="CarOwners.First().Cars.Count" HeaderText="车辆" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderCars"></f:RenderField>
                     <f:RenderField For="CarOwners.First().TransactionRecords.Count" HeaderText="交易记录" EnableColumnHide="false" EnableHeaderMenu="false" RendererFunction="renderTransactions"></f:RenderField>
+                    <f:RenderField For="CarOwners.First().Password" Enabled="false"  EnableHeaderMenu="false" RendererFunction="renderPassword"></f:RenderField>
                     <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="240" RendererFunction="renderBtns"></f:RenderField>
 
                 </Columns>
@@ -60,11 +61,11 @@
                                     <f:Listener Event="click" Handler="onDeleteSelectedClick"></f:Listener>
                                 </Listeners>
                             </f:Button>
-                            @*<f:Button ID="btnNew" Icon="Add" Text="新增用户">
-                                <Listeners>
-                                    <f:Listener Event="click" Handler="onNewClick"></f:Listener>
-                                </Listeners>
-                            </f:Button>*@
+                            <f:Button ID="btnNew" IconUrl="~/res/images/park/icon_add.png" Text="新增用户">
+                                    <Listeners>
+                                        <f:Listener Event="click" Handler="onNewClick"></f:Listener>
+                                    </Listeners>
+                                </f:Button>
                             <f:Button ID="btnSubmit" Text="保存数据" IconUrl="~/res/images/park/icon_save.png" OnClick="@Url.Handler("SaveData")" OnClickFields="Grid1"></f:Button>
 
                         </Items>
@@ -73,7 +74,9 @@
             </f:Grid>
         </Items>
     </f:Panel>
-
+    <f:Window ID="win" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+              EnableMaximize="true" EnableIFrame="true" Width="400" Height="600">
+    </f:Window>
     @*<f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
                   EnableMaximize="true" EnableIFrame="true" Width="900" Height="600"
                   OnClose="@Url.Handler("UserList_DoPostBack")" OnCloseFields="Panel1">
@@ -87,7 +90,8 @@
 
 
     function onNewClick(event) {
-        //F.ui.Window1.show('@Url.Content("~/Admin/UserNew")', '新增');
+        var url = '@ViewBag.MobileUrl' + '/#/login';
+        F.ui.win.show(url, "新增");
     }
         function renderCars(value, params) {
             return renderButtons([{ class: "car", text: value+" 辆" }]);
@@ -96,8 +100,14 @@
             return renderButtons([{ class: "tra", text: value + " 笔" }]);
     }
         function renderBtns(value, params) {
-            return renderButtons([{ class: "password", text: "重置密码" },
+            return renderButtons([
+                { class: "edit", text: "操作" },
                 { class: "delete", text: "删除" }]);
+        }
+        function renderPassword(value, params) {
+            return renderButtons([
+                { class: "password", text: "重置密码" },
+            ]);
     }
 
 
@@ -123,12 +133,16 @@
                     refreshWhenExist: true
                 });
                 } else if (cnode.hasClass('tra')) {
-                parent.addExampleTab({
-                    id: 'transactionRecord_withOwner',
-                    iframeUrl: '@Url.Content("~/CarAndOwner/TransactionRecordList")?carOwnerID=' + rowData.id,
-                    title: '交易记录 - ' + rowData.text,
-                    refreshWhenExist: true
-                });
+                    parent.addExampleTab({
+                        id: 'transactionRecord_withOwner',
+                        iframeUrl: '@Url.Content("~/CarAndOwner/TransactionRecordList")?carOwnerID=' + rowData.id,
+                        title: '交易记录 - ' + rowData.text,
+                        refreshWhenExist: true
+                    });
+                }
+                else if (cnode.hasClass('edit')) {
+                    var url = '@ViewBag.MobileUrl' + '/#/login?username=' + rowData.text+'&password='+rowData.values.Password;
+                    F.ui.win.show(url,"用户界面");
             }
         }
 
