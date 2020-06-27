@@ -37,9 +37,9 @@ namespace Park.Admin.Pages.Overview
             ShowNotify("操作成功，请重新登录");
             return UIHelper.Result();
         }
-        public async Task<IActionResult> OnPostGenerateTestDataAsync(int count)
+        public async Task<IActionResult> OnPostGenerateTestDataAsync(int count,bool totalDay)
         {
-            await ParkDatabaseInitializer.GenerateTestDatasAsync(ParkDB,count);
+            await ParkDatabaseInitializer.GenerateTestDatasAsync(ParkDB,count,()=> totalDay?DateTime.Today.AddHours(20): DateTime.Now);
             ShowNotify("操作成功");
             return UIHelper.Result();
         }

@@ -19,7 +19,8 @@
                 <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true" DataIDField="ID" DataTextField="LicensePlate"
                         AllowPaging="true" IsDatabasePaging="true" AllowCellEditing="true"
                         SortField="@PagingInfo.SortField" SortDirection="@PagingInfo.SortDirection"
-                        PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount" DataSource="@Model.ParkRecords"
+                        PageSize="@PagingInfo.PageSize" RecordCount="@PagingInfo.RecordCount"
+                        DataSource="@Model.ParkRecords"
                         OnSort="@Url.Handler("DoPostBack")" OnSortFields="Panel1" AllowSorting="true"
                         OnPageIndexChanged="@Url.Handler("DoPostBack")" OnPageIndexChangedFields="Panel1">
                     <Columns>

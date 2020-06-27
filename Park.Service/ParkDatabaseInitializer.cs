@@ -15,13 +15,13 @@ namespace Park.Service
     /// </summary>
     public static class ParkDatabaseInitializer
     {
-        public static Func<DateTime> Now = () => DateTime.Today.AddHours(20);//模拟的当前时间
+        //public static Func<DateTime> Now = () => DateTime.Today.AddHours(20);//模拟的当前时间
         /// <summary>
         /// 生成测试数据
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async static Task GenerateTestDatasAsync(ParkContext context, int userCount)
+        public async static Task GenerateTestDatasAsync(ParkContext context, int userCount, Func<DateTime> now)
         {
 
             Random r = new Random();
@@ -101,16 +101,16 @@ namespace Park.Service
                 //注册一名车主
                 var owner = (await CarOwnerService.RegisterAsync(context,
                     "user" + (i + 1).ToString(), "1234",
-                    Now().AddDays(-10).AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
+                    now().AddDays(-10).AddDays(-r.NextDouble() * 5))).CarOwner;//模拟用户在5天内注册的
                 await context.SaveChangesAsync();
 
                 //模拟为车主充值3次
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(20, 200),
-                    Now().AddDays(-7).AddDays(-r.NextDouble()));
+                    now().AddDays(-7).AddDays(-r.NextDouble()));
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(10, 50),
-                        Now().AddDays(-6).AddDays(-r.NextDouble()));
+                        now().AddDays(-6).AddDays(-r.NextDouble()));
                 await TransactionService.RechargeMoneyAsync(context, owner.ID, r.Next(30, 200),
-                        Now().AddDays(-5).AddDays(-r.NextDouble()));
+                        now().AddDays(-5).AddDays(-r.NextDouble()));
 
                 int carCount = r.Next(2, 5);
                 for (int j = 0; j < carCount; j++)//车辆
@@ -138,7 +138,7 @@ namespace Park.Service
                         {
                             leaveTime = leaveTime.AddHours(8);
                         }
-                        if (leaveTime > Now())
+                        if (leaveTime > now())
                         {
                             break;
                         }
@@ -149,7 +149,7 @@ namespace Park.Service
                         {
                             ParkingSpace ps = parkArea.ParkingSpaces.First(p => !p.HasCar);
                             ps.HasCar = true;//切换停车位状态
-                            if (leaveTime > Now().AddHours(-0.5))//设置时间差，这样可以让最后有一部分车留下来
+                            if (leaveTime > now().AddHours(-0.5))//设置时间差，这样可以让最后有一部分车留下来
                             {
                                 break;
                             }

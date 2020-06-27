@@ -43,8 +43,15 @@
           <f:FormRow>
               <Items>
                   <f:Label Text="测试数据用户数量"></f:Label>
-                  <f:NumberBox  ID="txtCount" MaxValue="200" MinValue="10"
+                  <f:NumberBox ID="txtCount" MaxValue="200" MinValue="10"
                                NoDecimal="true" NoNegative="true" Required="true" Text="50"/>
+              </Items>
+          </f:FormRow>  
+          <f:FormRow>
+              <Items>
+                  <f:Label Text="将模拟时间设置为今天一整天"></f:Label>
+                  
+                  <f:CheckBox Label="" ID="chkTotalDay"></f:CheckBox>
               </Items>
           </f:FormRow>  
           <f:FormRow>
@@ -91,7 +98,10 @@
             F.confirm({
                 message: '是否生成测试数据？',
                 ok: function () {
-                    F.doPostBack('@Url.Handler("GenerateTestData")', {count:F.ui.txtCount.getValue()});
+                    F.doPostBack('@Url.Handler("GenerateTestData")', {
+                        count: F.ui.txtCount.getValue(),
+                        totalDay: F.ui.chkTotalDay.getValue()
+                    });
                 },
                 cancel: function () {
                 }
